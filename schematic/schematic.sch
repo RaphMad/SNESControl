@@ -4490,7 +4490,7 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <label x="7.62" y="78.74" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="6-(SL)" class="0">
+<net name="6-(SEL)" class="0">
 <segment>
 <wire x1="48.26" y1="76.2" x2="17.78" y2="76.2" width="0.1524" layer="91"/>
 <label x="7.62" y="76.2" size="1.778" layer="95"/>
@@ -4526,7 +4526,7 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <label x="7.62" y="63.5" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="13-(X)" class="0">
+<net name="A0-(X)" class="0">
 <segment>
 <wire x1="48.26" y1="30.48" x2="22.86" y2="30.48" width="0.1524" layer="91"/>
 <wire x1="22.86" y1="30.48" x2="22.86" y2="58.42" width="0.1524" layer="91"/>
@@ -4543,14 +4543,14 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <label x="7.62" y="60.96" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="A0-(SL)" class="0">
+<net name="A1-(SL)" class="0">
 <segment>
 <pinref part="IC2" gate="A" pin="P3"/>
 <wire x1="48.26" y1="27.94" x2="17.78" y2="27.94" width="0.1524" layer="91"/>
 <label x="10.16" y="27.94" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="A1-(SR)" class="0">
+<net name="A2-(SR)" class="0">
 <segment>
 <pinref part="IC2" gate="A" pin="P4"/>
 <wire x1="48.26" y1="25.4" x2="17.78" y2="25.4" width="0.1524" layer="91"/>
