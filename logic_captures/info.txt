@@ -1,0 +1,6 @@
+Taken with Saleae Logic 1.2.17.
+
+Settings: decode_snes.logicsettings
+Channel 0: Latch
+Channel 1: Clock
+Channel 2: Data
