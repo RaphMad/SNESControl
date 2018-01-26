@@ -4,6 +4,7 @@
 void ReadController::begin() {
     pinMode(PIN_CONTROLLER_LATCH, OUTPUT);
     pinMode(PIN_CONTROLLER_CLOCK, OUTPUT);
+    pinMode(PIN_CONTROLLER_DATA, INPUT_PULLUP);
 }
 
 void pulse(uint8_t pin) {
