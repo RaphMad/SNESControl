@@ -11,7 +11,6 @@ void handleFallingLatchPulse(){
 }
 
 void setup() {
-    Serial.begin(9600);
     ReadController::begin();
     WriteToConsole::begin();
     StoreButtonData::begin();
