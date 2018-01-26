@@ -4456,7 +4456,9 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <text x="5.08" y="73.66" size="1.778" layer="91" rot="R180">Digital Pins</text>
 <text x="7.62" y="27.94" size="1.778" layer="91" rot="R180">Analog Pins</text>
 <text x="38.1" y="12.7" size="1.778" layer="91" rot="R180">10 kOhm</text>
-<text x="139.7" y="50.8" size="1.778" layer="91" rot="R180">1k Pull-Up resistors (only for PAL consoles)</text>
+<text x="139.7" y="50.8" size="1.778" layer="91" rot="R180">Pull-Up resistors (only for PAL consoles)
+2,2 kOhm for SNES-LATCH (R5)
+1 kOhm for SNES-CLOCK (R6)</text>
 </plain>
 <instances>
 <instance part="IC1" gate="A" x="60.96" y="66.04"/>
@@ -4712,6 +4714,10 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 </schematic>
 </drawing>
 <compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
 <note version="8.2" severity="warning">
 Since Version 8.2, EAGLE supports online libraries. The ids
 of those online libraries will not be understood (or retained)
