@@ -1,12 +1,14 @@
 ## Introduction
 
-This project contains hardware schematics and software for building a system that is able to decode and encode the SNES controller protocol on the fly.
+This project contains hardware schematics and software for building a device that is able to decode and encode the SNES controller protocol on the fly.
 
 Planned features:
 
 * Save stream of pressed buttons into a replay file
 * Play back replay files saved this way
 * Play back replay files from external sources
+
+Hardware is based on the [Arduino Uno](https://store.arduino.cc/arduino-uno-rev3) in combination with some simple electronic parts.
 
 ## Arduino sources
 
