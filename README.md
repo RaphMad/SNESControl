@@ -17,7 +17,8 @@ The project is based on [platformio](http://platformio.org/) and was developed f
 
 ## Client sources
 
-TBD
+The client code is located in the folder [client_code](client_code).
+The project is based on [C# / .NET / Microsoft Visual Studio](https://www.visualstudio.com/).
 
 ## Additional information
 
