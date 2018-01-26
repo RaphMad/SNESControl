@@ -27,4 +27,4 @@ TBD
 
 ## License
 
-MIT, see **LICENSE** file.
+MIT, see **[LICENSE](LICENSE)** file.
