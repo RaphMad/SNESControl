@@ -11,6 +11,11 @@ void pulse(uint8_t pin) {
     digitalWrite(pin, LOW);
 }
 
+bool sampleButton() {
+    pulse(PIN_CONTROLLER_CLOCK);
+    return digitalRead(PIN_CONTROLLER_DATA);
+}
+
 
 ButtonData ReadController::getData() {
     ButtonData sampledData;
@@ -21,39 +26,18 @@ ButtonData ReadController::getData() {
     // first button is already available, read it
     sampledData.B = digitalRead(PIN_CONTROLLER_DATA);
 
-    // shift following buttons
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.Y = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.SELECT = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.START = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.UP = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.DOWN = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.LEFT = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.RIGHT = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.A = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.X = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.SHOULDER_LEFT = digitalRead(PIN_CONTROLLER_DATA);
-
-    pulse(PIN_CONTROLLER_CLOCK);
-    sampledData.SHOULDER_RIGHT = digitalRead(PIN_CONTROLLER_DATA);
+    // sample the following buttons
+    sampledData.Y = sampleButton();
+    sampledData.SELECT = sampleButton();
+    sampledData.START = sampleButton();
+    sampledData.UP = sampleButton();
+    sampledData.DOWN = sampleButton();
+    sampledData.LEFT = sampleButton();
+    sampledData.RIGHT = sampleButton();
+    sampledData.A = sampleButton();
+    sampledData.X = sampleButton();
+    sampledData.SHOULDER_LEFT = sampleButton();
+    sampledData.SHOULDER_RIGHT = sampleButton();
 
     return sampledData;
 }

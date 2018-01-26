@@ -44,6 +44,12 @@ struct ButtonData {
     bool SHOULDER_LEFT:1;
     bool SHOULDER_RIGHT:1;
 
+    // unused padding bits
+    bool UNUSED_13: 1;
+    bool UNUSED_14: 1;
+    bool UNUSED_15: 1;
+    bool UNUSED_16: 1;
+
     ButtonData() {
         // initialize all fields with true, this makes creating manual instances easier (remember that true means NOT pressed)
         B = true;
@@ -58,6 +64,10 @@ struct ButtonData {
         X = true;
         SHOULDER_LEFT = true;
         SHOULDER_RIGHT = true;
+        UNUSED_13 = true;
+        UNUSED_14 = true;
+        UNUSED_15 = true;
+        UNUSED_16 = true;
     }
 };
 

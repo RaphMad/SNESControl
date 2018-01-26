@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "ReadController/ReadController.h"
 #include "WriteToConsole/WriteToConsole.h"
+#include "StoreButtonData/StoreButtonData.h"
 
 volatile bool isAfterLatch = false;
 
@@ -13,6 +14,7 @@ void setup() {
     Serial.begin(9600);
     ReadController::begin();
     WriteToConsole::begin();
+    StoreButtonData::begin();
 
     attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
 }
@@ -20,6 +22,8 @@ void setup() {
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
+
+        StoreButtonData::storeData(WriteToConsole::getLatestData());
     }
 
     WriteToConsole::addData(ReadController::getData());
