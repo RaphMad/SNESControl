@@ -23,8 +23,8 @@ The project is based on [C# / .NET / Microsoft Visual Studio](https://www.visual
 ## Additional information
 
 * A summary of resources I used for this project can be found in [resources](resources).
-* Hardware schematics (based on [Eagle](https://www.autodesk.com/products/eagle/overview) can be found in [schematics](schematics).
-* Some logic captures that help to illustrate the SNES controller protocol (based on [Saleae Logic](https://www.saleae.com/) can be found in [logic_captures](logic_captures).
+* Hardware schematics (based on [Eagle](https://www.autodesk.com/products/eagle/overview)) can be found in [schematics](schematics).
+* Some logic captures that help to illustrate the SNES controller protocol (based on [Saleae Logic](https://www.saleae.com/)) can be found in [logic_captures](logic_captures).
 
 ## License
 
