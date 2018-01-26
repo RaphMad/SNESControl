@@ -4459,6 +4459,7 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <text x="139.7" y="50.8" size="1.778" layer="91" rot="R180">Pull-Up resistors (only for PAL consoles)
 2,2 kOhm for SNES-LATCH (R5)
 1 kOhm for SNES-CLOCK (R6)</text>
+<text x="-17.78" y="-27.94" size="1.778" layer="91">+5V and GND of the controller are connected to the Arduino.</text>
 </plain>
 <instances>
 <instance part="IC1" gate="A" x="60.96" y="66.04"/>
@@ -4733,6 +4734,20 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <wire x1="20.32" y1="-17.78" x2="111.76" y2="-17.78" width="0.1524" layer="91"/>
 <label x="-10.16" y="17.78" size="1.778" layer="95"/>
 <label x="114.3" y="-17.78" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="+5V" class="0">
+<segment>
+<wire x1="111.76" y1="-20.32" x2="17.78" y2="-20.32" width="0.1524" layer="91"/>
+<label x="12.7" y="-20.32" size="1.778" layer="95"/>
+<label x="114.3" y="-20.32" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="GND" class="0">
+<segment>
+<wire x1="111.76" y1="-22.86" x2="17.78" y2="-22.86" width="0.1524" layer="91"/>
+<label x="12.7" y="-22.86" size="1.778" layer="95"/>
+<label x="114.3" y="-22.86" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
