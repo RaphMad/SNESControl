@@ -10,14 +10,5 @@ typedef enum {
      * Second byte: Length of stored data (max 256).
      * Following bytes: Data, to be interpreted double byte values.
      */
-    SaveButtonData = 0,
-
-    /*
-     * Direction: Arduino -> Client
-     *
-     * First byte: 1
-     * Second byte: Length of stored data (max 256).
-     * Following bytes: Data, to be interpreted double byte values.
-     */
-    EndButtonData = 1
+    SaveButtonData = 0
 } MessageTypes;

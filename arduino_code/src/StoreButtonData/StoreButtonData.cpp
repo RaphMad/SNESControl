@@ -1,47 +1,38 @@
 #include "StoreButtonData.h"
 #include <Arduino.h>
-#include <stdint.h>
 #include "../Communication/messageTypes.h"
-
-const uint8_t TEMP_STORE_SIZE = 50;
 
 void StoreButtonData::begin() {
     Serial.begin(9600);
 }
 
-/*
- * Data is temporarily stored in this array and automatically shifted to the PC when its full.
- * Note that the last, eventually incomplete data portion needs to be flushed!
- */
-ButtonData tempButtonData[TEMP_STORE_SIZE];
-uint8_t currentPosition = 0;
+uint8_t getFirstByte(ButtonData buttonData) {
+    uint8_t byte1 = 0;
 
-void sendButtonData(ButtonData buttonData) {
-    // interpret struct as array of bytes
-    Serial.write((uint8_t*)&buttonData, 2);
+    if (buttonData.B) bitSet(byte1, 7);
+    if (buttonData.Y) bitSet(byte1, 6);
+    if (buttonData.SELECT) bitSet(byte1, 5);
+    if (buttonData.START) bitSet(byte1, 4);
+    if (buttonData.UP) bitSet(byte1, 3);
+    if (buttonData.DOWN) bitSet(byte1, 2);
+    if (buttonData.LEFT) bitSet(byte1, 1);
+    if (buttonData.RIGHT) bitSet(byte1, 0);
+
+    return byte1;
 }
 
-void pushData() {
-    Serial.write(currentPosition);
+uint8_t getSecondByte(ButtonData buttonData) {
+    uint8_t byte2 = 0;
 
-    for (int i = 0; i < currentPosition; i++) {
-        sendButtonData(tempButtonData[i]);
-    }
+    if (buttonData.A) bitSet(byte2, 7);
+    if (buttonData.X) bitSet(byte2, 6);
+    if (buttonData.SHOULDER_LEFT) bitSet(byte2, 5);
+    if (buttonData.SHOULDER_RIGHT) bitSet(byte2, 4);
 
-    currentPosition = 0;
+    return byte2;
 }
 
 void StoreButtonData::storeData(ButtonData buttonData) {
-    tempButtonData[currentPosition] = buttonData;
-    currentPosition++;
-
-    if (currentPosition == TEMP_STORE_SIZE) {
-        Serial.write(SaveButtonData);
-        pushData();
-    }
-}
-
-void StoreButtonData::flush() {
-    Serial.write(EndButtonData);
-    pushData();
+    Serial.write(getFirstByte(buttonData));
+    Serial.write(getSecondByte(buttonData));
 }
