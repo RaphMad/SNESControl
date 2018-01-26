@@ -22,15 +22,5 @@ void loop() {
         isAfterLatch = false;
     }
 
-    ButtonData goDown;
-    goDown.DOWN = false;
-    WriteToConsole::prepareData(goDown);
-
-    delay(2000);
-
-    ButtonData goUp;
-    goUp.UP = false;
-    WriteToConsole::prepareData(goUp);
-
-    delay(2000);
+    WriteToConsole::addData(ReadController::getData());
 }
