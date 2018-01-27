@@ -32,7 +32,7 @@
                 return;
             }
 
-            _port = new SerialPort(argList[1], 57600);
+            _port = new SerialPort(argList[1], 9600);
 
             int saveToFileIndex = argList.FindIndex(x => x == "-saveToFile");
 
