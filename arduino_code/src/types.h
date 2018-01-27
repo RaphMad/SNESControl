@@ -98,6 +98,6 @@ typedef enum {
 /*
  * Maximum size of the message content.
  */
-const byte MAX_CONTENT_SIZE = 128;
+const byte MAX_CONTENT_SIZE = 64;
 
 #endif

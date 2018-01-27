@@ -66,7 +66,7 @@
 
         static void SendPing()
         {
-            byte[] bytes = Enumerable.Range(0, 256).Select(x => (byte)x).ToArray();
+            byte[] bytes = Enumerable.Range(0, 64).Select(x => (byte)x).ToArray();
             _serialConnector.SendData(MessageType.Ping, bytes);
         }
     }
