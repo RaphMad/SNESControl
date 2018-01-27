@@ -44,7 +44,7 @@
 
             while (pressedKey != ConsoleKey.Escape)
             {
-                pressedKey = Console.ReadKey(false).Key;
+                pressedKey = Console.ReadKey(true).Key;
 
                 var keyActions = new Dictionary<ConsoleKey, Action>
                                  {
