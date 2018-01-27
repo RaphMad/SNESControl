@@ -1,13 +1,13 @@
 #include "StoreButtonData.h"
 #include <Arduino.h>
-#include "../Communication/messageTypes.h"
 
-void StoreButtonData::begin() {
-    Serial.begin(9600);
-}
+const byte BUFFER_SIZE = 64;
+byte sendBuffer[BUFFER_SIZE];
 
-uint8_t getFirstByte(ButtonData buttonData) {
-    uint8_t byte1 = 0;
+byte bufferPosition = 0;
+
+byte getFirstByte(ButtonData buttonData) {
+    byte byte1 = 0;
 
     if (buttonData.B) bitSet(byte1, 7);
     if (buttonData.Y) bitSet(byte1, 6);
@@ -21,8 +21,8 @@ uint8_t getFirstByte(ButtonData buttonData) {
     return byte1;
 }
 
-uint8_t getSecondByte(ButtonData buttonData) {
-    uint8_t byte2 = 0;
+byte getSecondByte(ButtonData buttonData) {
+    byte byte2 = 0;
 
     if (buttonData.A) bitSet(byte2, 7);
     if (buttonData.X) bitSet(byte2, 6);
@@ -32,7 +32,27 @@ uint8_t getSecondByte(ButtonData buttonData) {
     return byte2;
 }
 
+void sendData() {
+    Serial.print("SAVE|");
+
+    for (int i = 0; i < BUFFER_SIZE; i+=2) {
+        Serial.print(sendBuffer[i]);
+        Serial.print(" ");
+        Serial.print(sendBuffer[i+1]);
+        Serial.print(" ");
+    }
+
+    Serial.println();
+    bufferPosition = 0;
+}
+
 void StoreButtonData::storeData(ButtonData buttonData) {
-    Serial.write(getFirstByte(buttonData));
-    Serial.write(getSecondByte(buttonData));
+    sendBuffer[bufferPosition] = getFirstByte(buttonData);
+    sendBuffer[bufferPosition + 1] = getSecondByte(buttonData);
+
+    bufferPosition += 2;
+
+    if (bufferPosition == BUFFER_SIZE) {
+        sendData();
+    }
 }

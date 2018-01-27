@@ -7,7 +7,7 @@ void ReadController::begin() {
     pinMode(PIN_CONTROLLER_DATA, INPUT_PULLUP);
 }
 
-void pulse(uint8_t pin) {
+void pulse(byte pin) {
     digitalWrite(pin, HIGH);
     digitalWrite(pin, LOW);
 }

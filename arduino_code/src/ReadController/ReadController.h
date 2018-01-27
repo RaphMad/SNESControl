@@ -1,5 +1,5 @@
-#ifndef ReadController_H
-#define ReadController_H
+#ifndef ReadController_h
+#define ReadController_h
 
 #include "types.h"
 

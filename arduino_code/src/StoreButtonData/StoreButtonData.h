@@ -1,11 +1,10 @@
-#ifndef StoreButtonData_H
-#define StoreButtonData_H
+#ifndef StoreButtonData_h
+#define StoreButtonData_h
 
 #include "types.h"
 
 class StoreButtonData {
     public:
-        static void begin();
         static void storeData(ButtonData buttonData);
 };
 
