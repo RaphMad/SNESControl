@@ -4,6 +4,7 @@
 #include "WriteToConsole/WriteToConsole.h"
 #include "StoreButtonData/StoreButtonData.h"
 #include "LoadButtonData/LoadButtonData.h"
+#include "Communication/Messenger.h"
 
 /*
  * Expected frame length in ms.
@@ -45,43 +46,6 @@ void pollController() {
     }
 }
 
-String receivedCommand = "";
-
-void checkForEnableReplayCommand() {
-    while (Serial.available()) {
-        char receivedChar = (char)Serial.read();
-        if (receivedChar == '\r' || receivedChar == '\n') break;
-        receivedCommand += receivedChar;
-  }
-
-  if (receivedCommand == "ENABLE REPLAY") {
-      receivedCommand = "";
-      isInReplayMode = true;
-      LoadButtonData::begin();
-  }
-
-    if (receivedCommand == "ENABLE SAVE") {
-        receivedCommand = "";
-      isInSaveMode = true;
-  }
-}
-
-void handleReplayData() {
-    bool wasInitialData = LoadButtonData::processIncomingData();
-
-    if (wasInitialData) {
-        WriteToConsole::prepareData(LoadButtonData::getData());
-    }
-}
-
-void processIncomingMessage() {
-    if (!isInReplayMode) {
-        checkForEnableReplayCommand();
-    } else {
-        handleReplayData();
-    }
-}
-
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
@@ -96,5 +60,5 @@ void loop() {
     }
 
     pollController();
-    processIncomingMessage();
+    Messenger::checkForData();
 }

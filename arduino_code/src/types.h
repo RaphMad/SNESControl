@@ -74,4 +74,26 @@ struct ButtonData {
     }
 };
 
+/*
+ * Identifiers of messages that are exchanged between the Arduino and the client application.
+ * Message have the following form:
+ *
+ * <START_BYTE> <MessageType> ... <Payload bytes> ... <END_BYTE>
+ *
+ * <MessageType> and <Payload bytes> will need to be encoded to not contain <START_BYTE> and <END_BYTE>.
+ * The size of <Payload bytes> is message specific.
+ */
+typedef enum {
+    // start with a value of 3 for more efficient encoding (the encoding will use 2 bytes for 0,1,2)
+    ENABLE_SAVE = 3,
+    SAVE = 4,
+    ENABLE_LOAD = 5,
+    LOAD = 6
+} MessageType;
+
+/*
+ * Maximum size of the message content.
+ */
+const byte MAX_CONTENT_SIZE = 128;
+
 #endif
