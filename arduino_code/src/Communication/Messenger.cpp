@@ -73,7 +73,6 @@ void sendInfo() {
 void decodeReceivedMessage(int numberOfBytes) {
     int decodeIndex = 0;
 
-    // 1 skips the start marker, end marker has already been omitted by readBytesUntil()
     for (int i = 0; i < numberOfBytes; i++) {
         byte currentByte = receivedBytes[i];
 
@@ -114,12 +113,25 @@ void decodeReceivedMessage(int numberOfBytes) {
     }
 }
 
+int numberOfBytes;
+bool isReceiving;
+
 void Messenger::checkForData() {
     while (Serial.available() > 0) {
         byte receivedByte = Serial.read();
 
         if (receivedByte == START_MARKER) {
-            int numberOfBytes = Serial.readBytesUntil(END_MARKER, receivedBytes, RECEIVE_BUFFER_SIZE);
+            numberOfBytes = 0;
+            isReceiving = true;
+        }
+
+        if (isReceiving && receivedByte != START_MARKER && receivedByte != END_MARKER) {
+            receivedBytes[numberOfBytes] = receivedByte;
+            numberOfBytes++;
+        }
+
+        if (receivedByte == END_MARKER) {
+            isReceiving = false;
             decodeReceivedMessage(numberOfBytes);
         }
     }
