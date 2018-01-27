@@ -12,6 +12,7 @@
 const byte FRAME_LENGTH = 20;
 
 volatile bool isAfterLatch = false;
+
 bool isInReplayMode = false;
 bool isInSaveMode = false;
 
@@ -44,22 +45,6 @@ void pollController() {
     }
 }
 
-void loop() {
-    if (isAfterLatch) {
-        isAfterLatch = false;
-
-        if (isInSaveMode) {
-            StoreButtonData::storeData(WriteToConsole::getLatestData());
-        }
-
-        if (isInReplayMode) {
-            WriteToConsole::prepareData(LoadButtonData::getData());
-        }
-    }
-
-    pollController();
-}
-
 String receivedCommand = "";
 
 void checkForEnableReplayCommand() {
@@ -89,10 +74,27 @@ void handleReplayData() {
     }
 }
 
-void serialEvent() {
+void processIncomingMessage() {
     if (!isInReplayMode) {
         checkForEnableReplayCommand();
     } else {
         handleReplayData();
     }
+}
+
+void loop() {
+    if (isAfterLatch) {
+        isAfterLatch = false;
+
+        if (isInSaveMode) {
+            StoreButtonData::storeData(WriteToConsole::getLatestData());
+        }
+
+        if (isInReplayMode) {
+            WriteToConsole::prepareData(LoadButtonData::getData());
+        }
+    }
+
+    pollController();
+    processIncomingMessage();
 }
