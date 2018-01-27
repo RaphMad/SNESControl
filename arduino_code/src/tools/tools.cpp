@@ -1,13 +1,34 @@
 #include "tools.h"
 
-byte* buttonDataToBytes(ButtonData buttonData) {
+void buttonDataToBytes(ButtonData buttonData, byte* buf) {
     ButtonData* memoryAddress = &buttonData;
-    return (byte*) memoryAddress;
+    byte* copyFrom = (byte*) memoryAddress;
+
+    memcpy(buf, copyFrom, 2);
 }
 
 ButtonData bytesToButtonData(byte* bytes) {
-    ButtonData* memoryAddress = (ButtonData*) bytes;
-    return *memoryAddress;
+    ButtonData buttonData;
+
+    byte byte1 = bytes[0];
+    byte byte2 = bytes[1];
+
+    // note that buttons are stored in reverse order
+    buttonData.B = bitRead(byte1, 7);
+    buttonData.Y = bitRead(byte1, 6);
+    buttonData.SELECT = bitRead(byte1, 5);
+    buttonData.START = bitRead(byte1, 4);
+    buttonData.UP = bitRead(byte1, 3);
+    buttonData.DOWN = bitRead(byte1, 2);
+    buttonData.LEFT = bitRead(byte1, 1);
+    buttonData.RIGHT = bitRead(byte1, 0);
+
+    buttonData.A = bitRead(byte2, 7);
+    buttonData.X = bitRead(byte2, 6);
+    buttonData.SHOULDER_LEFT = bitRead(byte2, 5);
+    buttonData.SHOULDER_RIGHT = bitRead(byte2, 4);
+
+    return buttonData;
 }
 
 String formatButtonData(ButtonData buttonData) {

@@ -7,7 +7,7 @@
  * Converts a ButtonData structure into its byte representation.
  * Will always return an array of two bytes.
  */
-byte* buttonDataToBytes(ButtonData buttonData);
+void buttonDataToBytes(ButtonData buttonData, byte* buf);
 
 /*
  * Converts bytes into the corresponding ButtonData structure.

@@ -23,7 +23,7 @@ class WriteToConsole {
         static void addData(ButtonData additionalData);
 
         /*
-         * Retrieves the latest data that has been read by the console (may be a combination of prepared and combined data).
+         * Retrieves the latest data that has been read by the console (combined of prepared and combined data).
          */
         static ButtonData getLatestData();
 };

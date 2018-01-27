@@ -6,6 +6,10 @@
 class ReadController {
     public:
         static void begin();
+
+        /*
+         * Poll controller for data.
+         */
         static ButtonData getData();
 };
 

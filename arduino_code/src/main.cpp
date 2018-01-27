@@ -82,7 +82,7 @@ void checkForEnableReplayCommand() {
 }
 
 void handleReplayData() {
-    bool wasInitialData = LoadButtonData::handleIncomingData();
+    bool wasInitialData = LoadButtonData::processIncomingData();
 
     if (wasInitialData) {
         WriteToConsole::prepareData(LoadButtonData::getData());

@@ -4,6 +4,8 @@
 void ReadController::begin() {
     pinMode(PIN_CONTROLLER_LATCH, OUTPUT);
     pinMode(PIN_CONTROLLER_CLOCK, OUTPUT);
+
+    // having this pin configured as PULLUP is important to get consistent HIGH states when no controller is connected
     pinMode(PIN_CONTROLLER_DATA, INPUT_PULLUP);
 }
 
@@ -16,7 +18,6 @@ bool sampleButton() {
     pulse(PIN_CONTROLLER_CLOCK);
     return digitalRead(PIN_CONTROLLER_DATA);
 }
-
 
 ButtonData ReadController::getData() {
     ButtonData sampledData;

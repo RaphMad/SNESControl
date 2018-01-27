@@ -5,6 +5,10 @@
 
 class StoreButtonData {
     public:
+
+        /*
+         * Stores the passed in ButtonData structure.
+         */
         static void storeData(ButtonData buttonData);
 };
 

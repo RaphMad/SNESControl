@@ -1,36 +1,15 @@
 #include "StoreButtonData.h"
 #include <Arduino.h>
+#include "../tools/tools.h"
 
-const byte BUFFER_SIZE = 64;
+/*
+ * Wait for this many bytes before actually sending data to the client.
+ * With a value of 128 about one save request is sent per second (assuming inputs come in at 50 or 60Hz).
+ */
+const byte BUFFER_SIZE = 128;
+
 byte sendBuffer[BUFFER_SIZE];
-
 byte bufferPosition = 0;
-
-byte getFirstByte(ButtonData buttonData) {
-    byte byte1 = 0;
-
-    if (buttonData.B) bitSet(byte1, 7);
-    if (buttonData.Y) bitSet(byte1, 6);
-    if (buttonData.SELECT) bitSet(byte1, 5);
-    if (buttonData.START) bitSet(byte1, 4);
-    if (buttonData.UP) bitSet(byte1, 3);
-    if (buttonData.DOWN) bitSet(byte1, 2);
-    if (buttonData.LEFT) bitSet(byte1, 1);
-    if (buttonData.RIGHT) bitSet(byte1, 0);
-
-    return byte1;
-}
-
-byte getSecondByte(ButtonData buttonData) {
-    byte byte2 = 0;
-
-    if (buttonData.A) bitSet(byte2, 7);
-    if (buttonData.X) bitSet(byte2, 6);
-    if (buttonData.SHOULDER_LEFT) bitSet(byte2, 5);
-    if (buttonData.SHOULDER_RIGHT) bitSet(byte2, 4);
-
-    return byte2;
-}
 
 void sendData() {
     Serial.print("SAVE|");
@@ -47,11 +26,11 @@ void sendData() {
 }
 
 void StoreButtonData::storeData(ButtonData buttonData) {
-    sendBuffer[bufferPosition] = getFirstByte(buttonData);
-    sendBuffer[bufferPosition + 1] = getSecondByte(buttonData);
+    buttonDataToBytes(buttonData, sendBuffer + bufferPosition);
 
     bufferPosition += 2;
 
+    // buffer is full, send data
     if (bufferPosition == BUFFER_SIZE) {
         sendData();
     }
