@@ -102,7 +102,7 @@ void decodeReceivedMessage(int numberOfBytes) {
         case LOAD:
             break;
         case PING:
-            //Messenger::sendData(PONG, payload, decodeIndex - 1);
+            Messenger::sendData(PONG, payload, decodeIndex - 1);
             break;
         case PONG:
             break;
