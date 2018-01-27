@@ -6,45 +6,69 @@
 #include "LoadButtonData/LoadButtonData.h"
 #include "Communication/Messenger.h"
 
-/*
- * Expected frame length in ms.
- * Should be 20ms for PAL, 16ms for NTSC consoles.
- */
-const byte FRAME_LENGTH = 20;
-
 volatile bool isAfterLatch = false;
-
-bool isInReplayMode = false;
-bool isInSaveMode = false;
 
 void handleFallingLatchPulse() {
     // keep interrupt handler short, actual code will be executed in main loop
     isAfterLatch = true;
 }
 
+/*
+ * Keep some statistics.
+ * Maximum loop duration should be well below the frame time (16-20ms).
+ */
+unsigned long lastLoop;
+unsigned long maxLoopDuration;
+
+void calculateLoopDuration() {
+    unsigned long timeNow = millis();
+    unsigned long loopDuration = timeNow - lastLoop;
+
+    if (loopDuration > maxLoopDuration) {
+        maxLoopDuration = loopDuration;
+    }
+
+    lastLoop = timeNow;
+}
+
+unsigned long getMaxLoopDuration() {
+    return maxLoopDuration;
+}
+
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     ReadController::begin();
     WriteToConsole::begin();
+
+    Messenger::setMaxLoopDurationFunction(getMaxLoopDuration);
 
     attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
 }
 
 /*
+ * Expected frame length in ms.
+ * Should be 20ms for PAL, 16ms for NTSC consoles.
+ */
+const byte FRAME_LENGTH = 20;
+
+/*
  * Poll controller twice per frame.
  */
-int lastPoll = 0;
-int pollDelta = FRAME_LENGTH / 2;
+unsigned long lastPoll = 0;
+unsigned long pollDelta = FRAME_LENGTH / 2;
 
 void pollController() {
-    int timeNow = millis();
+    unsigned long timeNow = millis();
 
     if (timeNow - lastPoll > pollDelta) {
        WriteToConsole::addData(ReadController::getData());
        lastPoll = timeNow;
     }
 }
+
+bool isInReplayMode = false;
+bool isInSaveMode = false;
 
 void loop() {
     if (isAfterLatch) {
@@ -61,4 +85,5 @@ void loop() {
 
     pollController();
     Messenger::checkForData();
+    calculateLoopDuration();
 }

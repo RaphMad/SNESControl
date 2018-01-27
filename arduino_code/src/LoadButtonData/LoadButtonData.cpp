@@ -23,7 +23,7 @@ bool isInputBuffer1Active = false;
 bool hasFirstData = false;
 
 void requestData() {
-    Serial.println("LOAD|" + BUFFER_SIZE);
+    //Serial.println("LOAD|" + BUFFER_SIZE);
 }
 
 void LoadButtonData::begin() {
