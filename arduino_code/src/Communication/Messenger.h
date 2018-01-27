@@ -21,9 +21,9 @@ class Messenger {
         static void print(String text);
 
         /*
-         * Sets the function that will deliver data for the REQUEST_STATUS message.
+         * Sets a value to the app info.
          */
-        static void setMaxLoopDurationFunction(unsigned long (*getMaxLoopDuration) ());
+        static void setAppInfo(AppInfo* appInfo);
 };
 
 #endif

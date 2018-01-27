@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "../tools/tools.h"
 #include "types.h"
+#include "../Communication/Messenger.h"
 
 /*
  * Wait for this many bytes before actually sending data to the client.
@@ -13,16 +14,7 @@ byte sendBuffer[BUFFER_SIZE];
 byte bufferPosition = 0;
 
 void sendData() {
-    Serial.print("SAVE|");
-
-    for (byte i = 0; i < BUFFER_SIZE; i+=2) {
-        Serial.print(sendBuffer[i]);
-        Serial.print(" ");
-        Serial.print(sendBuffer[i+1]);
-        Serial.print(" ");
-    }
-
-    Serial.println();
+    Messenger::sendData(SAVE, sendBuffer, BUFFER_SIZE);
     bufferPosition = 0;
 }
 

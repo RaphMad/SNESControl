@@ -10,6 +10,7 @@
         Ping = 7,
         Pong = 8,
         Print = 9,
-        RequestStatus = 10
+        RequestStatus = 10,
+        DisableSave = 11
     }
 }

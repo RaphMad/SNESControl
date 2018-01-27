@@ -59,15 +59,16 @@ void Messenger::print(String text) {
     sendData(PRINT, bytes, text.length());
 }
 
-unsigned long (*getMaxLoopDuration) ();
+AppInfo* appInfoPointer;
 
-void Messenger::setMaxLoopDurationFunction(unsigned long (*value) ()) {
-    getMaxLoopDuration = value;
+void Messenger::setAppInfo(AppInfo* value) {
+    appInfoPointer = value;
 }
 
 void sendInfo() {
-    unsigned long maxLoopDuration = getMaxLoopDuration();
-    Messenger::print("MaxLoopDuration: " + String(maxLoopDuration));
+    Messenger::print("Max loop duration: " + String(appInfoPointer->maxLoopDuration));
+    Messenger::print("Is file save mode: " + String(appInfoPointer->isInSaveMode));
+    Messenger::print("Is in replay mode: " + String(appInfoPointer->isInReplayMode));
 }
 
 void decodeReceivedMessage(int numberOfBytes) {
@@ -93,6 +94,7 @@ void decodeReceivedMessage(int numberOfBytes) {
 
     switch(messageType) {
         case ENABLE_SAVE:
+            appInfoPointer->isInSaveMode = true;
             break;
         case SAVE:
             break;
@@ -109,6 +111,9 @@ void decodeReceivedMessage(int numberOfBytes) {
             break;
         case REQUEST_STATUS:
             sendInfo();
+            break;
+        case DISABLE_SAVE:
+            appInfoPointer->isInSaveMode = false;
             break;
     }
 }

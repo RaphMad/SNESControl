@@ -13,26 +13,23 @@ void handleFallingLatchPulse() {
     isAfterLatch = true;
 }
 
+AppInfo appInfo;
+
 /*
  * Keep some statistics.
  * Maximum loop duration should be well below the frame time (16-20ms).
  */
 unsigned long lastLoop;
-unsigned long maxLoopDuration;
 
 void calculateLoopDuration() {
     unsigned long timeNow = millis();
     unsigned long loopDuration = timeNow - lastLoop;
 
-    if (loopDuration > maxLoopDuration) {
-        maxLoopDuration = loopDuration;
+    if (loopDuration > appInfo.maxLoopDuration) {
+        appInfo.maxLoopDuration = loopDuration;
     }
 
     lastLoop = timeNow;
-}
-
-unsigned long getMaxLoopDuration() {
-    return maxLoopDuration;
 }
 
 void setup() {
@@ -41,7 +38,7 @@ void setup() {
     ReadController::begin();
     WriteToConsole::begin();
 
-    Messenger::setMaxLoopDurationFunction(getMaxLoopDuration);
+    Messenger::setAppInfo(&appInfo);
 
     attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
 }
@@ -67,18 +64,15 @@ void pollController() {
     }
 }
 
-bool isInReplayMode = false;
-bool isInSaveMode = false;
-
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
 
-        if (isInSaveMode) {
+        if (appInfo.isInSaveMode) {
             StoreButtonData::storeData(WriteToConsole::getLatestData());
         }
 
-        if (isInReplayMode) {
+        if (appInfo.isInReplayMode) {
             WriteToConsole::prepareData(LoadButtonData::getData());
         }
     }

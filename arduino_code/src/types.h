@@ -92,12 +92,22 @@ typedef enum {
     PING = 7,
     PONG = 8,
     PRINT = 9,
-    REQUEST_STATUS = 10
+    REQUEST_STATUS = 10,
+    DISABLE_SAVE = 11
 } MessageType;
 
 /*
  * Maximum size of the message content.
  */
 const byte MAX_CONTENT_SIZE = 64;
+
+/*
+ * Holds information about the application.
+ */
+struct AppInfo {
+    unsigned long maxLoopDuration;
+    bool isInSaveMode;
+    bool isInReplayMode;
+};
 
 #endif

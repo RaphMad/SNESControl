@@ -6,6 +6,7 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using SaveToFile;
 
     public class SerialConnector
     {
@@ -89,7 +90,8 @@
                            {
                                { MessageType.Ping, ProcessPing },
                                { MessageType.Pong, ProcessPong },
-                               { MessageType.Print, ProcessPrint }
+                               { MessageType.Print, ProcessPrint },
+                               { MessageType.Save, SaveButtonData }
                            };
 
             MessageType type = (MessageType)decodedBytes[0];
@@ -114,6 +116,18 @@
         private void ProcessPrint(byte[] data)
         {
             Console.WriteLine("PRINT <" + Encoding.ASCII.GetString(data) + ">");
+        }
+
+        private ReplayFileWriter _replayFileWriter;
+
+        public void UseReplayFileWriter(ReplayFileWriter replayFileWriter)
+        {
+            _replayFileWriter = replayFileWriter;
+        }
+
+        void SaveButtonData(byte[] data)
+        {
+            _replayFileWriter.AppendBytes(data);
         }
     }
 }

@@ -41,6 +41,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Communication\SerialConnector.cs" />
+    <Compile Include="SaveToFile\ReplayFileWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
