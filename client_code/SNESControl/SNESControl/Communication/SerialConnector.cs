@@ -67,7 +67,7 @@
                     receivedBytes.Add(receivedByte);
                 }
 
-                if (receivedByte == MessageCoder.EndMarker)
+                if (receiveInProgress && receivedByte == MessageCoder.EndMarker)
                 {
                     receiveInProgress = false;
 
