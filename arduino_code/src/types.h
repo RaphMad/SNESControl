@@ -95,21 +95,22 @@ typedef enum {
     REQUEST_STATUS = 10,
     DISABLE_SAVE = 11,
     DISABLE_LOAD = 12,
-    LOAD_RESPONSE = 13
+    LOAD_RESPONSE = 13,
+    INFO_RESPONSE = 14
 } MessageType;
 
 /*
  * Maximum size of the message content.
  */
-const byte MAX_CONTENT_SIZE = 64;
+const byte MAX_CONTENT_SIZE = 128;
 
 /*
  * Holds information about the application.
  */
 struct AppInfo {
-    unsigned long maxLoopDuration;
+    int maxLoopDuration;
 
-    unsigned long lastLatchDuration;
+    int lastLatchDuration;
     int longLatches;
     int shortLatches;
 

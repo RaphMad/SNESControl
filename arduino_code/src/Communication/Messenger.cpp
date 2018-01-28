@@ -68,12 +68,16 @@ void Messenger::setAppInfo(AppInfo* value) {
 }
 
 void sendInfo() {
-    Messenger::print("Max loop duration: " + String(appInfoPointer->maxLoopDuration));
-    Messenger::print("Last latch duration: " + String(appInfoPointer->lastLatchDuration));
-    Messenger::print("Number of short latches: " + String(appInfoPointer->shortLatches));
-    Messenger::print("Number of long latches (lag frames): " + String(appInfoPointer->longLatches));
-    Messenger::print("Is file save mode: " + String(appInfoPointer->isInSaveMode));
-    Messenger::print("Is in replay mode: " + String(appInfoPointer->isInReplayMode));
+    byte bytesToSend[9];
+
+    memcpy(bytesToSend, &appInfoPointer->isInReplayMode, 0);
+    memcpy(bytesToSend, &appInfoPointer->isInSaveMode, 1);
+    memcpy(bytesToSend, &appInfoPointer->longLatches, 2);
+    memcpy(bytesToSend, &appInfoPointer->shortLatches, 4);
+    memcpy(bytesToSend, &appInfoPointer->lastLatchDuration, 6);
+    memcpy(bytesToSend, &appInfoPointer->maxLoopDuration, 8);
+
+    Messenger::sendData(INFO_RESPONSE, bytesToSend, 9);
 }
 
 void decodeReceivedMessage(int numberOfBytes) {
@@ -130,6 +134,9 @@ void decodeReceivedMessage(int numberOfBytes) {
             WriteToConsole::prepareData(ButtonData());
             break;
         case LOAD_RESPONSE:
+             LoadButtonData::processIncomingData(payload, decodeIndex - 1);
+            break;
+        case INFO_RESPONSE:
              LoadButtonData::processIncomingData(payload, decodeIndex - 1);
             break;
     }

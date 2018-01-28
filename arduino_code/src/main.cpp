@@ -28,11 +28,11 @@ AppInfo appInfo;
  * There should be no short latches.
  * Number of long latches should correspond to lag frames.
  */
-unsigned long lastLoop;
+int lastLoop;
 
 void calculateLoopDuration() {
-    unsigned long timeNow = millis();
-    unsigned long loopDuration = timeNow - lastLoop;
+    int timeNow = millis();
+    int loopDuration = timeNow - lastLoop;
 
     if (loopDuration > appInfo.maxLoopDuration) {
         appInfo.maxLoopDuration = loopDuration;
@@ -41,13 +41,13 @@ void calculateLoopDuration() {
     lastLoop = timeNow;
 }
 
-unsigned long lastLatch;
+int lastLatch;
 int shortLatches;
 int longLatches;
 
 void calculateLatchInfo() {
-    unsigned long timeNow = millis();
-    unsigned long latchDuration = timeNow - lastLatch;
+    int timeNow = millis();
+    int latchDuration = timeNow - lastLatch;
 
     appInfo.lastLatchDuration = latchDuration;
 
@@ -71,11 +71,11 @@ void setup() {
 /*
  * Poll controller twice per frame.
  */
-unsigned long lastPoll = 0;
-unsigned long pollDelta = FRAME_LENGTH / 2;
+int lastPoll = 0;
+int pollDelta = FRAME_LENGTH / 2;
 
 void pollController() {
-    unsigned long timeNow = millis();
+    int timeNow = millis();
 
     if (timeNow - lastPoll > pollDelta) {
        WriteToConsole::addData(ReadController::getData());

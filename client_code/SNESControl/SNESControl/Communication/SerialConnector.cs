@@ -92,7 +92,8 @@
                                { MessageType.Pong, ProcessPong },
                                { MessageType.Print, ProcessPrint },
                                { MessageType.Save, SaveButtonData },
-                               { MessageType.Load, LoadButtonData }
+                               { MessageType.Load, LoadButtonData },
+                               { MessageType.InfoResponse, HandleInfoResponse }
                            };
 
             MessageType type = (MessageType)decodedBytes[0];
@@ -154,6 +155,16 @@
                     SendData(MessageType.DisableLoad, new byte[]{});
                 }
             }
+        }
+
+        public void HandleInfoResponse(byte[] data)
+        {
+            Console.WriteLine("Max loop duration: " + BitConverter.ToInt16(data, 0));
+            Console.WriteLine("Last latch duration: " + BitConverter.ToInt16(data, 2));
+            Console.WriteLine("Number of short latches: " + BitConverter.ToInt16(data, 4));
+            Console.WriteLine("Number of long latches (lag frames): " + BitConverter.ToInt16(data, 6));
+            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 7));
+            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 8));
         }
     }
 }

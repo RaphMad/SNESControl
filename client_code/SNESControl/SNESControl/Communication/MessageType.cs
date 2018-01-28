@@ -13,6 +13,7 @@
         RequestStatus = 10,
         DisableSave = 11,
         DisableLoad = 12,
-        LoadResponse = 13
+        LoadResponse = 13,
+        InfoResponse = 14
     }
 }
