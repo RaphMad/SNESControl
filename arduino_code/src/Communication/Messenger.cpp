@@ -23,7 +23,7 @@ void Messenger::sendData(MessageType type, byte* payload, int size) {
     byte bytesToSend[size * 2 + 4];
 
     bytesToSend[0] = START_MARKER;
-    bytesToSend[1] = type; // needs encoding shoul we ever introduce types 0,1,2
+    bytesToSend[1] = type; // needs encoding should we ever introduce types 0,1,2
     int sendIndex = 2;
 
     for (int i = 0; i < size; i++) {
