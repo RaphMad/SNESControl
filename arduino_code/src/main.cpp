@@ -44,6 +44,8 @@ void calculateLoopDuration() {
 int lastLatch;
 int shortLatches;
 int longLatches;
+bool isFirstLatch = true;
+int firstLatch;
 
 void calculateLatchInfo() {
     int timeNow = millis();
@@ -54,6 +56,11 @@ void calculateLatchInfo() {
     if (latchDuration < (FRAME_LENGTH / 2)) shortLatches++;
     if (latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) longLatches++;
     appInfo.numberOfLatches++;
+
+    if (isFirstLatch) {
+        appInfo.firstLatch = millis();
+        isFirstLatch = false;
+    }
 
     lastLatch = timeNow;
 }
@@ -87,6 +94,7 @@ void pollController() {
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
+
         calculateLatchInfo();
 
         if (appInfo.isInSaveMode) {

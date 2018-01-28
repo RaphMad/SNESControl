@@ -109,8 +109,9 @@ const byte MAX_CONTENT_SIZE = 128;
  */
 struct AppInfo {
     int maxLoopDuration;
-
     int lastLatchDuration;
+
+    int firstLatch;
     int numberOfLatches;
     int longLatches;
     int shortLatches;

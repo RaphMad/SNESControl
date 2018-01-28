@@ -68,17 +68,18 @@ void Messenger::setAppInfo(AppInfo* value) {
 }
 
 void sendInfo() {
-    byte bytesToSend[11];
+    byte bytesToSend[13];
 
     memcpy(bytesToSend, &appInfoPointer->isInReplayMode, 0);
     memcpy(bytesToSend, &appInfoPointer->isInSaveMode, 1);
     memcpy(bytesToSend, &appInfoPointer->longLatches, 2);
     memcpy(bytesToSend, &appInfoPointer->shortLatches, 4);
     memcpy(bytesToSend, &appInfoPointer->numberOfLatches, 6);
-    memcpy(bytesToSend, &appInfoPointer->lastLatchDuration, 8);
-    memcpy(bytesToSend, &appInfoPointer->maxLoopDuration, 10);
+    memcpy(bytesToSend, &appInfoPointer->firstLatch, 8);
+    memcpy(bytesToSend, &appInfoPointer->lastLatchDuration, 10);
+    memcpy(bytesToSend, &appInfoPointer->maxLoopDuration, 12);
 
-    Messenger::sendData(INFO_RESPONSE, bytesToSend, 11);
+    Messenger::sendData(INFO_RESPONSE, bytesToSend, 13);
 }
 
 void decodeReceivedMessage(int numberOfBytes) {
