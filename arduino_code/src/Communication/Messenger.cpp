@@ -69,6 +69,7 @@ void Messenger::setAppInfo(AppInfo* value) {
 
 void sendInfo() {
     Messenger::print("Max loop duration: " + String(appInfoPointer->maxLoopDuration));
+    Messenger::print("Last latch duration: " + String(appInfoPointer->lastLatchDuration));
     Messenger::print("Is file save mode: " + String(appInfoPointer->isInSaveMode));
     Messenger::print("Is in replay mode: " + String(appInfoPointer->isInReplayMode));
 }
