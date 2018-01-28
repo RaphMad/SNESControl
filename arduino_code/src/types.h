@@ -111,6 +111,7 @@ struct AppInfo {
     int maxLoopDuration;
 
     int lastLatchDuration;
+    int numberOfLatches;
     int longLatches;
     int shortLatches;
 

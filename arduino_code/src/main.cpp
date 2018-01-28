@@ -53,6 +53,7 @@ void calculateLatchInfo() {
 
     if (latchDuration < (FRAME_LENGTH / 2)) shortLatches++;
     if (latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) longLatches++;
+    appInfo.numberOfLatches++;
 
     lastLatch = timeNow;
 }
