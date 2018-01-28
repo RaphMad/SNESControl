@@ -4686,22 +4686,6 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 <junction x="109.22" y="55.88"/>
 </segment>
 </net>
-<net name="SNES-GND" class="0">
-<segment>
-<wire x1="88.9" y1="17.78" x2="88.9" y2="60.96" width="0.1524" layer="91"/>
-<wire x1="111.76" y1="60.96" x2="88.9" y2="60.96" width="0.1524" layer="91"/>
-<wire x1="68.58" y1="60.96" x2="88.9" y2="60.96" width="0.1524" layer="91"/>
-<junction x="88.9" y="60.96"/>
-<wire x1="68.58" y1="17.78" x2="88.9" y2="17.78" width="0.1524" layer="91"/>
-<label x="114.3" y="60.96" size="1.778" layer="95"/>
-<pinref part="IC2" gate="A" pin="SI"/>
-<wire x1="48.26" y1="10.16" x2="43.18" y2="10.16" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="10.16" x2="43.18" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="43.18" y1="-7.62" x2="88.9" y2="-7.62" width="0.1524" layer="91"/>
-<wire x1="88.9" y1="-7.62" x2="88.9" y2="17.78" width="0.1524" layer="91"/>
-<junction x="88.9" y="17.78"/>
-</segment>
-</net>
 <net name="A0-(X)" class="0">
 <segment>
 <pinref part="IC2" gate="A" pin="P2"/>
@@ -4745,9 +4729,26 @@ Source: http://www.mouser.com/ds/2/392/products_18-2245.pdf</description>
 </net>
 <net name="GND" class="0">
 <segment>
-<wire x1="111.76" y1="-22.86" x2="17.78" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="17.78" x2="88.9" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="111.76" y1="60.96" x2="93.98" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="60.96" x2="88.9" y2="60.96" width="0.1524" layer="91"/>
+<wire x1="68.58" y1="60.96" x2="88.9" y2="60.96" width="0.1524" layer="91"/>
+<junction x="88.9" y="60.96"/>
+<wire x1="68.58" y1="17.78" x2="88.9" y2="17.78" width="0.1524" layer="91"/>
+<label x="114.3" y="60.96" size="1.778" layer="95"/>
+<pinref part="IC2" gate="A" pin="SI"/>
+<wire x1="48.26" y1="10.16" x2="43.18" y2="10.16" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="10.16" x2="43.18" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="43.18" y1="-7.62" x2="88.9" y2="-7.62" width="0.1524" layer="91"/>
+<wire x1="88.9" y1="-7.62" x2="88.9" y2="17.78" width="0.1524" layer="91"/>
+<junction x="88.9" y="17.78"/>
+<wire x1="111.76" y1="-22.86" x2="93.98" y2="-22.86" width="0.1524" layer="91"/>
 <label x="12.7" y="-22.86" size="1.778" layer="95"/>
 <label x="114.3" y="-22.86" size="1.778" layer="95"/>
+<wire x1="93.98" y1="-22.86" x2="17.78" y2="-22.86" width="0.1524" layer="91"/>
+<wire x1="93.98" y1="60.96" x2="93.98" y2="-22.86" width="0.1524" layer="91"/>
+<junction x="93.98" y="60.96"/>
+<junction x="93.98" y="-22.86"/>
 </segment>
 </net>
 </nets>
