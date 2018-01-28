@@ -30,6 +30,7 @@ void requestData() {
 
 void LoadButtonData::begin() {
     // request initial data for inputBuffer1 immediately
+    reset();
     requestData();
 }
 
@@ -59,10 +60,12 @@ ButtonData readFromBuffer1() {
 
     if (inputBuffer1Index == BUFFER_SIZE) {
         isInputBuffer1Active = false;
+        inputBuffer1Index = 0;
         requestData();
     }
 
-    return bytesToButtonData(nextBytes);
+    ButtonData buttonData = bytesToButtonData(nextBytes);
+    return buttonData;
 }
 
 ButtonData readFromBuffer2() {
@@ -72,19 +75,23 @@ ButtonData readFromBuffer2() {
 
     if (inputBuffer2Index == BUFFER_SIZE) {
         isInputBuffer1Active = true;
+        inputBuffer2Index = 0;
         requestData();
     }
 
-    return bytesToButtonData(nextBytes);
+    ButtonData buttonData = bytesToButtonData(nextBytes);
+    return buttonData;
 }
 
 ButtonData LoadButtonData::getData() {
     ButtonData buttonData;
 
-    if (isInputBuffer1Active) {
-        buttonData = readFromBuffer1();
-    } else {
-        buttonData = readFromBuffer2();
+    if (hasFirstData) {
+        if (isInputBuffer1Active) {
+            buttonData = readFromBuffer1();
+        } else {
+            buttonData = readFromBuffer2();
+        }
     }
 
     return buttonData;

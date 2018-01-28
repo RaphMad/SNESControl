@@ -146,11 +146,11 @@
 
                 if (buttonData.Length > 0)
                 {
-                    Console.WriteLine("sending button data @" + DateTime.Now.ToLongTimeString());
                     SendData(MessageType.LoadResponse, buttonData);
                 }
                 else
                 {
+                    Console.WriteLine("Replay file ended, stopping playback");
                     SendData(MessageType.DisableLoad, new byte[]{});
                 }
             }
