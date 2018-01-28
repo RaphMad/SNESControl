@@ -10,7 +10,7 @@
  * Expected frame length in ms.
  * Should be 20ms for PAL, 16ms for NTSC consoles.
  */
-const byte FRAME_LENGTH = 20;
+const int FRAME_LENGTH = 20;
 
 volatile bool isAfterLatch = false;
 

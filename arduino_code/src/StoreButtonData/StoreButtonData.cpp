@@ -8,10 +8,10 @@
  * Wait for this many bytes before actually sending data to the client.
  * With a value of 128 about one save request is sent per second (assuming inputs come in at 50 or 60Hz).
  */
-const byte BUFFER_SIZE = MAX_CONTENT_SIZE;
+const int BUFFER_SIZE = MAX_CONTENT_SIZE;
 
 byte sendBuffer[BUFFER_SIZE];
-byte bufferPosition = 0;
+int bufferPosition = 0;
 
 void sendData() {
     Messenger::sendData(SAVE, sendBuffer, BUFFER_SIZE);

@@ -13,13 +13,13 @@
  *
  * With a value of 128 about one save request is sent per second (assuming inputs come in at 50 or 60Hz).
  */
-const byte BUFFER_SIZE = MAX_CONTENT_SIZE;
+const int BUFFER_SIZE = MAX_CONTENT_SIZE;
 
 byte inputBuffer1[BUFFER_SIZE];
-byte inputBuffer1Index = 0;
+int inputBuffer1Index = 0;
 
 byte inputBuffer2[BUFFER_SIZE];
-byte inputBuffer2Index = 0;
+int inputBuffer2Index = 0;
 
 bool isInputBuffer1Active = false;
 bool hasFirstData = false;
