@@ -16,9 +16,11 @@
 
         public byte[] GetNextBytes(byte numberOfBytes)
         {
+            byte[] bytes = _bytesFromFile.Skip(_currentIndex).Take(numberOfBytes).ToArray();
+
             _currentIndex += numberOfBytes;
 
-            return _bytesFromFile.Skip(_currentIndex).Take(numberOfBytes).ToArray();
+            return bytes;
         }
     }
 }
