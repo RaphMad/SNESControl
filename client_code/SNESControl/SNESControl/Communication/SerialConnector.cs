@@ -142,7 +142,7 @@
         {
             if (_replayFileReader != null)
             {
-                byte[] buttonData = _replayFileReader.GetNextBytes();
+                byte[] buttonData = _replayFileReader.GetNextBytes(data[0]);
 
                 if (buttonData.Length > 0)
                 {

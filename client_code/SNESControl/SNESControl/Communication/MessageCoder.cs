@@ -5,11 +5,6 @@
 
     public static class MessageCoder
     {
-        /// <summary>
-        /// Maximum number of payload bytes in a message.
-        /// </summary>
-        public static int MaxContentSize = 64;
-
         public static byte StartMarker = 0;
         public static byte EndMarker = 1;
         public static byte EncodeMarker = 2;

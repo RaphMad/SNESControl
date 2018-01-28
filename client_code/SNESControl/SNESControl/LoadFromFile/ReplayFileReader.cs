@@ -14,11 +14,11 @@
             _bytesFromFile = File.ReadAllBytes(fileName);
         }
 
-        public byte[] GetNextBytes()
+        public byte[] GetNextBytes(byte numberOfBytes)
         {
-            _currentIndex += MessageCoder.MaxContentSize;
+            _currentIndex += numberOfBytes;
 
-            return _bytesFromFile.Skip(_currentIndex).Take(MessageCoder.MaxContentSize).ToArray();
+            return _bytesFromFile.Skip(_currentIndex).Take(numberOfBytes).ToArray();
         }
     }
 }

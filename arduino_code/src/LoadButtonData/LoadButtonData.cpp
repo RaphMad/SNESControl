@@ -25,7 +25,8 @@ bool isInputBuffer1Active = false;
 bool hasFirstData = false;
 
 void requestData() {
-    Messenger::sendData(LOAD, NULL, 0);
+    byte content[] = { MAX_CONTENT_SIZE };
+    Messenger::sendData(LOAD, content, 1);
 }
 
 void LoadButtonData::begin() {
