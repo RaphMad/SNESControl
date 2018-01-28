@@ -146,6 +146,7 @@
 
                 if (buttonData.Length > 0)
                 {
+                    DebugPrint("Sending data");
                     SendData(MessageType.LoadResponse, buttonData);
                 }
                 else
@@ -154,6 +155,13 @@
                     SendData(MessageType.DisableLoad, new byte[]{});
                 }
             }
+        }
+
+        void DebugPrint(string text)
+        {
+            var timeNow = DateTime.Now;
+            string prefix = timeNow.ToLongTimeString() + "." + $"{timeNow.Millisecond:D3}" + ": ";
+            Console.WriteLine(prefix + text);
         }
     }
 }

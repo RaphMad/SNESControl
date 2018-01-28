@@ -18,6 +18,7 @@ AppInfo appInfo;
 /*
  * Keep some statistics.
  * Maximum loop duration should be well below the frame time (16-20ms).
+ * Maximum latch duration should be exactly 16ms (NTSC) or 20ms (PAL).
  */
 unsigned long lastLoop;
 
@@ -32,15 +33,26 @@ void calculateLoopDuration() {
     lastLoop = timeNow;
 }
 
+unsigned long lastLatch;
+
+void calculateLatchDuration() {
+    unsigned long timeNow = millis();
+    unsigned long latchDuration = timeNow - lastLatch;
+
+    appInfo.lastLatchDuration = latchDuration;
+
+    lastLatch = timeNow;
+}
+
 void setup() {
+    attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
+
     Serial.begin(115200);
 
     ReadController::begin();
     WriteToConsole::begin();
 
     Messenger::setAppInfo(&appInfo);
-
-    attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
 }
 
 /*
@@ -67,6 +79,7 @@ void pollController() {
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
+        calculateLatchDuration();
 
         if (appInfo.isInSaveMode) {
             StoreButtonData::storeData(WriteToConsole::getLatestData());

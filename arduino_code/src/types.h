@@ -108,6 +108,7 @@ const byte MAX_CONTENT_SIZE = 64;
  */
 struct AppInfo {
     unsigned long maxLoopDuration;
+    unsigned long lastLatchDuration;
     bool isInSaveMode;
     bool isInReplayMode;
 };
