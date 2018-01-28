@@ -13,15 +13,26 @@ const int BUFFER_SIZE = MAX_CONTENT_SIZE;
 byte sendBuffer[BUFFER_SIZE];
 int bufferPosition = 0;
 
+void StoreButtonData::reset() {
+    bufferPosition = 0;
+}
+
 void sendData() {
     Messenger::sendData(SAVE, sendBuffer, BUFFER_SIZE);
     bufferPosition = 0;
 }
 
+AppInfo* appInfoReference;
+
+void StoreButtonData::setAppInfo(AppInfo* value) {
+    appInfoReference = value;
+}
+
 void StoreButtonData::storeData(ButtonData buttonData) {
+    buttonData.pressedAt = millis() - appInfoReference->firstLatch;
     buttonDataToBytes(buttonData, sendBuffer + bufferPosition);
 
-    bufferPosition += 2;
+    bufferPosition += 4;
 
     // buffer is full, send data
     if (bufferPosition == BUFFER_SIZE) {

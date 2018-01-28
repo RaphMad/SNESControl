@@ -57,7 +57,7 @@ void LoadButtonData::processIncomingData(byte* buf, int size) {
 ButtonData readFromBuffer1() {
     byte* nextBytes = inputBuffer1 + inputBuffer1Index;
 
-    inputBuffer1Index += 2;
+    inputBuffer1Index += 4;
 
     if (inputBuffer1Index == BUFFER_SIZE) {
         isInputBuffer1Active = false;
@@ -65,14 +65,13 @@ ButtonData readFromBuffer1() {
         requestData();
     }
 
-    ButtonData buttonData = bytesToButtonData(nextBytes);
-    return buttonData;
+    return bytesToButtonData(nextBytes);;
 }
 
 ButtonData readFromBuffer2() {
     byte* nextBytes = inputBuffer2 + inputBuffer2Index;
 
-    inputBuffer2Index += 2;
+    inputBuffer2Index += 4;
 
     if (inputBuffer2Index == BUFFER_SIZE) {
         isInputBuffer1Active = true;
@@ -80,8 +79,7 @@ ButtonData readFromBuffer2() {
         requestData();
     }
 
-    ButtonData buttonData = bytesToButtonData(nextBytes);
-    return buttonData;
+    return bytesToButtonData(nextBytes);
 }
 
 ButtonData LoadButtonData::getData() {

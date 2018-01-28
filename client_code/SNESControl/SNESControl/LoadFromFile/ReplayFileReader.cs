@@ -5,13 +5,21 @@
 
     public class ReplayFileReader
     {
-        private readonly byte[] _bytesFromFile;
+        private readonly string _fileName;
+
+        private byte[] _bytesFromFile = {};
 
         private int _currentIndex;
 
         public ReplayFileReader(string fileName)
         {
-            _bytesFromFile = File.ReadAllBytes(fileName);
+            _fileName = fileName;
+        }
+
+        public void Read()
+        {
+            _bytesFromFile = File.ReadAllBytes(_fileName);
+            _currentIndex = 0;
         }
 
         public byte[] GetNextBytes(byte numberOfBytes)

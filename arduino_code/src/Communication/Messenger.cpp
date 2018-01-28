@@ -2,6 +2,7 @@
 #include "../tools/tools.h"
 #include "../LoadButtonData/LoadButtonData.h"
 #include "../WriteToConsole/WriteToConsole.h"
+#include "../StoreButtonData/StoreButtonData.h"
 
 /*
  * Markers were chosen deliberately to have low values, since most of the transmitted data will be high values.
@@ -68,18 +69,20 @@ void Messenger::setAppInfo(AppInfo* value) {
 }
 
 void sendInfo() {
-    byte bytesToSend[13];
+    byte bytesToSend[18];
 
-    memcpy(bytesToSend, &appInfoPointer->isInReplayMode, 0);
-    memcpy(bytesToSend, &appInfoPointer->isInSaveMode, 1);
-    memcpy(bytesToSend, &appInfoPointer->longLatches, 2);
-    memcpy(bytesToSend, &appInfoPointer->shortLatches, 4);
-    memcpy(bytesToSend, &appInfoPointer->numberOfLatches, 6);
-    memcpy(bytesToSend, &appInfoPointer->firstLatch, 8);
-    memcpy(bytesToSend, &appInfoPointer->lastLatchDuration, 10);
-    memcpy(bytesToSend, &appInfoPointer->maxLoopDuration, 12);
+    memcpy(bytesToSend, &appInfoPointer->maxLoopDuration, 2);
+    memcpy(bytesToSend + 2, &appInfoPointer->lastLatchDuration, 2);
+    memcpy(bytesToSend + 4, &appInfoPointer->firstLatch, 2);
+    memcpy(bytesToSend + 6, &appInfoPointer->numberOfLatches, 2);
+    memcpy(bytesToSend + 8, &appInfoPointer->shortLatches, 2);
+    memcpy(bytesToSend + 10, &appInfoPointer->longLatches, 2);
+    memcpy(bytesToSend + 12, &appInfoPointer->isInSaveMode, 1);
+    memcpy(bytesToSend + 13, &appInfoPointer->isInReplayMode, 1);
+    memcpy(bytesToSend + 14, &appInfoPointer->delayCount, 2);
+    memcpy(bytesToSend + 16, &appInfoPointer->skipCount, 2);
 
-    Messenger::sendData(INFO_RESPONSE, bytesToSend, 13);
+    Messenger::sendData(INFO_RESPONSE, bytesToSend, 18);
 }
 
 void decodeReceivedMessage(int numberOfBytes) {
@@ -105,11 +108,14 @@ void decodeReceivedMessage(int numberOfBytes) {
 
     switch(messageType) {
         case ENABLE_SAVE:
+            appInfoPointer->firstLatch = 0;
+            StoreButtonData::reset();
             appInfoPointer->isInSaveMode = true;
             break;
         case SAVE:
             break;
         case ENABLE_LOAD:
+            appInfoPointer->firstLatch = 0;
             appInfoPointer->isInReplayMode = true;
             LoadButtonData::begin();
             break;
@@ -127,12 +133,29 @@ void decodeReceivedMessage(int numberOfBytes) {
             break;
         case DISABLE_SAVE:
             appInfoPointer->isInSaveMode = false;
+            StoreButtonData::reset();
             break;
         case DISABLE_LOAD:
             appInfoPointer->isInReplayMode = false;
 
             // reset all ongoing replay actions
             LoadButtonData::reset();
+            WriteToConsole::prepareData(ButtonData());
+        case RESET_DATA:
+            appInfoPointer->isInReplayMode = false;
+            appInfoPointer->isInSaveMode = false;
+            appInfoPointer->delayCount = 0;
+            appInfoPointer->firstLatch = 0;
+            appInfoPointer->lastLatchDuration = 0;
+            appInfoPointer->longLatches = 0;
+            appInfoPointer->maxLoopDuration = 0;
+            appInfoPointer->numberOfLatches = 0;
+            appInfoPointer->shortLatches = 0;
+            appInfoPointer->skipCount = 0;
+
+            // reset all ongoing replay actions
+            LoadButtonData::reset();
+            StoreButtonData::reset();
             WriteToConsole::prepareData(ButtonData());
             break;
         case LOAD_RESPONSE:

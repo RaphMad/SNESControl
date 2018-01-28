@@ -42,10 +42,6 @@ void calculateLoopDuration() {
 }
 
 int lastLatch;
-int shortLatches;
-int longLatches;
-bool isFirstLatch = true;
-int firstLatch;
 
 void calculateLatchInfo() {
     int timeNow = millis();
@@ -53,13 +49,12 @@ void calculateLatchInfo() {
 
     appInfo.lastLatchDuration = latchDuration;
 
-    if (latchDuration < (FRAME_LENGTH / 2)) shortLatches++;
-    if (latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) longLatches++;
+    if (latchDuration < (FRAME_LENGTH / 2)) appInfo.shortLatches++;
+    if (latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) appInfo.longLatches++;
     appInfo.numberOfLatches++;
 
-    if (isFirstLatch) {
+    if (appInfo.firstLatch == 0) {
         appInfo.firstLatch = millis();
-        isFirstLatch = false;
     }
 
     lastLatch = timeNow;
@@ -74,6 +69,7 @@ void setup() {
     WriteToConsole::begin();
 
     Messenger::setAppInfo(&appInfo);
+    StoreButtonData::setAppInfo(&appInfo);
 }
 
 /*
@@ -91,6 +87,24 @@ void pollController() {
     }
 }
 
+void checkButtonTiming(ButtonData buttonData) {
+    int buttonTime = buttonData.pressedAt;
+    int timeNow = millis();
+    int timeFromFirstLatch = timeNow - appInfo.firstLatch;
+
+    int buttonDelay = buttonTime - timeFromFirstLatch - FRAME_LENGTH;
+
+    if (buttonDelay < -FRAME_LENGTH) {
+        // loading the next button data effectively skips a frame
+        LoadButtonData::getData();
+        appInfo.skipCount++;
+    } else if (buttonDelay > FRAME_LENGTH / 2) {
+        // delay a bit so we can sync up
+        delay(buttonDelay);
+        appInfo.delayCount++;
+    }
+}
+
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
@@ -102,7 +116,10 @@ void loop() {
         }
 
         if (appInfo.isInReplayMode) {
-            WriteToConsole::prepareData(LoadButtonData::getData());
+            ButtonData buttonData = LoadButtonData::getData();
+            checkButtonTiming(buttonData);
+
+            WriteToConsole::prepareData(buttonData);
         }
     }
 

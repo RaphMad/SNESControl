@@ -5,6 +5,8 @@ void buttonDataToBytes(ButtonData buttonData, byte* buf) {
     byte* copyFrom = (byte*) memoryAddress;
 
     memcpy(buf, copyFrom, 2);
+    buf[2] = buttonData.pressedAt % 256;
+    buf[3] = buttonData.pressedAt / 256;
 }
 
 ButtonData bytesToButtonData(byte* bytes) {
@@ -12,6 +14,8 @@ ButtonData bytesToButtonData(byte* bytes) {
 
     byte byte1 = bytes[0];
     byte byte2 = bytes[1];
+    byte byte3 = bytes[2];
+    byte byte4 = bytes[3];
 
     // note that buttons are stored in reverse order
     buttonData.B = bitRead(byte1, 7);
@@ -27,6 +31,8 @@ ButtonData bytesToButtonData(byte* bytes) {
     buttonData.X = bitRead(byte2, 6);
     buttonData.SHOULDER_LEFT = bitRead(byte2, 5);
     buttonData.SHOULDER_RIGHT = bitRead(byte2, 4);
+
+    buttonData.pressedAt = byte3 + byte4 * 256;
 
     return buttonData;
 }

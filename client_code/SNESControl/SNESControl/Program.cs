@@ -9,7 +9,9 @@
     class Program
     {
         private static SerialConnector _serialConnector;
+
         private static ReplayFileWriter _replayFileWriter;
+
         private static ReplayFileReader _replayFileReader;
 
         static void Main(string[] args)
@@ -25,37 +27,43 @@
                 return;
             }
 
+            // initialize file
+            string fileName = FindArg(argList, "-file");
+            if (fileName == null)
+            {
+                Console.WriteLine("Please supply a file name via '-file <fileName'>!");
+                Console.ReadKey();
+                return;
+            }
+
             // set up the serial connection
             _serialConnector = new SerialConnector(argList[1]);
             _serialConnector.Start();
 
+            // set up file reader and writer
+            _replayFileWriter = new ReplayFileWriter(fileName);
+            _serialConnector.UseReplayFileWriter(_replayFileWriter);
+            _replayFileReader = new ReplayFileReader(fileName);
+            _serialConnector.UseReplayFileReader(_replayFileReader);
+
             Console.WriteLine("Commands:");
             Console.WriteLine();
+            Console.WriteLine("'s': save to file");
+            Console.WriteLine("'l': load from file");
+            Console.WriteLine("'x': reset all states / stop all ongoing actions");
             Console.WriteLine("'i': request information");
             Console.WriteLine("'p': send a PING request containing 64 bytes");
-            Console.WriteLine("'s': stop saving to a file");
-            Console.WriteLine("'l': stop loading from a file");
             Console.WriteLine("'ESC': quit");
             Console.WriteLine();
 
-            // initialize saving to file if needed
-            string saveToFile = FindArg(argList, "-saveToFile");
-            if (saveToFile != null)
-            {
-                _replayFileWriter = new ReplayFileWriter(saveToFile);
-                _serialConnector.UseReplayFileWriter(_replayFileWriter);
-                _serialConnector.SendData(MessageType.EnableSave, new byte[] { });
-
-                Console.WriteLine("Saving incoming inputs to file <" + saveToFile + ">.");
-                Console.WriteLine();
-            }
+            // reset any previous states
+            _serialConnector.SendData(MessageType.DisableSave, new byte[] { });
+            _serialConnector.SendData(MessageType.DisableLoad, new byte[] { });
 
             // initialize saving to file if needed
             string loadFromFile = FindArg(argList, "-loadFromFile");
             if (loadFromFile != null)
             {
-                _replayFileReader = new ReplayFileReader(loadFromFile);
-                _serialConnector.UseReplayFileReader(_replayFileReader);
                 _serialConnector.SendData(MessageType.EnableLoad, new byte[] { });
 
                 Console.WriteLine("Loading inputs from file <" + loadFromFile + ">.");
@@ -65,7 +73,7 @@
             ProcessKeys();
 
             _serialConnector.Stop();
-            _replayFileWriter?.Close();
+            _replayFileWriter.Close();
 
             // wait some time to allow for cleanup 
             Thread.Sleep(1000);
@@ -96,8 +104,9 @@
                                  {
                                      { ConsoleKey.I, RequestInfo },
                                      { ConsoleKey.P, SendPing },
-                                     { ConsoleKey.S, StopSaving },
-                                     { ConsoleKey.L, StopLoading }
+                                     { ConsoleKey.S, Save },
+                                     { ConsoleKey.L, Load },
+                                     { ConsoleKey.X, ResetStates }
                                  };
 
                 if (keyActions.ContainsKey(pressedKey))
@@ -118,18 +127,25 @@
             _serialConnector.SendData(MessageType.Ping, bytes);
         }
 
-        static void StopSaving()
+        static void Save()
         {
-            Console.WriteLine("Stop saving to file");
-            _replayFileWriter?.Close();
-            _serialConnector.SendData(MessageType.DisableSave, new byte[] { });
+            Console.WriteLine("Saving to file");
+            _replayFileWriter.Open();
+            _serialConnector.SendData(MessageType.EnableSave, new byte[] { });
         }
 
-        static void StopLoading()
+        static void Load()
         {
-            Console.WriteLine("Stop loading from file");
-            _replayFileWriter?.Close();
-            _serialConnector.SendData(MessageType.DisableLoad, new byte[] { });
+            Console.WriteLine("Loading from file");
+            _replayFileReader.Read();
+            _serialConnector.SendData(MessageType.EnableLoad, new byte[] { });
+        }
+
+        static void ResetStates()
+        {
+            Console.WriteLine("Resetting all states.");
+            _replayFileWriter.Close();
+            _serialConnector.SendData(MessageType.ResetData, new byte[] { });
         }
     }
 }

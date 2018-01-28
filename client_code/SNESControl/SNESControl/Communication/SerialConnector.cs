@@ -129,7 +129,7 @@
 
         void SaveButtonData(byte[] data)
         {
-            _replayFileWriter?.AppendBytes(data);
+            _replayFileWriter.AppendBytes(data);
         }
 
         private ReplayFileReader _replayFileReader;
@@ -167,8 +167,11 @@
             Console.WriteLine("Number of short latches: " + BitConverter.ToInt16(data, 8));
             Console.WriteLine("Number of long latches (lag frames): " + BitConverter.ToInt16(data, 10));
             Console.WriteLine();
-            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 11));
-            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 12));
+            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 12));
+            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 13));
+            Console.WriteLine();
+            Console.WriteLine("Delay count: " + BitConverter.ToInt16(data, 14));
+            Console.WriteLine("Skip count: " + BitConverter.ToInt16(data, 16));
             Console.WriteLine();
         }
     }

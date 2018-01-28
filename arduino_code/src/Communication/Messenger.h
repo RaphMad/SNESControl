@@ -21,7 +21,7 @@ class Messenger {
         static void print(String text);
 
         /*
-         * Sets a value to the app info.
+         * Sets a reference to the app info.
          */
         static void setAppInfo(AppInfo* appInfo);
 };

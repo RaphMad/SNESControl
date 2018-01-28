@@ -52,6 +52,11 @@ struct ButtonData {
     bool X:1;
     bool A:1;
 
+    /*
+     * Time when the button was pressed, relative to the timestamp of the first latch.
+     */
+    int pressedAt;
+
     ButtonData() {
         // initialize all fields with true, this makes creating manual instances easier
         // (remember that true means NOT pressed)
@@ -96,7 +101,8 @@ typedef enum {
     DISABLE_SAVE = 11,
     DISABLE_LOAD = 12,
     LOAD_RESPONSE = 13,
-    INFO_RESPONSE = 14
+    INFO_RESPONSE = 14,
+    RESET_DATA = 15
 } MessageType;
 
 /*
@@ -118,6 +124,9 @@ struct AppInfo {
 
     bool isInSaveMode;
     bool isInReplayMode;
+
+    int skipCount;
+    int delayCount;
 };
 
 #endif

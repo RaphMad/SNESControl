@@ -14,6 +14,7 @@
         DisableSave = 11,
         DisableLoad = 12,
         LoadResponse = 13,
-        InfoResponse = 14
+        InfoResponse = 14,
+        ResetData = 15
     }
 }
