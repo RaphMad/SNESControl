@@ -70,6 +70,8 @@ void Messenger::setAppInfo(AppInfo* value) {
 void sendInfo() {
     Messenger::print("Max loop duration: " + String(appInfoPointer->maxLoopDuration));
     Messenger::print("Last latch duration: " + String(appInfoPointer->lastLatchDuration));
+    Messenger::print("Number of short latches: " + String(appInfoPointer->shortLatches));
+    Messenger::print("Number of long latches (lag frames): " + String(appInfoPointer->longLatches));
     Messenger::print("Is file save mode: " + String(appInfoPointer->isInSaveMode));
     Messenger::print("Is in replay mode: " + String(appInfoPointer->isInReplayMode));
 }

@@ -6,6 +6,12 @@
 #include "LoadButtonData/LoadButtonData.h"
 #include "Communication/Messenger.h"
 
+/*
+ * Expected frame length in ms.
+ * Should be 20ms for PAL, 16ms for NTSC consoles.
+ */
+const byte FRAME_LENGTH = 20;
+
 volatile bool isAfterLatch = false;
 
 void handleFallingLatchPulse() {
@@ -19,6 +25,8 @@ AppInfo appInfo;
  * Keep some statistics.
  * Maximum loop duration should be well below the frame time (16-20ms).
  * Maximum latch duration should be exactly 16ms (NTSC) or 20ms (PAL).
+ * There should be no short latches.
+ * Number of long latches should correspond to lag frames.
  */
 unsigned long lastLoop;
 
@@ -34,12 +42,17 @@ void calculateLoopDuration() {
 }
 
 unsigned long lastLatch;
+int shortLatches;
+int longLatches;
 
-void calculateLatchDuration() {
+void calculateLatchInfo() {
     unsigned long timeNow = millis();
     unsigned long latchDuration = timeNow - lastLatch;
 
     appInfo.lastLatchDuration = latchDuration;
+
+    if (latchDuration < (FRAME_LENGTH / 2)) shortLatches++;
+    if (latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) longLatches++;
 
     lastLatch = timeNow;
 }
@@ -54,12 +67,6 @@ void setup() {
 
     Messenger::setAppInfo(&appInfo);
 }
-
-/*
- * Expected frame length in ms.
- * Should be 20ms for PAL, 16ms for NTSC consoles.
- */
-const byte FRAME_LENGTH = 20;
 
 /*
  * Poll controller twice per frame.
@@ -79,7 +86,7 @@ void pollController() {
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
-        calculateLatchDuration();
+        calculateLatchInfo();
 
         if (appInfo.isInSaveMode) {
             StoreButtonData::storeData(WriteToConsole::getLatestData());

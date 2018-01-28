@@ -111,12 +111,12 @@
 
         private void ProcessPong(byte[] data)
         {
-            Console.WriteLine("PONG <" + BitConverter.ToString(data) + ">");
+            Console.WriteLine(">" + BitConverter.ToString(data));
         }
 
         private void ProcessPrint(byte[] data)
         {
-            Console.WriteLine("PRINT <" + Encoding.ASCII.GetString(data) + ">");
+            Console.WriteLine("> " + Encoding.ASCII.GetString(data));
         }
 
         private ReplayFileWriter _replayFileWriter;
