@@ -1,5 +1,7 @@
 #include "Messenger.h"
 #include "../tools/tools.h"
+#include "../LoadButtonData/LoadButtonData.h"
+#include "../WriteToConsole/WriteToConsole.h"
 
 /*
  * Markers were chosen deliberately to have low values, since most of the transmitted data will be high values.
@@ -99,6 +101,8 @@ void decodeReceivedMessage(int numberOfBytes) {
         case SAVE:
             break;
         case ENABLE_LOAD:
+            appInfoPointer->isInReplayMode = true;
+            LoadButtonData::begin();
             break;
         case LOAD:
             break;
@@ -114,6 +118,16 @@ void decodeReceivedMessage(int numberOfBytes) {
             break;
         case DISABLE_SAVE:
             appInfoPointer->isInSaveMode = false;
+            break;
+        case DISABLE_LOAD:
+            appInfoPointer->isInReplayMode = false;
+
+            // reset all ongoing replay actions
+            LoadButtonData::reset();
+            WriteToConsole::prepareData(ButtonData());
+            break;
+        case LOAD_RESPONSE:
+             LoadButtonData::processIncomingData(payload, decodeIndex - 1);
             break;
     }
 }

@@ -13,15 +13,18 @@ class LoadButtonData {
 
         /*
          * This is meant to be called regularly when incoming data is available.
-         *
-         * The return value indicates whether this was the very first portion of data that has been received.
          */
-        static bool processIncomingData();
+        static void processIncomingData(byte* buf, int size);
 
         /*
          * Read the next available button data.
          */
         static ButtonData getData();
+
+        /*
+         * Resets to the initial state.
+         */
+        static void reset();
 };
 
 #endif

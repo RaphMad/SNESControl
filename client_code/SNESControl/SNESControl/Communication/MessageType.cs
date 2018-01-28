@@ -11,6 +11,8 @@
         Pong = 8,
         Print = 9,
         RequestStatus = 10,
-        DisableSave = 11
+        DisableSave = 11,
+        DisableLoad = 12,
+        LoadResponse = 13
     }
 }

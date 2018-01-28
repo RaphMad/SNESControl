@@ -10,6 +10,7 @@
     {
         private static SerialConnector _serialConnector;
         private static ReplayFileWriter _replayFileWriter;
+        private static ReplayFileReader _replayFileReader;
 
         static void Main(string[] args)
         {
@@ -24,8 +25,6 @@
                 return;
             }
 
-            string saveToFile = FindArg(argList, "-saveToFile");
-
             // set up the serial connection
             _serialConnector = new SerialConnector(argList[1]);
             _serialConnector.Start();
@@ -35,10 +34,12 @@
             Console.WriteLine("'i': request information");
             Console.WriteLine("'p': send a PING request containing 64 bytes");
             Console.WriteLine("'s': stop saving to a file");
+            Console.WriteLine("'l': stop loading from a file");
             Console.WriteLine("'ESC': quit");
             Console.WriteLine();
 
             // initialize saving to file if needed
+            string saveToFile = FindArg(argList, "-saveToFile");
             if (saveToFile != null)
             {
                 _replayFileWriter = new ReplayFileWriter(saveToFile);
@@ -46,6 +47,18 @@
                 _serialConnector.SendData(MessageType.EnableSave, new byte[] { });
 
                 Console.WriteLine("Saving incoming inputs to file <" + saveToFile + ">.");
+                Console.WriteLine();
+            }
+
+            // initialize saving to file if needed
+            string loadFromFile = FindArg(argList, "-loadFromFile");
+            if (loadFromFile != null)
+            {
+                _replayFileReader = new ReplayFileReader(loadFromFile);
+                _serialConnector.UseReplayFileReader(_replayFileReader);
+                _serialConnector.SendData(MessageType.EnableLoad, new byte[] { });
+
+                Console.WriteLine("Loading inputs from file <" + loadFromFile + ">.");
                 Console.WriteLine();
             }
 
@@ -83,7 +96,8 @@
                                  {
                                      { ConsoleKey.I, RequestInfo },
                                      { ConsoleKey.P, SendPing },
-                                     { ConsoleKey.S, StopSaving }
+                                     { ConsoleKey.S, StopSaving },
+                                     { ConsoleKey.L, StopLoading }
                                  };
 
                 if (keyActions.ContainsKey(pressedKey))
@@ -109,6 +123,13 @@
             Console.WriteLine("Stop saving to file");
             _replayFileWriter?.Close();
             _serialConnector.SendData(MessageType.DisableSave, new byte[] { });
+        }
+
+        static void StopLoading()
+        {
+            Console.WriteLine("Stop loading from file");
+            _replayFileWriter?.Close();
+            _serialConnector.SendData(MessageType.DisableLoad, new byte[] { });
         }
     }
 }

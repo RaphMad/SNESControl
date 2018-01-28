@@ -91,7 +91,8 @@
                                { MessageType.Ping, ProcessPing },
                                { MessageType.Pong, ProcessPong },
                                { MessageType.Print, ProcessPrint },
-                               { MessageType.Save, SaveButtonData }
+                               { MessageType.Save, SaveButtonData },
+                               { MessageType.Load, LoadButtonData }
                            };
 
             MessageType type = (MessageType)decodedBytes[0];
@@ -127,7 +128,32 @@
 
         void SaveButtonData(byte[] data)
         {
-            _replayFileWriter.AppendBytes(data);
+            _replayFileWriter?.AppendBytes(data);
+        }
+
+        private ReplayFileReader _replayFileReader;
+
+        public void UseReplayFileReader(ReplayFileReader replayFileReader)
+        {
+            _replayFileReader = replayFileReader;
+        }
+
+        public void LoadButtonData(byte[] data)
+        {
+            if (_replayFileReader != null)
+            {
+                byte[] buttonData = _replayFileReader.GetNextBytes();
+
+                if (buttonData.Length > 0)
+                {
+                    Console.WriteLine("sending button data @" + DateTime.Now.ToLongTimeString());
+                    SendData(MessageType.LoadResponse, buttonData);
+                }
+                else
+                {
+                    SendData(MessageType.DisableLoad, new byte[]{});
+                }
+            }
         }
     }
 }

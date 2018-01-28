@@ -38,6 +38,7 @@
   <ItemGroup>
     <Compile Include="Communication\MessageCoder.cs" />
     <Compile Include="Communication\MessageType.cs" />
+    <Compile Include="LoadFromFile\ReplayFileReader.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Communication\SerialConnector.cs" />

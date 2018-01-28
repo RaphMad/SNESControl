@@ -2,6 +2,8 @@
 #include "LoadButtonData.h"
 #include "../tools/tools.h"
 #include "types.h"
+#include "../WriteToConsole/WriteToConsole.h"
+#include "../Communication/Messenger.h"
 
 /*
  * Use two alternating input buffers to ensure a consistent flow of inputs to the console.
@@ -23,7 +25,7 @@ bool isInputBuffer1Active = false;
 bool hasFirstData = false;
 
 void requestData() {
-    //Serial.println("LOAD|" + BUFFER_SIZE);
+    Messenger::sendData(LOAD, NULL, 0);
 }
 
 void LoadButtonData::begin() {
@@ -31,24 +33,23 @@ void LoadButtonData::begin() {
     requestData();
 }
 
-bool LoadButtonData::processIncomingData() {
+void LoadButtonData::processIncomingData(byte* buf, int size) {
     // write data into inactive input buffer
     if (!isInputBuffer1Active) {
-        inputBuffer1[0] = 0;
+        memcpy(inputBuffer1, buf, size);
     } else {
-        inputBuffer2[0] = 0;
+        memcpy(inputBuffer2, buf, size);
     }
-
-    bool wasInitial = !hasFirstData;
 
     if (!hasFirstData) {
         // initial case, set buffer1 to active and load data for buffer 2
         hasFirstData = true;
         isInputBuffer1Active = true;
         requestData();
-    }
 
-    return wasInitial;
+        // also prepare the first frame
+        WriteToConsole::prepareData(getData());
+    }
 }
 
 ButtonData readFromBuffer1() {
@@ -87,4 +88,12 @@ ButtonData LoadButtonData::getData() {
     }
 
     return buttonData;
+}
+
+
+void LoadButtonData::reset() {
+    inputBuffer1Index = 0;
+    inputBuffer2Index = 0;
+    isInputBuffer1Active = false;
+    hasFirstData = false;
 }

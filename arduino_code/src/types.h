@@ -93,7 +93,9 @@ typedef enum {
     PONG = 8,
     PRINT = 9,
     REQUEST_STATUS = 10,
-    DISABLE_SAVE = 11
+    DISABLE_SAVE = 11,
+    DISABLE_LOAD = 12,
+    LOAD_RESPONSE = 13
 } MessageType;
 
 /*
