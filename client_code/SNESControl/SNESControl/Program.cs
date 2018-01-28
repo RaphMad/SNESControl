@@ -50,8 +50,9 @@
             Console.WriteLine();
             Console.WriteLine("'s': save to file");
             Console.WriteLine("'l': load from file");
-            Console.WriteLine("'x': reset all states / stop all ongoing actions");
+            Console.WriteLine("'x': stop saving / loading");
             Console.WriteLine("'i': request information");
+            Console.WriteLine("'o': clear information");
             Console.WriteLine("'p': send a PING request containing 64 bytes");
             Console.WriteLine("'ESC': quit");
             Console.WriteLine();
@@ -106,7 +107,8 @@
                                      { ConsoleKey.P, SendPing },
                                      { ConsoleKey.S, Save },
                                      { ConsoleKey.L, Load },
-                                     { ConsoleKey.X, ResetStates }
+                                     { ConsoleKey.X, StopSaveLoad },
+                                     { ConsoleKey.O, Reset }
                                  };
 
                 if (keyActions.ContainsKey(pressedKey))
@@ -141,10 +143,17 @@
             _serialConnector.SendData(MessageType.EnableLoad, new byte[] { });
         }
 
-        static void ResetStates()
+        static void StopSaveLoad()
         {
-            Console.WriteLine("Resetting all states.");
+            Console.WriteLine("Stopping saving/loading.");
             _replayFileWriter.Close();
+            _serialConnector.SendData(MessageType.DisableSave, new byte[] { });
+            _serialConnector.SendData(MessageType.DisableLoad, new byte[] { });
+        }
+
+        static void Reset()
+        {
+            Console.WriteLine("Resetting all data.");
             _serialConnector.SendData(MessageType.ResetData, new byte[] { });
         }
     }
