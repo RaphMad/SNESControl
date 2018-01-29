@@ -65,7 +65,7 @@ ButtonData readFromBuffer1() {
         requestData();
     }
 
-    return bytesToButtonData(nextBytes);;
+    return bytesToButtonData(nextBytes);
 }
 
 ButtonData readFromBuffer2() {

@@ -28,8 +28,8 @@ void StoreButtonData::setAppInfo(AppInfo* value) {
     appInfoReference = value;
 }
 
-void StoreButtonData::storeData(ButtonData buttonData) {
-    buttonData.pressedAt = millis() - appInfoReference->firstLatch;
+void StoreButtonData::storeData(ButtonData* buttonData) {
+    buttonData->pressedAt = millis() - appInfoReference->firstLatch;
     buttonDataToBytes(buttonData, sendBuffer + bufferPosition);
 
     bufferPosition += 4;

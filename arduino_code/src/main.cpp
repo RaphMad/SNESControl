@@ -87,8 +87,8 @@ void pollController() {
     }
 }
 
-void checkButtonTiming(ButtonData buttonData) {
-    int buttonTime = buttonData.pressedAt;
+void checkButtonTiming(ButtonData* buttonData) {
+    int buttonTime = buttonData->pressedAt;
     int timeNow = millis();
     int timeFromFirstLatch = timeNow - appInfo.firstLatch;
 
@@ -112,12 +112,12 @@ void loop() {
         calculateLatchInfo();
 
         if (appInfo.isInSaveMode) {
-            StoreButtonData::storeData(WriteToConsole::getLatestData());
+            StoreButtonData::storeData(&WriteToConsole::getLatestData());
         }
 
         if (appInfo.isInReplayMode) {
             ButtonData buttonData = LoadButtonData::getData();
-            checkButtonTiming(buttonData);
+            checkButtonTiming(&buttonData);
 
             WriteToConsole::prepareData(buttonData);
         }

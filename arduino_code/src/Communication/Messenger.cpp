@@ -75,29 +75,15 @@ void Messenger::setAppInfo(AppInfo* value) {
     appInfoPointer = value;
 }
 
-int getFreeRam () {
-  extern int __heap_start, *__brkval;
-  int v;
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
-}
-
 void sendInfo() {
     byte bytesToSend[20];
 
-    memcpy(bytesToSend, &appInfoPointer->maxLoopDuration, 2);
-    memcpy(bytesToSend + 2, &appInfoPointer->lastLatchDuration, 2);
-    memcpy(bytesToSend + 4, &appInfoPointer->firstLatch, 2);
-    memcpy(bytesToSend + 6, &appInfoPointer->numberOfLatches, 2);
-    memcpy(bytesToSend + 8, &appInfoPointer->shortLatches, 2);
-    memcpy(bytesToSend + 10, &appInfoPointer->longLatches, 2);
-    memcpy(bytesToSend + 12, &appInfoPointer->isInSaveMode, 1);
-    memcpy(bytesToSend + 13, &appInfoPointer->isInReplayMode, 1);
-    memcpy(bytesToSend + 14, &appInfoPointer->delayCount, 2);
-    memcpy(bytesToSend + 16, &appInfoPointer->skipCount, 2);
+    appInfoToBytes(appInfoPointer, bytesToSend);
 
+    // amount of free RAM is not part of AppInfo
     int freeRam = getFreeRam();
-    bytesToSend[19] = (freeRam >> 8) & 0xFF;
-    bytesToSend[18] = freeRam & 0xFF;
+    bytesToSend[18] = (freeRam >> 8) & 0xFF;
+    bytesToSend[19] = freeRam & 0xFF;
 
     Messenger::sendData(INFO_RESPONSE, bytesToSend, 20);
 }

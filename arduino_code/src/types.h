@@ -31,26 +31,19 @@ const byte PIN_CONTROLLER_DATA = A5;
  * Note that true means NOT pressed.
  */
 struct ButtonData {
-    // reverse bit order within the bytes
-    // (just as a convenience, this way the resulting bits can be aligned to clock cycles)
-    bool RIGHT:1;
-    bool LEFT:1;
-    bool DOWN:1;
-    bool UP:1;
-    bool START:1;
-    bool SELECT:1;
-    bool Y:1;
-    bool B:1;
+    bool B;
+    bool Y;
+    bool SELECT;
+    bool START;
+    bool UP;
+    bool DOWN;
+    bool LEFT;
+    bool RIGHT;
 
-    // unused padding bits
-    bool UNUSED_13: 1;
-    bool UNUSED_14: 1;
-    bool UNUSED_15: 1;
-    bool UNUSED_16: 1;
-    bool SHOULDER_RIGHT:1;
-    bool SHOULDER_LEFT:1;
-    bool X:1;
-    bool A:1;
+    bool A;
+    bool X;
+    bool SHOULDER_LEFT;
+    bool SHOULDER_RIGHT;
 
     /*
      * Time when the button was pressed, relative to the timestamp of the first latch.
@@ -68,14 +61,11 @@ struct ButtonData {
         DOWN = true;
         LEFT = true;
         RIGHT = true;
+
         A = true;
         X = true;
         SHOULDER_LEFT = true;
         SHOULDER_RIGHT = true;
-        UNUSED_13 = true;
-        UNUSED_14 = true;
-        UNUSED_15 = true;
-        UNUSED_16 = true;
     }
 };
 
