@@ -81,9 +81,7 @@ void sendInfo() {
     appInfoToBytes(appInfoPointer, bytesToSend);
 
     // amount of free RAM is not part of AppInfo
-    int freeRam = getFreeRam();
-    bytesToSend[18] = (freeRam >> 8) & 0xFF;
-    bytesToSend[19] = freeRam & 0xFF;
+    intToBytes(getFreeRam(), bytesToSend + 18);
 
     Messenger::sendData(INFO_RESPONSE, bytesToSend, 20);
 }
