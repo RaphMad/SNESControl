@@ -11,7 +11,7 @@
  * The active input buffer is assumed to already contain data (and is being read from).
  * Meanwhile data for the inactive buffer is being fetched from the client.
  *
- * With a value of 128 about one save request is sent per second (assuming inputs come in at 50 or 60Hz).
+ * With a value of 64 about two load request are sent per second (assuming inputs come in at 50 or 60Hz).
  */
 const int INPUT_BUFFER_SIZE = MAX_CONTENT_SIZE;
 
