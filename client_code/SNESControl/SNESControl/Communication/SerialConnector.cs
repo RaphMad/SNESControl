@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO.Ports;
     using System.Linq;
     using System.Text;
@@ -110,9 +111,21 @@
             SendData(MessageType.Pong, data);
         }
 
+        private readonly Stopwatch _pingTimer = new Stopwatch();
+
+        public void StartPingTimer()
+        {
+            _pingTimer.Start();
+        }
+
         private void ProcessPong(byte[] data)
         {
-            Console.WriteLine(">" + BitConverter.ToString(data));
+            _pingTimer.Stop();
+
+            Console.WriteLine("Pong data: " + BitConverter.ToString(data));
+            Console.WriteLine("Ping took " + _pingTimer.ElapsedMilliseconds + " ms.");
+
+            _pingTimer.Reset();
         }
 
         private void ProcessPrint(byte[] data)

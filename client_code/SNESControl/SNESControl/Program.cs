@@ -126,6 +126,7 @@
         static void SendPing()
         {
             byte[] bytes = Enumerable.Range(0, 64).Select(x => (byte)x).ToArray();
+            _serialConnector.StartPingTimer();
             _serialConnector.SendData(MessageType.Ping, bytes);
         }
 
