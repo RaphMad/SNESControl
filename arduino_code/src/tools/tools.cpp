@@ -23,21 +23,21 @@ void appInfoToBytes(AppInfo* appInfo, byte* buf) {
 void buttonDataToBytes(ButtonData* buttonData, byte* buf) {
     buf[0] = 0xFF;
 
-    if (buttonData->B) bitClear(buf[0], 7);
-    if (buttonData->Y) bitClear(buf[0], 6);
-    if (buttonData->SELECT) bitClear(buf[0], 5);
-    if (buttonData->START) bitClear(buf[0], 4);
-    if (buttonData->UP) bitClear(buf[0], 3);
-    if (buttonData->DOWN) bitClear(buf[0], 2);
-    if (buttonData->LEFT) bitClear(buf[0], 1);
-    if (buttonData->RIGHT) bitClear(buf[0], 0);
+    if (!buttonData->B) bitClear(buf[0], 7);
+    if (!buttonData->Y) bitClear(buf[0], 6);
+    if (!buttonData->SELECT) bitClear(buf[0], 5);
+    if (!buttonData->START) bitClear(buf[0], 4);
+    if (!buttonData->UP) bitClear(buf[0], 3);
+    if (!buttonData->DOWN) bitClear(buf[0], 2);
+    if (!buttonData->LEFT) bitClear(buf[0], 1);
+    if (!buttonData->RIGHT) bitClear(buf[0], 0);
 
     buf[1] = 0xFF;
 
-    if (buttonData->A) bitClear(buf[1], 7);
-    if (buttonData->X) bitClear(buf[1], 6);
-    if (buttonData->SHOULDER_LEFT) bitClear(buf[1], 5);
-    if (buttonData->SHOULDER_RIGHT) bitClear(buf[1], 4);
+    if (!buttonData->A) bitClear(buf[1], 7);
+    if (!buttonData->X) bitClear(buf[1], 6);
+    if (!buttonData->SHOULDER_LEFT) bitClear(buf[1], 5);
+    if (!buttonData->SHOULDER_RIGHT) bitClear(buf[1], 4);
 
     intToBytes(buttonData->pressedAt, buf + 2);
 }
