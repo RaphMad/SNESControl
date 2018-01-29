@@ -4546,6 +4546,8 @@ temperature compensated, 6,2 V</description>
 2,2 kOhm for SNES-LATCH (R5)
 1 kOhm for SNES-CLOCK (R6)</text>
 <text x="-17.78" y="-27.94" size="1.778" layer="91">+5V and GND of the controller are connected to the Arduino.</text>
+<text x="-25.4" y="43.18" size="1.778" layer="91">Note: P1-P8 are incorrectly based on
+the chips pinout (so P1 = 1, P2 = 2, etc...)</text>
 </plain>
 <instances>
 <instance part="IC1" gate="A" x="60.96" y="66.04"/>
