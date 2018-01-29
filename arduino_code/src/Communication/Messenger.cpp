@@ -18,19 +18,24 @@ const byte ENCODE_MARKER = 2;
  * plus 2 bytes for the message type plus 2 bytes for the start / end marker.
  */
 const int BUFFER_SIZE = MAX_CONTENT_SIZE * 2 + 2 + 2;
-byte receivedBytes[BUFFER_SIZE];
+
+byte receiveBuffer[BUFFER_SIZE];
+int receiveBufferIndex;
+bool isReceiving;
 
 /*
  * This could be allocated on the stack for each sent message,
  * but declaring it globally makes it show up in the program data size
  * and avoids allocating a lot of stack memory each time a message is sent.
  */
-byte bytesToSend[BUFFER_SIZE];
+byte sendBuffer[BUFFER_SIZE];
+
+extern AppInfo appInfo;
 
 void Messenger::sendData(MessageType type, byte* payload, int size) {
     if (size <= MAX_CONTENT_SIZE) {
-        bytesToSend[0] = START_MARKER;
-        bytesToSend[1] = type; // needs encoding should we ever introduce types 0,1,2
+        sendBuffer[0] = START_MARKER;
+        sendBuffer[1] = type; // needs encoding should we ever introduce types 0,1,2
         int sendIndex = 2;
 
         for (int i = 0; i < size; i++) {
@@ -38,27 +43,28 @@ void Messenger::sendData(MessageType type, byte* payload, int size) {
 
             // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
             if (currentByte == START_MARKER) {
-                bytesToSend[sendIndex] = ENCODE_MARKER;
+                sendBuffer[sendIndex] = ENCODE_MARKER;
                 sendIndex++;
-                bytesToSend[sendIndex] = currentByte + ENCODE_MARKER + 1;
+                sendBuffer[sendIndex] = currentByte + ENCODE_MARKER + 1;
             } else if (currentByte == ENCODE_MARKER) {
-                bytesToSend[sendIndex] = ENCODE_MARKER;
+                sendBuffer[sendIndex] = ENCODE_MARKER;
                 sendIndex++;
-                bytesToSend[sendIndex] = currentByte + ENCODE_MARKER + 1;
+                sendBuffer[sendIndex] = currentByte + ENCODE_MARKER + 1;
             } else if (currentByte == END_MARKER) {
-                bytesToSend[sendIndex] = ENCODE_MARKER;
+                sendBuffer[sendIndex] = ENCODE_MARKER;
                 sendIndex++;
-                bytesToSend[sendIndex] = currentByte + ENCODE_MARKER + 1;
+                sendBuffer[sendIndex] = currentByte + ENCODE_MARKER + 1;
             } else {
-                bytesToSend[sendIndex] = currentByte;
+                sendBuffer[sendIndex] = currentByte;
             }
 
             sendIndex++;
         }
 
-        bytesToSend[sendIndex] = END_MARKER;
+        sendBuffer[sendIndex] = END_MARKER;
+        sendIndex++;
 
-        Serial.write(bytesToSend, sendIndex + 1);
+        Serial.write(sendBuffer, sendIndex);
     }
 }
 
@@ -68,8 +74,6 @@ void Messenger::print(String text) {
 
     sendData(PRINT, bytes, text.length());
 }
-
-extern AppInfo appInfo;
 
 void sendInfo() {
     byte bytesToSend[20];
@@ -82,27 +86,7 @@ void sendInfo() {
     Messenger::sendData(INFO_RESPONSE, bytesToSend, 20);
 }
 
-void decodeReceivedMessage(int numberOfBytes) {
-    int decodedBytes = 0;
-
-    for (int i = 0; i < numberOfBytes; i++) {
-        byte currentByte = receivedBytes[i];
-
-        if (currentByte == ENCODE_MARKER) {
-            // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
-            i++;
-            byte nextByte = receivedBytes[i];
-            currentByte = nextByte - ENCODE_MARKER - 1;
-        }
-
-        // re-use the receive buffer for the decoded data
-        receivedBytes[decodedBytes] = currentByte;
-        decodedBytes++;
-    }
-
-    MessageType messageType = (MessageType)receivedBytes[0];
-    byte* payload = receivedBytes + 1;
-
+void handleMessage(MessageType messageType, byte* payload, int size) {
     switch(messageType) {
         case ENABLE_SAVE:
             appInfo.firstLatch = 0;
@@ -119,7 +103,7 @@ void decodeReceivedMessage(int numberOfBytes) {
         case LOAD:
             break;
         case PING:
-            Messenger::sendData(PONG, payload, decodedBytes - 1);
+            Messenger::sendData(PONG, payload, size);
             break;
         case PONG:
             break;
@@ -156,34 +140,55 @@ void decodeReceivedMessage(int numberOfBytes) {
             WriteToConsole::prepareData(ButtonData());
             break;
         case LOAD_RESPONSE:
-             LoadButtonData::processIncomingData(payload, decodedBytes - 1);
+             LoadButtonData::processIncomingData(payload, size);
             break;
         case INFO_RESPONSE:
-             LoadButtonData::processIncomingData(payload, decodedBytes - 1);
+             LoadButtonData::processIncomingData(payload, size);
             break;
     }
 }
 
-int numberOfBytes;
-bool isReceiving;
+void decodeReceivedMessage(int numberOfBytes) {
+    int decodedBytes = 0;
+
+    for (int i = 0; i < numberOfBytes; i++) {
+        byte currentByte = receiveBuffer[i];
+
+        if (currentByte == ENCODE_MARKER) {
+            // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
+            i++;
+            byte nextByte = receiveBuffer[i];
+            currentByte = nextByte - ENCODE_MARKER - 1;
+        }
+
+        // re-use the receive buffer for the decoded data
+        receiveBuffer[decodedBytes] = currentByte;
+        decodedBytes++;
+    }
+
+    MessageType messageType = (MessageType)receiveBuffer[0];
+    byte* payload = receiveBuffer + 1;
+
+    handleMessage(messageType, payload, decodedBytes - 1);
+}
 
 void Messenger::checkForData() {
     while (Serial.available() > 0) {
         byte receivedByte = Serial.read();
 
         if (receivedByte == START_MARKER) {
-            numberOfBytes = 0;
+            receiveBufferIndex = 0;
             isReceiving = true;
         }
 
         if (isReceiving && receivedByte != START_MARKER && receivedByte != END_MARKER) {
-            receivedBytes[numberOfBytes] = receivedByte;
-            numberOfBytes++;
+            receiveBuffer[receiveBufferIndex] = receivedByte;
+            receiveBufferIndex++;
         }
 
         if (receivedByte == END_MARKER) {
             isReceiving = false;
-            decodeReceivedMessage(numberOfBytes);
+            decodeReceivedMessage(receiveBufferIndex);
         }
     }
 }

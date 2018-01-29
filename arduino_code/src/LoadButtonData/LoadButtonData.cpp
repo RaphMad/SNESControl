@@ -13,16 +13,16 @@
  *
  * With a value of 128 about one save request is sent per second (assuming inputs come in at 50 or 60Hz).
  */
-const int BUFFER_SIZE = MAX_CONTENT_SIZE;
+const int INPUT_BUFFER_SIZE = MAX_CONTENT_SIZE;
 
-byte inputBuffer1[BUFFER_SIZE];
+byte inputBuffer1[INPUT_BUFFER_SIZE];
 int inputBuffer1Index = 0;
 
-byte inputBuffer2[BUFFER_SIZE];
+byte inputBuffer2[INPUT_BUFFER_SIZE];
 int inputBuffer2Index = 0;
 
 bool isInputBuffer1Active = false;
-bool hasFirstData = false;
+bool hasInitialData = false;
 
 void requestData() {
     byte content[] = { MAX_CONTENT_SIZE };
@@ -43,9 +43,9 @@ void LoadButtonData::processIncomingData(byte* buf, int size) {
         memcpy(inputBuffer2, buf, size);
     }
 
-    if (!hasFirstData) {
+    if (!hasInitialData) {
         // initial case, set buffer1 to active and load data for buffer 2
-        hasFirstData = true;
+        hasInitialData = true;
         isInputBuffer1Active = true;
         requestData();
 
@@ -59,7 +59,7 @@ ButtonData readFromBuffer1() {
 
     inputBuffer1Index += 4;
 
-    if (inputBuffer1Index == BUFFER_SIZE) {
+    if (inputBuffer1Index == INPUT_BUFFER_SIZE) {
         isInputBuffer1Active = false;
         inputBuffer1Index = 0;
         requestData();
@@ -73,7 +73,7 @@ ButtonData readFromBuffer2() {
 
     inputBuffer2Index += 4;
 
-    if (inputBuffer2Index == BUFFER_SIZE) {
+    if (inputBuffer2Index == INPUT_BUFFER_SIZE) {
         isInputBuffer1Active = true;
         inputBuffer2Index = 0;
         requestData();
@@ -85,7 +85,7 @@ ButtonData readFromBuffer2() {
 ButtonData LoadButtonData::getData() {
     ButtonData buttonData;
 
-    if (hasFirstData) {
+    if (hasInitialData) {
         if (isInputBuffer1Active) {
             buttonData = readFromBuffer1();
         } else {
@@ -101,5 +101,5 @@ void LoadButtonData::reset() {
     inputBuffer1Index = 0;
     inputBuffer2Index = 0;
     isInputBuffer1Active = false;
-    hasFirstData = false;
+    hasInitialData = false;
 }

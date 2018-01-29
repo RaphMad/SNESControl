@@ -12,6 +12,26 @@
  */
 const int FRAME_LENGTH = 20;
 
+/*
+ * Controller will be polled twice per frame.
+ */
+int lastPoll;
+int pollDelta = FRAME_LENGTH / 2;
+
+/*
+ * Timestamps of last loop and last latch - used to calculate performance info.
+ */
+int lastLoop;
+int lastLatch;
+
+/*
+ * Holds global information about the application.
+ */
+AppInfo appInfo;
+
+/*
+ * Indicates whether we are right after a latch.
+ */
 volatile bool isAfterLatch = false;
 
 void handleFallingLatchPulse() {
@@ -19,16 +39,14 @@ void handleFallingLatchPulse() {
     isAfterLatch = true;
 }
 
-AppInfo appInfo;
+void setup() {
+    attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
 
-/*
- * Keep some statistics.
- * Maximum loop duration should be well below the frame time (16-20ms).
- * Maximum latch duration should be exactly 16ms (NTSC) or 20ms (PAL).
- * There should be no short latches.
- * Number of long latches should correspond to lag frames.
- */
-int lastLoop;
+    Serial.begin(115200);
+
+    ReadController::begin();
+    WriteToConsole::begin();
+}
 
 void calculateLoopDuration() {
     int timeNow = millis();
@@ -40,8 +58,6 @@ void calculateLoopDuration() {
 
     lastLoop = timeNow;
 }
-
-int lastLatch;
 
 void calculateLatchInfo() {
     int timeNow = millis();
@@ -59,21 +75,6 @@ void calculateLatchInfo() {
 
     lastLatch = timeNow;
 }
-
-void setup() {
-    attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
-
-    Serial.begin(115200);
-
-    ReadController::begin();
-    WriteToConsole::begin();
-}
-
-/*
- * Poll controller twice per frame.
- */
-int lastPoll = 0;
-int pollDelta = FRAME_LENGTH / 2;
 
 void pollController() {
     int timeNow = millis();
