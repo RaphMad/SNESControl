@@ -1,7 +1,6 @@
 #ifndef types_h
 #define types_h
 
-#include <stdint.h>
 #include <Arduino.h>
 
 // pin to button mapping for console communication

@@ -1,10 +1,11 @@
 #include <Arduino.h>
 #include "tools\tools.h"
-#include "ReadController/ReadController.h"
-#include "WriteToConsole/WriteToConsole.h"
-#include "StoreButtonData/StoreButtonData.h"
-#include "LoadButtonData/LoadButtonData.h"
 #include "Communication/Messenger.h"
+#include "LoadButtonData/LoadButtonData.h"
+#include "ReadController/ReadController.h"
+#include "StoreButtonData/StoreButtonData.h"
+#include "WriteToConsole/WriteToConsole.h"
+
 
 /*
  * Expected frame length in ms.

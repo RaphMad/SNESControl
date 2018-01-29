@@ -1,8 +1,8 @@
 #include "Messenger.h"
 #include "../tools/tools.h"
 #include "../LoadButtonData/LoadButtonData.h"
-#include "../WriteToConsole/WriteToConsole.h"
 #include "../StoreButtonData/StoreButtonData.h"
+#include "../WriteToConsole/WriteToConsole.h"
 
 /*
  * Markers were chosen deliberately to have low values, since most of the transmitted data will be high values.

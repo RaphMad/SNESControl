@@ -1,7 +1,5 @@
 #include <Arduino.h>
 #include "WriteToConsole.h"
-#include "../Communication/Messenger.h"
-#include "../tools/tools.h"
 
 ButtonData lastPreparedData;
 ButtonData lastAdditionalData;

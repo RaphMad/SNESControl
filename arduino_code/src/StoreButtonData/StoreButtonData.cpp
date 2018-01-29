@@ -1,7 +1,6 @@
-#include "StoreButtonData.h"
 #include <Arduino.h>
+#include "StoreButtonData.h"
 #include "../tools/tools.h"
-#include "types.h"
 #include "../Communication/Messenger.h"
 
 /*
