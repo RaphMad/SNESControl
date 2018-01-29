@@ -21,9 +21,9 @@ const int BUFFER_SIZE = MAX_CONTENT_SIZE * 2 + 2 + 2;
 byte receivedBytes[BUFFER_SIZE];
 
 /*
- * This could be allocated on the stack for each send message,
+ * This could be allocated on the stack for each sent message,
  * but declaring it globally makes it show up in the program data size
- * and avoids allocating a lot of stack memory.
+ * and avoids allocating a lot of stack memory each time a message is sent.
  */
 byte bytesToSend[BUFFER_SIZE];
 

@@ -18,6 +18,8 @@ class Messenger {
 
         /*
          * Convencience function to print text to the client.
+         * Only for debugging purposes, String will cause unpredictable
+         * memory allocation results in production.
          */
         static void print(String text);
 
