@@ -22,15 +22,11 @@ void sendData() {
     bufferPosition = 0;
 }
 
-AppInfo* appInfoReference;
+extern AppInfo appInfo;
 
-void StoreButtonData::setAppInfo(AppInfo* value) {
-    appInfoReference = value;
-}
-
-void StoreButtonData::storeData(ButtonData* buttonData) {
-    buttonData->pressedAt = millis() - appInfoReference->firstLatch;
-    buttonDataToBytes(buttonData, sendBuffer + bufferPosition);
+void StoreButtonData::storeData(ButtonData buttonData) {
+    buttonData.pressedAt = millis() - appInfo.firstLatch;
+    buttonDataToBytes(&buttonData, sendBuffer + bufferPosition);
 
     bufferPosition += 4;
 

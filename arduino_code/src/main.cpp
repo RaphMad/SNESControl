@@ -67,9 +67,6 @@ void setup() {
 
     ReadController::begin();
     WriteToConsole::begin();
-
-    Messenger::setAppInfo(&appInfo);
-    StoreButtonData::setAppInfo(&appInfo);
 }
 
 /*
@@ -112,7 +109,7 @@ void loop() {
         calculateLatchInfo();
 
         if (appInfo.isInSaveMode) {
-            StoreButtonData::storeData(&WriteToConsole::getLatestData());
+            StoreButtonData::storeData(WriteToConsole::getLatestData());
         }
 
         if (appInfo.isInReplayMode) {

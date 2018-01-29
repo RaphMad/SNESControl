@@ -22,11 +22,6 @@ class Messenger {
          * memory allocation results in production.
          */
         static void print(String text);
-
-        /*
-         * Sets a reference to the app info.
-         */
-        static void setAppInfo(AppInfo* appInfo);
 };
 
 #endif

@@ -69,16 +69,12 @@ void Messenger::print(String text) {
     sendData(PRINT, bytes, text.length());
 }
 
-AppInfo* appInfoPointer;
-
-void Messenger::setAppInfo(AppInfo* value) {
-    appInfoPointer = value;
-}
+extern AppInfo appInfo;
 
 void sendInfo() {
     byte bytesToSend[20];
 
-    appInfoToBytes(appInfoPointer, bytesToSend);
+    appInfoToBytes(&appInfo, bytesToSend);
 
     // amount of free RAM is not part of AppInfo
     intToBytes(getFreeRam(), bytesToSend + 18);
@@ -109,15 +105,15 @@ void decodeReceivedMessage(int numberOfBytes) {
 
     switch(messageType) {
         case ENABLE_SAVE:
-            appInfoPointer->firstLatch = 0;
+            appInfo.firstLatch = 0;
             StoreButtonData::reset();
-            appInfoPointer->isInSaveMode = true;
+            appInfo.isInSaveMode = true;
             break;
         case SAVE:
             break;
         case ENABLE_LOAD:
-            appInfoPointer->firstLatch = 0;
-            appInfoPointer->isInReplayMode = true;
+            appInfo.firstLatch = 0;
+            appInfo.isInReplayMode = true;
             LoadButtonData::begin();
             break;
         case LOAD:
@@ -133,26 +129,26 @@ void decodeReceivedMessage(int numberOfBytes) {
             sendInfo();
             break;
         case DISABLE_SAVE:
-            appInfoPointer->isInSaveMode = false;
+            appInfo.isInSaveMode = false;
             StoreButtonData::reset();
             break;
         case DISABLE_LOAD:
-            appInfoPointer->isInReplayMode = false;
+            appInfo.isInReplayMode = false;
 
             // reset all ongoing replay actions
             LoadButtonData::reset();
             WriteToConsole::prepareData(ButtonData());
         case RESET_DATA:
-            appInfoPointer->isInReplayMode = false;
-            appInfoPointer->isInSaveMode = false;
-            appInfoPointer->delayCount = 0;
-            appInfoPointer->firstLatch = 0;
-            appInfoPointer->lastLatchDuration = 0;
-            appInfoPointer->longLatches = 0;
-            appInfoPointer->maxLoopDuration = 0;
-            appInfoPointer->numberOfLatches = 0;
-            appInfoPointer->shortLatches = 0;
-            appInfoPointer->skipCount = 0;
+            appInfo.isInReplayMode = false;
+            appInfo.isInSaveMode = false;
+            appInfo.delayCount = 0;
+            appInfo.firstLatch = 0;
+            appInfo.lastLatchDuration = 0;
+            appInfo.longLatches = 0;
+            appInfo.maxLoopDuration = 0;
+            appInfo.numberOfLatches = 0;
+            appInfo.shortLatches = 0;
+            appInfo.skipCount = 0;
 
             // reset all ongoing replay actions
             LoadButtonData::reset();
