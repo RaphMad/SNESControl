@@ -12,6 +12,7 @@ class Messenger {
 
         /*
          * Send data with its payload to the client.
+         * Size needs to be less than MAX_CONTENT_SIZE.
          */
         static void sendData(MessageType type, byte* payload, int size);
 

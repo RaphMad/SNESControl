@@ -17,42 +17,49 @@ const byte ENCODE_MARKER = 2;
  * Due the encoding, in a worst case we may need double the content size
  * plus 2 bytes for the message type plus 2 bytes for the start / end marker.
  */
-const int RECEIVE_BUFFER_SIZE = MAX_CONTENT_SIZE * 2 + 2 + 2;
-byte receivedBytes[RECEIVE_BUFFER_SIZE];
+const int BUFFER_SIZE = MAX_CONTENT_SIZE * 2 + 2 + 2;
+byte receivedBytes[BUFFER_SIZE];
+
+/*
+ * This could be allocated on the stack for each send message,
+ * but declaring it globally makes it show up in the program data size
+ * and avoids allocating a lot of stack memory.
+ */
+byte bytesToSend[BUFFER_SIZE];
 
 void Messenger::sendData(MessageType type, byte* payload, int size) {
-    byte bytesToSend[size * 2 + 2 + 2];
+    if (size <= MAX_CONTENT_SIZE) {
+        bytesToSend[0] = START_MARKER;
+        bytesToSend[1] = type; // needs encoding should we ever introduce types 0,1,2
+        int sendIndex = 2;
 
-    bytesToSend[0] = START_MARKER;
-    bytesToSend[1] = type; // needs encoding should we ever introduce types 0,1,2
-    int sendIndex = 2;
+        for (int i = 0; i < size; i++) {
+            byte currentByte = payload[i];
 
-    for (int i = 0; i < size; i++) {
-        byte currentByte = payload[i];
+            // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
+            if (currentByte == START_MARKER) {
+                bytesToSend[sendIndex] = ENCODE_MARKER;
+                sendIndex++;
+                bytesToSend[sendIndex] = currentByte + ENCODE_MARKER + 1;
+            } else if (currentByte == ENCODE_MARKER) {
+                bytesToSend[sendIndex] = ENCODE_MARKER;
+                sendIndex++;
+                bytesToSend[sendIndex] = currentByte + ENCODE_MARKER + 1;
+            } else if (currentByte == END_MARKER) {
+                bytesToSend[sendIndex] = ENCODE_MARKER;
+                sendIndex++;
+                bytesToSend[sendIndex] = currentByte + ENCODE_MARKER + 1;
+            } else {
+                bytesToSend[sendIndex] = currentByte;
+            }
 
-        // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
-        if (currentByte == START_MARKER) {
-            bytesToSend[sendIndex] = ENCODE_MARKER;
             sendIndex++;
-            bytesToSend[sendIndex] = currentByte + ENCODE_MARKER + 1;
-        } else if (currentByte == ENCODE_MARKER) {
-            bytesToSend[sendIndex] = ENCODE_MARKER;
-            sendIndex++;
-            bytesToSend[sendIndex] = currentByte + ENCODE_MARKER + 1;
-        } else if (currentByte == END_MARKER) {
-            bytesToSend[sendIndex] = ENCODE_MARKER;
-            sendIndex++;
-            bytesToSend[sendIndex] = currentByte + ENCODE_MARKER + 1;
-        } else {
-            bytesToSend[sendIndex] = currentByte;
         }
 
-        sendIndex++;
+        bytesToSend[sendIndex] = END_MARKER;
+
+        Serial.write(bytesToSend, sendIndex + 1);
     }
-
-    bytesToSend[sendIndex] = END_MARKER;
-
-    Serial.write(bytesToSend, sendIndex + 1);
 }
 
 void Messenger::print(String text) {
