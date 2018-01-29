@@ -173,6 +173,8 @@
             Console.WriteLine("Delay count: " + BitConverter.ToInt16(data, 14));
             Console.WriteLine("Skip count: " + BitConverter.ToInt16(data, 16));
             Console.WriteLine();
+            Console.WriteLine("Free RAM: " + BitConverter.ToInt16(data, 18));
+            Console.WriteLine();
         }
     }
 }

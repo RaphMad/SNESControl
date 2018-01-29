@@ -21,7 +21,7 @@ const int RECEIVE_BUFFER_SIZE = MAX_CONTENT_SIZE * 2 + 2 + 2;
 byte receivedBytes[RECEIVE_BUFFER_SIZE];
 
 void Messenger::sendData(MessageType type, byte* payload, int size) {
-    byte bytesToSend[size * 2 + 4];
+    byte bytesToSend[size * 2 + 2 + 2];
 
     bytesToSend[0] = START_MARKER;
     bytesToSend[1] = type; // needs encoding should we ever introduce types 0,1,2
@@ -68,8 +68,14 @@ void Messenger::setAppInfo(AppInfo* value) {
     appInfoPointer = value;
 }
 
+int getFreeRam () {
+  extern int __heap_start, *__brkval;
+  int v;
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+}
+
 void sendInfo() {
-    byte bytesToSend[18];
+    byte bytesToSend[20];
 
     memcpy(bytesToSend, &appInfoPointer->maxLoopDuration, 2);
     memcpy(bytesToSend + 2, &appInfoPointer->lastLatchDuration, 2);
@@ -82,11 +88,15 @@ void sendInfo() {
     memcpy(bytesToSend + 14, &appInfoPointer->delayCount, 2);
     memcpy(bytesToSend + 16, &appInfoPointer->skipCount, 2);
 
-    Messenger::sendData(INFO_RESPONSE, bytesToSend, 18);
+    int freeRam = getFreeRam();
+    bytesToSend[19] = (freeRam >> 8) & 0xFF;
+    bytesToSend[18] = freeRam & 0xFF;
+
+    Messenger::sendData(INFO_RESPONSE, bytesToSend, 20);
 }
 
 void decodeReceivedMessage(int numberOfBytes) {
-    int decodeIndex = 0;
+    int decodedBytes = 0;
 
     for (int i = 0; i < numberOfBytes; i++) {
         byte currentByte = receivedBytes[i];
@@ -99,8 +109,8 @@ void decodeReceivedMessage(int numberOfBytes) {
         }
 
         // re-use the receive buffer for the decoded data
-        receivedBytes[decodeIndex] = currentByte;
-        decodeIndex++;
+        receivedBytes[decodedBytes] = currentByte;
+        decodedBytes++;
     }
 
     MessageType messageType = (MessageType)receivedBytes[0];
@@ -122,7 +132,7 @@ void decodeReceivedMessage(int numberOfBytes) {
         case LOAD:
             break;
         case PING:
-            Messenger::sendData(PONG, payload, decodeIndex - 1);
+            Messenger::sendData(PONG, payload, decodedBytes - 1);
             break;
         case PONG:
             break;
@@ -159,10 +169,10 @@ void decodeReceivedMessage(int numberOfBytes) {
             WriteToConsole::prepareData(ButtonData());
             break;
         case LOAD_RESPONSE:
-             LoadButtonData::processIncomingData(payload, decodeIndex - 1);
+             LoadButtonData::processIncomingData(payload, decodedBytes - 1);
             break;
         case INFO_RESPONSE:
-             LoadButtonData::processIncomingData(payload, decodeIndex - 1);
+             LoadButtonData::processIncomingData(payload, decodedBytes - 1);
             break;
     }
 }
