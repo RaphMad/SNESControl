@@ -115,7 +115,7 @@ typedef enum {
  * Minimum 4 bytes, since this is the size of a single ButtonData structure.
  * Maximum size is at about 230 (depending on current stack size).
  */
-const byte MAX_CONTENT_SIZE = 64;
+const uint8_t MAX_CONTENT_SIZE = 64;
 
 /*
  * Holds information about the application.

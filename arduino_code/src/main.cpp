@@ -23,6 +23,8 @@ static const uint8_t FRAME_LENGTH = 20;
 static volatile bool isAfterLatch = false;
 
 static void handleFallingLatchPulse();
+static void saveButtonData();
+static void prepareNextReplayFrame();
 static void calculateLatchInfo();
 static void fixButtonTiming(uint16_t);
 static void pollController();
@@ -47,22 +49,31 @@ void loop() {
         isAfterLatch = false;
 
         calculateLatchInfo();
-
-        if (appInfo.isInSaveMode) {
-            StoreButtonData::storeData(ConsoleWriter.getLatestData());
-        }
-
-        if (appInfo.isInReplayMode) {
-            ButtonData buttonData = LoadButtonData::getData();
-            fixButtonTiming(buttonData.pressedAt);
-
-            ConsoleWriter.prepareData(buttonData);
-        }
+        saveButtonData();
+        prepareNextReplayFrame();
     }
 
     pollController();
     Messenger::checkForData();
     calculateLoopDuration();
+}
+
+static void saveButtonData() {
+    if (appInfo.isInSaveMode) {
+        ButtonData buttonData = ConsoleWriter.getLatestData();
+        buttonData.pressedAt = millis() - appInfo.firstLatch;
+
+        ButtonDataStorage.storeData(buttonData);
+    }
+}
+
+static void prepareNextReplayFrame() {
+    if (appInfo.isInReplayMode) {
+        ButtonData buttonData = LoadButtonData::getData();
+        fixButtonTiming(buttonData.pressedAt);
+
+        ConsoleWriter.prepareData(buttonData);
+    }
 }
 
 static uint16_t lastLatch;

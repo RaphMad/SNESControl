@@ -6,14 +6,28 @@
 #include "../Communication/Messenger.h"
 
 class StoreButtonData {
+    private:
+        /*
+        * Wait for this many bytes before actually sending data to the client.
+        * With a value of 64 about two save requests are sent per second (assuming inputs come in at 50 or 60Hz).
+        */
+        static const uint8_t OUTPUT_BUFFER_SIZE = MAX_CONTENT_SIZE;
+
+        uint8_t outputBuffer[OUTPUT_BUFFER_SIZE];
+        uint8_t outputBufferIndex= 0;
     public:
 
         /*
          * Stores the passed in ButtonData structure.
          */
-        static void storeData(ButtonData buttonData);
+        void storeData(const ButtonData buttonData);
 
-        static void reset();
+        void reset();
 };
+
+/*
+ * Stores button data.
+ */
+extern StoreButtonData ButtonDataStorage;
 
 #endif

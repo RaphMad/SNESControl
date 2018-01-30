@@ -85,8 +85,8 @@ void handleMessage(MessageType messageType, byte* payload, int size) {
     switch(messageType) {
         case ENABLE_SAVE:
             appInfo.firstLatch = 0;
-            StoreButtonData::reset();
             appInfo.isInSaveMode = true;
+            ButtonDataStorage.reset();
             break;
         case SAVE:
             break;
@@ -109,12 +109,10 @@ void handleMessage(MessageType messageType, byte* payload, int size) {
             break;
         case DISABLE_SAVE:
             appInfo.isInSaveMode = false;
-            StoreButtonData::reset();
+            ButtonDataStorage.reset();
             break;
         case DISABLE_LOAD:
             appInfo.isInReplayMode = false;
-
-            // reset all ongoing replay actions
             LoadButtonData::reset();
             ConsoleWriter.prepareData(ButtonData());
         case RESET_DATA:
@@ -130,7 +128,7 @@ void handleMessage(MessageType messageType, byte* payload, int size) {
 
             // reset all ongoing replay actions
             LoadButtonData::reset();
-            StoreButtonData::reset();
+            ButtonDataStorage.reset();
             ConsoleWriter.prepareData(ButtonData());
             break;
         case LOAD_RESPONSE:
