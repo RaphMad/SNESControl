@@ -42,7 +42,7 @@ const ButtonData LoadButtonData::getData() {
 }
 
 const ButtonData LoadButtonData::readFromBuffer1() {
-    byte* nextBytes = inputBuffer1 + inputBuffer1Index;
+    const uint8_t* nextBytes = inputBuffer1 + inputBuffer1Index;
 
     inputBuffer1Index += sizeof(ButtonData);
 
@@ -56,7 +56,7 @@ const ButtonData LoadButtonData::readFromBuffer1() {
 }
 
 const ButtonData LoadButtonData::readFromBuffer2() {
-    byte* nextBytes = inputBuffer2 + inputBuffer2Index;
+    const uint8_t* nextBytes = inputBuffer2 + inputBuffer2Index;
 
     inputBuffer2Index += sizeof(ButtonData);
 
@@ -70,7 +70,7 @@ const ButtonData LoadButtonData::readFromBuffer2() {
 }
 
 static void requestData() {
-    uint8_t content[] = { MAX_CONTENT_SIZE };
+    const uint8_t content[] = { MAX_CONTENT_SIZE };
     MessageProcessor.sendData(LOAD, content, 1);
 }
 

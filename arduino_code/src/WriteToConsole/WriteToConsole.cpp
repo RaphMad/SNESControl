@@ -47,7 +47,7 @@ void WriteToConsole::addData(const ButtonData additionalData) {
 void WriteToConsole::setPins() {
     ButtonData combinedData = getLatestData();
 
-    uint16_t* memoryLocation = (uint16_t*)&combinedData;
+    const uint16_t* memoryLocation = (uint16_t*)&combinedData;
 
     // set values for pin 4-7
     PORTD &= B00001111;

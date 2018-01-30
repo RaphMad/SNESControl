@@ -34,7 +34,7 @@ uint16_t bytesToInt(const uint8_t* const bytes) {
     return (bytes[1] << 8) + bytes[0];
 }
 
-String formatButtonData(const ButtonData& buttonData) {
+const String formatButtonData(const ButtonData& buttonData) {
     String pressedButtons = "";
 
     if (!buttonData.B) pressedButtons += "B, ";

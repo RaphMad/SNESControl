@@ -2,7 +2,7 @@
 
 void Messenger::checkForData() {
     while (Serial.available() > 0) {
-        byte receivedByte = Serial.read();
+        const uint8_t receivedByte = Serial.read();
 
         if (receivedByte == START_MARKER) {
             receiveBufferIndex = 0;
@@ -21,16 +21,16 @@ void Messenger::checkForData() {
     }
 }
 
-void Messenger::decodeReceivedMessage(uint8_t numberOfBytes) {
-    int decodedBytes = 0;
+void Messenger::decodeReceivedMessage(const uint8_t numberOfBytes) {
+    uint8_t decodedBytes = 0;
 
-    for (int i = 0; i < numberOfBytes; i++) {
-        byte currentByte = receiveBuffer[i];
+    for (uint8_t i = 0; i < numberOfBytes; i++) {
+        uint8_t currentByte = receiveBuffer[i];
 
         if (currentByte == ENCODE_MARKER) {
             // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
             i++;
-            byte nextByte = receiveBuffer[i];
+            const uint8_t nextByte = receiveBuffer[i];
             currentByte = nextByte - ENCODE_MARKER - 1;
         }
 
@@ -40,7 +40,7 @@ void Messenger::decodeReceivedMessage(uint8_t numberOfBytes) {
     }
 
     MessageType messageType = (MessageType)receiveBuffer[0];
-    byte* payload = receiveBuffer + 1;
+    const uint8_t* payload = receiveBuffer + 1;
 
     handleMessage(messageType, payload, decodedBytes - 1);
 }
@@ -111,7 +111,7 @@ void Messenger::sendData(const MessageType type, const uint8_t* const payload, c
         uint8_t sendIndex = 2;
 
         for (uint8_t i = 0; i < size; i++) {
-            byte currentByte = payload[i];
+            const uint8_t currentByte = payload[i];
 
             // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
             if (currentByte == START_MARKER) {
@@ -141,7 +141,7 @@ void Messenger::sendData(const MessageType type, const uint8_t* const payload, c
 }
 
 void Messenger::sendInfo() {
-    uint8_t dataBufferSize = sizeof(AppInfo) + sizeof(uint16_t);
+    const uint8_t dataBufferSize = sizeof(AppInfo) + sizeof(uint16_t);
     uint8_t bytesToSend[dataBufferSize];
 
     memcpy(bytesToSend, &appInfo, sizeof(AppInfo));
@@ -153,7 +153,7 @@ void Messenger::sendInfo() {
 }
 
 void Messenger::print(const String& text) {
-    byte bytes[text.length() + 1];
+    uint8_t bytes[text.length() + 1];
     text.getBytes(bytes, text.length() + 1);
 
     sendData(PRINT, bytes, text.length());

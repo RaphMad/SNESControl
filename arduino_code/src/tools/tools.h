@@ -36,6 +36,6 @@ uint16_t getFreeRam();
  * Only for debugging purposes, String will cause unpredictable
  * memory allocation results in production.
  */
-String formatButtonData(const ButtonData& buttonData);
+const String formatButtonData(const ButtonData& buttonData);
 
 #endif
