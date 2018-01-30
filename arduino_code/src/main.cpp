@@ -22,11 +22,11 @@ static const uint8_t FRAME_LENGTH = 20;
  */
 static volatile bool isAfterLatch = false;
 
-void handleFallingLatchPulse();
-void calculateLatchInfo();
-void checkButtonTiming(uint16_t);
-void pollController();
-void calculateLoopDuration();
+static void handleFallingLatchPulse();
+static void calculateLatchInfo();
+static void fixButtonTiming(uint16_t);
+static void pollController();
+static void calculateLoopDuration();
 
 void setup() {
     attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
@@ -37,7 +37,7 @@ void setup() {
     WriteToConsole::begin();
 }
 
-void handleFallingLatchPulse() {
+static void handleFallingLatchPulse() {
     // keep interrupt handler short, actual code will be executed in main loop
     isAfterLatch = true;
 }
@@ -54,7 +54,7 @@ void loop() {
 
         if (appInfo.isInReplayMode) {
             ButtonData buttonData = LoadButtonData::getData();
-            checkButtonTiming(buttonData.pressedAt);
+            fixButtonTiming(buttonData.pressedAt);
 
             WriteToConsole::prepareData(buttonData);
         }
@@ -65,7 +65,7 @@ void loop() {
     calculateLoopDuration();
 }
 
-void calculateLatchInfo() {
+static void calculateLatchInfo() {
     static uint16_t lastLatch;
 
     uint16_t timeNow = millis();
@@ -83,7 +83,7 @@ void calculateLatchInfo() {
     lastLatch = timeNow;
 }
 
-void checkButtonTiming(uint16_t pressedAt) {
+static void fixButtonTiming(const uint16_t pressedAt) {
     uint16_t timeNow = millis();
     uint16_t timeFromFirstLatch = timeNow - appInfo.firstLatch;
 
@@ -100,7 +100,7 @@ void checkButtonTiming(uint16_t pressedAt) {
     }
 }
 
-void pollController() {
+static void pollController() {
     // Controller will be polled twice per frame.
     static uint16_t lastPoll;
     static uint8_t pollDelta = FRAME_LENGTH / 2;
@@ -113,7 +113,7 @@ void pollController() {
     }
 }
 
-void calculateLoopDuration() {
+static void calculateLoopDuration() {
     static uint16_t lastLoop;
 
     uint16_t timeNow = millis();
