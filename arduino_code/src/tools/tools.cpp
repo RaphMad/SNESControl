@@ -1,19 +1,10 @@
 #include "tools.h"
 
-void intToBytes(int value, byte* buf) {
-    buf[0] = value & 0xFF;
-    buf[1] = (value >> 8) & 0xFF;
-}
-
-void buttonDataToBytes(ButtonData* buttonData, byte* buf) {
+void buttonDataToBytes(const ButtonData* const buttonData, byte* const buf) {
     memcpy(buf, buttonData, sizeof(ButtonData));
 }
 
-int bytesToInt(byte* bytes) {
-    return (bytes[1] << 8) + bytes[0];
-}
-
-ButtonData bytesToButtonData(byte* bytes) {
+ButtonData bytesToButtonData(const byte* const bytes) {
     ButtonData buttonData;
 
     // note that buttons are stored in reverse order
@@ -36,21 +27,29 @@ ButtonData bytesToButtonData(byte* bytes) {
     return buttonData;
 }
 
-String formatButtonData(ButtonData* buttonData) {
+void intToBytes(const uint16_t value, byte* const buf) {
+    memcpy(buf, &value, sizeof(uint16_t));
+}
+
+uint16_t bytesToInt(const byte* const bytes) {
+    return (bytes[1] << 8) + bytes[0];
+}
+
+String formatButtonData(const ButtonData& buttonData) {
     String pressedButtons = "";
 
-    if (!buttonData->B) pressedButtons += "B, ";
-    if (!buttonData->Y) pressedButtons += "Y, ";
-    if (!buttonData->SELECT) pressedButtons += "SELECT, ";
-    if (!buttonData->START) pressedButtons += "START, ";
-    if (!buttonData->UP) pressedButtons += "UP, ";
-    if (!buttonData->DOWN) pressedButtons += "DOWN, ";
-    if (!buttonData->LEFT) pressedButtons += "LEFT, ";
-    if (!buttonData->RIGHT) pressedButtons += "RIGHT, ";
-    if (!buttonData->A) pressedButtons += "A, ";
-    if (!buttonData->X) pressedButtons += "X, ";
-    if (!buttonData->SHOULDER_LEFT) pressedButtons += "SHOULDER_LEFT, ";
-    if (!buttonData->SHOULDER_RIGHT) pressedButtons += "SHOULDER_RIGHT, ";
+    if (!buttonData.B) pressedButtons += "B, ";
+    if (!buttonData.Y) pressedButtons += "Y, ";
+    if (!buttonData.SELECT) pressedButtons += "SELECT, ";
+    if (!buttonData.START) pressedButtons += "START, ";
+    if (!buttonData.UP) pressedButtons += "UP, ";
+    if (!buttonData.DOWN) pressedButtons += "DOWN, ";
+    if (!buttonData.LEFT) pressedButtons += "LEFT, ";
+    if (!buttonData.RIGHT) pressedButtons += "RIGHT, ";
+    if (!buttonData.A) pressedButtons += "A, ";
+    if (!buttonData.X) pressedButtons += "X, ";
+    if (!buttonData.SHOULDER_LEFT) pressedButtons += "SHOULDER_LEFT, ";
+    if (!buttonData.SHOULDER_RIGHT) pressedButtons += "SHOULDER_RIGHT, ";
 
     if (pressedButtons.endsWith(", ")) {
         pressedButtons = pressedButtons.substring(0, pressedButtons.length() - 2);

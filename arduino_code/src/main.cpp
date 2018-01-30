@@ -65,11 +65,11 @@ void loop() {
     calculateLoopDuration();
 }
 
-static void calculateLatchInfo() {
-    static uint16_t lastLatch;
+static uint16_t lastLatch;
 
-    uint16_t timeNow = millis();
-    uint16_t latchDuration = timeNow - lastLatch;
+static void calculateLatchInfo() {
+    const uint16_t timeNow = millis();
+    const uint16_t latchDuration = timeNow - lastLatch;
 
     appInfo.lastLatchDuration = latchDuration;
 
@@ -84,10 +84,10 @@ static void calculateLatchInfo() {
 }
 
 static void fixButtonTiming(const uint16_t pressedAt) {
-    uint16_t timeNow = millis();
-    uint16_t timeFromFirstLatch = timeNow - appInfo.firstLatch;
+    const uint16_t timeNow = millis();
+    const uint16_t timeFromFirstLatch = timeNow - appInfo.firstLatch;
 
-    int8_t buttonDelay = pressedAt - timeFromFirstLatch - FRAME_LENGTH;
+    const int8_t buttonDelay = pressedAt - timeFromFirstLatch - FRAME_LENGTH;
 
     if (buttonDelay < -FRAME_LENGTH) {
         // loading the next button data effectively skips a frame
@@ -100,12 +100,12 @@ static void fixButtonTiming(const uint16_t pressedAt) {
     }
 }
 
-static void pollController() {
-    // Controller will be polled twice per frame.
-    static uint16_t lastPoll;
-    static uint8_t pollDelta = FRAME_LENGTH / 2;
+// Controller will be polled twice per frame.
+const static uint8_t pollDelta = FRAME_LENGTH / 2;
+static uint16_t lastPoll;
 
-    uint16_t timeNow = millis();
+static void pollController() {
+    const uint16_t timeNow = millis();
 
     if (timeNow - lastPoll > pollDelta) {
        WriteToConsole::addData(ReadController::getData());
@@ -113,11 +113,11 @@ static void pollController() {
     }
 }
 
-static void calculateLoopDuration() {
-    static uint16_t lastLoop;
+static uint16_t lastLoop;
 
-    uint16_t timeNow = millis();
-    uint16_t loopDuration = timeNow - lastLoop;
+static void calculateLoopDuration() {
+    const uint16_t timeNow = millis();
+    const uint16_t loopDuration = timeNow - lastLoop;
 
     if (loopDuration > appInfo.maxLoopDuration) {
         appInfo.maxLoopDuration = loopDuration;

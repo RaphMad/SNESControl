@@ -6,20 +6,23 @@
 /*
  * Converts a ButtonData structure into its byte representation.
  */
-void buttonDataToBytes(ButtonData* buttonData, byte* buf);
+void buttonDataToBytes(const ButtonData* buttonData, byte* buf);
 
 /*
  * Converts bytes into the corresponding ButtonData structure.
  * Expects an array of two bytes.
  */
-ButtonData bytesToButtonData(byte* bytes);
+ButtonData bytesToButtonData(const byte* bytes);
 
 /*
- * Converts a ButtonData structure into a human readable format.
- * Only for debugging purposes, String will cause unpredictable
- * memory allocation results in production.
+ * Converts an integer into its byte representation.
  */
-String formatButtonData(ButtonData* buttonData);
+void intToBytes(uint16_t value, byte* buf);
+
+/*
+ * Converts bytes to their integer representation.
+ */
+uint16_t bytesToInt(const byte* bytes);
 
 /*
  * Gets the currently available free RAM.
@@ -29,8 +32,10 @@ String formatButtonData(ButtonData* buttonData);
 uint16_t getFreeRam();
 
 /*
- * Converts an integer into its byte representation.
+ * Converts a ButtonData structure into a human readable format.
+ * Only for debugging purposes, String will cause unpredictable
+ * memory allocation results in production.
  */
-void intToBytes(int value, byte* buf);
+String formatButtonData(const ButtonData& buttonData);
 
 #endif
