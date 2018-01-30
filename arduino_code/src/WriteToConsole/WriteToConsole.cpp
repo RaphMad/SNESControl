@@ -1,7 +1,6 @@
 #include "WriteToConsole.h"
 
-ButtonData lastPreparedData;
-ButtonData lastAdditionalData;
+static void setPins();
 
 void WriteToConsole::begin() {
     pinMode(PIN_BTN_B, OUTPUT);
@@ -18,11 +17,21 @@ void WriteToConsole::begin() {
     pinMode(PIN_BTN_SHOULDER_RIGHT, OUTPUT);
 
     // initialize pins with default button data (all set to HIGH)
-    prepareData(ButtonData());
+    setPins();
 }
 
-void setPins() {
-    ButtonData combinedData = WriteToConsole::getLatestData();
+void WriteToConsole::prepareData(const ButtonData buttonData) {
+    lastPreparedData = buttonData;
+    setPins();
+}
+
+void WriteToConsole::addData(const ButtonData additionalData) {
+    lastAdditionalData = additionalData;
+    setPins();
+}
+
+static void setPins() {
+    ButtonData combinedData = ConsoleWriter.getLatestData();
 
     digitalWrite(PIN_BTN_B, combinedData.B);
     digitalWrite(PIN_BTN_Y, combinedData.Y);
@@ -38,17 +47,7 @@ void setPins() {
     digitalWrite(PIN_BTN_SHOULDER_RIGHT, combinedData.SHOULDER_RIGHT);
 }
 
-void WriteToConsole::prepareData(ButtonData buttonData) {
-    lastPreparedData = buttonData;
-    setPins();
-}
-
-void WriteToConsole::addData(ButtonData additionalData) {
-    lastAdditionalData = additionalData;
-    setPins();
-}
-
-ButtonData WriteToConsole::getLatestData() {
+const ButtonData WriteToConsole::getLatestData() {
     ButtonData combinedData;
     combinedData.B = lastPreparedData.B && lastAdditionalData.B;
     combinedData.Y = lastPreparedData.Y && lastAdditionalData.Y;
@@ -65,3 +64,5 @@ ButtonData WriteToConsole::getLatestData() {
 
     return combinedData;
 }
+
+WriteToConsole ConsoleWriter;

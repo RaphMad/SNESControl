@@ -45,7 +45,7 @@ void LoadButtonData::processIncomingData(byte* buf, int size) {
         requestData();
 
         // also prepare the first frame
-        WriteToConsole::prepareData(getData());
+        ConsoleWriter.prepareData(getData());
     }
 }
 

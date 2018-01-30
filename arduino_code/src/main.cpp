@@ -34,7 +34,7 @@ void setup() {
     Serial.begin(115200);
 
     ReadController::begin();
-    WriteToConsole::begin();
+    ConsoleWriter.begin();
 }
 
 static void handleFallingLatchPulse() {
@@ -49,14 +49,14 @@ void loop() {
         calculateLatchInfo();
 
         if (appInfo.isInSaveMode) {
-            StoreButtonData::storeData(WriteToConsole::getLatestData());
+            StoreButtonData::storeData(ConsoleWriter.getLatestData());
         }
 
         if (appInfo.isInReplayMode) {
             ButtonData buttonData = LoadButtonData::getData();
             fixButtonTiming(buttonData.pressedAt);
 
-            WriteToConsole::prepareData(buttonData);
+            ConsoleWriter.prepareData(buttonData);
         }
     }
 
@@ -108,7 +108,7 @@ static void pollController() {
     const uint16_t timeNow = millis();
 
     if (timeNow - lastPoll > pollDelta) {
-       WriteToConsole::addData(ReadController::getData());
+       ConsoleWriter.addData(ReadController::getData());
        lastPoll = timeNow;
     }
 }

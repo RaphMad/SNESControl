@@ -116,7 +116,7 @@ void handleMessage(MessageType messageType, byte* payload, int size) {
 
             // reset all ongoing replay actions
             LoadButtonData::reset();
-            WriteToConsole::prepareData(ButtonData());
+            ConsoleWriter.prepareData(ButtonData());
         case RESET_DATA:
             appInfo.isInReplayMode = false;
             appInfo.isInSaveMode = false;
@@ -131,7 +131,7 @@ void handleMessage(MessageType messageType, byte* payload, int size) {
             // reset all ongoing replay actions
             LoadButtonData::reset();
             StoreButtonData::reset();
-            WriteToConsole::prepareData(ButtonData());
+            ConsoleWriter.prepareData(ButtonData());
             break;
         case LOAD_RESPONSE:
              LoadButtonData::processIncomingData(payload, size);
