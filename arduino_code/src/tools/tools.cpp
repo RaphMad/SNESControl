@@ -4,7 +4,7 @@ void buttonDataToBytes(const ButtonData* const buttonData, byte* const buf) {
     memcpy(buf, buttonData, sizeof(ButtonData));
 }
 
-ButtonData bytesToButtonData(const byte* const bytes) {
+const ButtonData bytesToButtonData(const byte* const bytes) {
     ButtonData buttonData;
 
     // note that buttons are stored in reverse order

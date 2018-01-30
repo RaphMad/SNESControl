@@ -12,7 +12,7 @@ void buttonDataToBytes(const ButtonData* buttonData, byte* buf);
  * Converts bytes into the corresponding ButtonData structure.
  * Expects an array of two bytes.
  */
-ButtonData bytesToButtonData(const byte* bytes);
+const ButtonData bytesToButtonData(const byte* bytes);
 
 /*
  * Converts an integer into its byte representation.
