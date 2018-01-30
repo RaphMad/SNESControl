@@ -7,7 +7,7 @@ void StoreButtonData::storeData(const ButtonData buttonData) {
 
     // buffer is full, send data
     if (outputBufferIndex == OUTPUT_BUFFER_SIZE) {
-        Messenger::sendData(SAVE, outputBuffer, OUTPUT_BUFFER_SIZE);
+        MessageProcessor.sendData(SAVE, outputBuffer, OUTPUT_BUFFER_SIZE);
         outputBufferIndex = 0;
     }
 }

@@ -54,7 +54,7 @@ void loop() {
     }
 
     pollController();
-    Messenger::checkForData();
+    MessageProcessor.checkForData();
     calculateLoopDuration();
 }
 
@@ -69,7 +69,7 @@ static void saveButtonData() {
 
 static void prepareNextReplayFrame() {
     if (appInfo.isInReplayMode) {
-        ButtonData buttonData = LoadButtonData::getData();
+        ButtonData buttonData = ButtonDataLoader.getData();
         fixButtonTiming(buttonData.pressedAt);
 
         ConsoleWriter.prepareData(buttonData);
@@ -102,7 +102,7 @@ static void fixButtonTiming(const uint16_t pressedAt) {
 
     if (buttonDelay < -FRAME_LENGTH) {
         // loading the next button data effectively skips a frame
-        LoadButtonData::getData();
+        ButtonDataLoader.getData();
         appInfo.skipCount++;
     } else if (buttonDelay > FRAME_LENGTH / 2) {
         // delay a bit so we can sync up

@@ -8,6 +8,9 @@ class WriteToConsole {
     private:
         ButtonData lastPreparedData;
         ButtonData lastAdditionalData;
+
+        void setPins();
+
     public:
         void begin();
 

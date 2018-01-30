@@ -15,6 +15,7 @@ class StoreButtonData {
 
         uint8_t outputBuffer[OUTPUT_BUFFER_SIZE];
         uint8_t outputBufferIndex= 0;
+
     public:
 
         /*
@@ -26,7 +27,7 @@ class StoreButtonData {
 };
 
 /*
- * Stores button data.
+ * Stores button data to the client application.
  */
 extern StoreButtonData ButtonDataStorage;
 

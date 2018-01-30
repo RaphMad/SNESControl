@@ -44,8 +44,8 @@ void WriteToConsole::addData(const ButtonData additionalData) {
     setPins();
 }
 
-static void setPins() {
-    ButtonData combinedData = ConsoleWriter.getLatestData();
+void WriteToConsole::setPins() {
+    ButtonData combinedData = getLatestData();
 
     uint16_t* memoryLocation = (uint16_t*)&combinedData;
 

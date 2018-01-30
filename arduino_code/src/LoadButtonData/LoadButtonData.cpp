@@ -1,28 +1,6 @@
 #include "LoadButtonData.h"
 
-/*
- * Use two alternating input buffers to ensure a consistent flow of inputs to the console.
- *
- * The active input buffer is assumed to already contain data (and is being read from).
- * Meanwhile data for the inactive buffer is being fetched from the client.
- *
- * With a value of 64 about two load request are sent per second (assuming inputs come in at 50 or 60Hz).
- */
-const int INPUT_BUFFER_SIZE = MAX_CONTENT_SIZE;
-
-byte inputBuffer1[INPUT_BUFFER_SIZE];
-int inputBuffer1Index = 0;
-
-byte inputBuffer2[INPUT_BUFFER_SIZE];
-int inputBuffer2Index = 0;
-
-bool isInputBuffer1Active = false;
-bool hasInitialData = false;
-
-void requestData() {
-    byte content[] = { MAX_CONTENT_SIZE };
-    Messenger::sendData(LOAD, content, 1);
-}
+static void requestData();
 
 void LoadButtonData::begin() {
     // request initial data for inputBuffer1 immediately
@@ -30,7 +8,7 @@ void LoadButtonData::begin() {
     requestData();
 }
 
-void LoadButtonData::processIncomingData(byte* buf, int size) {
+void LoadButtonData::processIncomingData(const uint8_t* const buf, const uint8_t size) {
     // write data into inactive input buffer
     if (!isInputBuffer1Active) {
         memcpy(inputBuffer1, buf, size);
@@ -49,35 +27,7 @@ void LoadButtonData::processIncomingData(byte* buf, int size) {
     }
 }
 
-ButtonData readFromBuffer1() {
-    byte* nextBytes = inputBuffer1 + inputBuffer1Index;
-
-    inputBuffer1Index += sizeof(ButtonData);
-
-    if (inputBuffer1Index == INPUT_BUFFER_SIZE) {
-        isInputBuffer1Active = false;
-        inputBuffer1Index = 0;
-        requestData();
-    }
-
-    return bytesToButtonData(nextBytes);
-}
-
-ButtonData readFromBuffer2() {
-    byte* nextBytes = inputBuffer2 + inputBuffer2Index;
-
-    inputBuffer2Index += sizeof(ButtonData);
-
-    if (inputBuffer2Index == INPUT_BUFFER_SIZE) {
-        isInputBuffer1Active = true;
-        inputBuffer2Index = 0;
-        requestData();
-    }
-
-    return bytesToButtonData(nextBytes);
-}
-
-ButtonData LoadButtonData::getData() {
+const ButtonData LoadButtonData::getData() {
     ButtonData buttonData;
 
     if (hasInitialData) {
@@ -91,6 +41,39 @@ ButtonData LoadButtonData::getData() {
     return buttonData;
 }
 
+const ButtonData LoadButtonData::readFromBuffer1() {
+    byte* nextBytes = inputBuffer1 + inputBuffer1Index;
+
+    inputBuffer1Index += sizeof(ButtonData);
+
+    if (inputBuffer1Index == INPUT_BUFFER_SIZE) {
+        isInputBuffer1Active = false;
+        inputBuffer1Index = 0;
+        requestData();
+    }
+
+    return bytesToButtonData(nextBytes);
+}
+
+const ButtonData LoadButtonData::readFromBuffer2() {
+    byte* nextBytes = inputBuffer2 + inputBuffer2Index;
+
+    inputBuffer2Index += sizeof(ButtonData);
+
+    if (inputBuffer2Index == INPUT_BUFFER_SIZE) {
+        isInputBuffer1Active = true;
+        inputBuffer2Index = 0;
+        requestData();
+    }
+
+    return bytesToButtonData(nextBytes);
+}
+
+static void requestData() {
+    uint8_t content[] = { MAX_CONTENT_SIZE };
+    MessageProcessor.sendData(LOAD, content, 1);
+}
+
 
 void LoadButtonData::reset() {
     inputBuffer1Index = 0;
@@ -98,3 +81,5 @@ void LoadButtonData::reset() {
     isInputBuffer1Active = false;
     hasInitialData = false;
 }
+
+LoadButtonData ButtonDataLoader;

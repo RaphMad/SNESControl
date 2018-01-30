@@ -47,6 +47,10 @@ const ButtonData ReadController::getData() {
 
 static void pulseLatch() {
     PORTC |= B00010000;
+
+    // latch has a duration of 12us in the SNES controller protocol
+    delayMicroseconds(12);
+
     PORTC &= B11101111;
 
     // equivalent to
@@ -57,15 +61,17 @@ static void pulseLatch() {
 static bool sampleButton() {
     pulseClock();
 
-    // give PINC some time to react
-    // 12us is the time per sampled button data on a real SNES.
-    delayMicroseconds(12);
-
     return PINC & B00100000;
 }
 
 static void pulseClock() {
+    // delay between clock cycles is 6us in the SNES controller protocol
+    delayMicroseconds(6);
     PORTC |= B00001000;
+
+    // time the clock is high is 6us in the SNES controller protocol
+    delayMicroseconds(6);
+
     PORTC &= B11110111;
 
     // equivalent to
