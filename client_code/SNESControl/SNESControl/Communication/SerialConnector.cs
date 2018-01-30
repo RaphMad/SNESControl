@@ -172,21 +172,20 @@
 
         public void HandleInfoResponse(byte[] data)
         {
-            Console.WriteLine("Max loop duration: " + BitConverter.ToInt16(data, 0));
-            Console.WriteLine("Last latch duration: " + BitConverter.ToInt16(data, 2));
+            Console.WriteLine("Max loop duration: " + BitConverter.ToUInt16(data, 0));
+            Console.WriteLine("Last latch duration: " + BitConverter.ToUInt16(data, 2));
             Console.WriteLine();
-            Console.WriteLine("First latch timestamp: " + BitConverter.ToInt16(data, 4));
-            Console.WriteLine("Number of latches: " + BitConverter.ToInt16(data, 6));
-            Console.WriteLine("Number of short latches: " + BitConverter.ToInt16(data, 8));
-            Console.WriteLine("Number of long latches (lag frames): " + BitConverter.ToInt16(data, 10));
+            Console.WriteLine("First latch timestamp: " + BitConverter.ToUInt16(data, 4));
             Console.WriteLine();
-            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 12));
-            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 13));
+            Console.WriteLine("Number of short latches: " + data[6]);
+            Console.WriteLine("Number of long latches (lag frames): " + data[7]);
+            Console.WriteLine("Delay count: " + data[8]);
+            Console.WriteLine("Skip count: " + data[9]);
             Console.WriteLine();
-            Console.WriteLine("Delay count: " + BitConverter.ToInt16(data, 14));
-            Console.WriteLine("Skip count: " + BitConverter.ToInt16(data, 16));
+            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 10));
+            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 11));
             Console.WriteLine();
-            Console.WriteLine("Free RAM: " + BitConverter.ToInt16(data, 18));
+            Console.WriteLine("Free RAM: " + BitConverter.ToUInt16(data, 12));
             Console.WriteLine();
         }
     }

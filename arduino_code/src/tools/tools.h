@@ -26,16 +26,11 @@ String formatButtonData(ButtonData* buttonData);
  *
  * This is the amount of bytes between the stack and the heap.
  */
-int getFreeRam();
+uint16_t getFreeRam();
 
 /*
  * Converts an integer into its byte representation.
  */
 void intToBytes(int value, byte* buf);
-
-/*
- * Converts a AppInfo structure into its byte representation.
- */
-void appInfoToBytes(AppInfo* appInfo, byte* buf);
 
 #endif

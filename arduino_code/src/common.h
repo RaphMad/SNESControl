@@ -30,24 +30,35 @@ const byte PIN_CONTROLLER_DATA = A5;
  * Note that true means NOT pressed.
  */
 struct ButtonData {
-    bool B :1;
-    bool Y :1;
-    bool SELECT :1;
-    bool START :1;
-    bool UP :1;
-    bool DOWN :1;
-    bool LEFT :1;
+    /*
+     * Store bits in reverse order s.t. the saved bytes correspond to the wire protocol.
+     */
     bool RIGHT :1;
+    bool LEFT :1;
+    bool DOWN :1;
+    bool UP :1;
+    bool START :1;
+    bool SELECT :1;
+    bool Y :1;
+    bool B :1;
 
-    bool A :1;
-    bool X :1;
-    bool SHOULDER_LEFT :1;
+    /*
+     * Unused padding bits.
+     */
+    bool UNUSED_BIT8 :1;
+    bool UNUSED_BIT7 :1;
+    bool UNUSED_BIT6 :1;
+    bool UNUSED_BIT5 :1;
+
     bool SHOULDER_RIGHT :1;
+    bool SHOULDER_LEFT :1;
+    bool X :1;
+    bool A :1;
 
     /*
      * Time when the button was pressed, relative to the timestamp of the first latch.
      */
-    uint16_t pressedAt :16;
+    uint16_t pressedAt;
 
     ButtonData() {
         // initialize all fields with true, this makes creating manual instances easier
@@ -65,6 +76,10 @@ struct ButtonData {
         X = true;
         SHOULDER_LEFT = true;
         SHOULDER_RIGHT = true;
+        UNUSED_BIT5 = true;
+        UNUSED_BIT6 = true;
+        UNUSED_BIT7 = true;
+        UNUSED_BIT8 = true;
     }
 };
 
@@ -106,19 +121,23 @@ const byte MAX_CONTENT_SIZE = 64;
  * Holds information about the application.
  */
 struct AppInfo {
-    int maxLoopDuration;
-    int lastLatchDuration;
+    uint16_t maxLoopDuration;
+    uint16_t lastLatchDuration;
 
-    int firstLatch;
-    int numberOfLatches;
-    int longLatches;
-    int shortLatches;
+    uint16_t firstLatch;
+
+    uint8_t longLatches;
+    uint8_t shortLatches;
+    uint8_t skipCount;
+    uint8_t delayCount;
 
     bool isInSaveMode;
     bool isInReplayMode;
-
-    int skipCount;
-    int delayCount;
 };
+
+/*
+ * Holds global information about the application.
+ */
+extern AppInfo appInfo;
 
 #endif

@@ -30,8 +30,6 @@ bool isReceiving;
  */
 byte sendBuffer[BUFFER_SIZE];
 
-extern AppInfo appInfo;
-
 void Messenger::sendData(MessageType type, byte* payload, int size) {
     if (size <= MAX_CONTENT_SIZE) {
         sendBuffer[0] = START_MARKER;
@@ -76,14 +74,15 @@ void Messenger::print(String text) {
 }
 
 void sendInfo() {
-    byte bytesToSend[20];
+    uint8_t dataBufferSize = sizeof(AppInfo) + sizeof(uint16_t);
+    uint8_t bytesToSend[dataBufferSize];
 
-    appInfoToBytes(&appInfo, bytesToSend);
+    memcpy(bytesToSend, &appInfo, sizeof(AppInfo));
 
     // amount of free RAM is not part of AppInfo
-    intToBytes(getFreeRam(), bytesToSend + 18);
+    intToBytes(getFreeRam(), bytesToSend + sizeof(AppInfo));
 
-    Messenger::sendData(INFO_RESPONSE, bytesToSend, 20);
+    Messenger::sendData(INFO_RESPONSE, bytesToSend, dataBufferSize);
 }
 
 void handleMessage(MessageType messageType, byte* payload, int size) {
@@ -130,7 +129,6 @@ void handleMessage(MessageType messageType, byte* payload, int size) {
             appInfo.lastLatchDuration = 0;
             appInfo.longLatches = 0;
             appInfo.maxLoopDuration = 0;
-            appInfo.numberOfLatches = 0;
             appInfo.shortLatches = 0;
             appInfo.skipCount = 0;
 

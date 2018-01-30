@@ -11,19 +11,7 @@
  * Expected frame length in ms.
  * Should be 20ms for PAL, 16ms for NTSC consoles.
  */
-const int FRAME_LENGTH = 20;
-
-/*
- * Controller will be polled twice per frame.
- */
-int lastPoll;
-int pollDelta = FRAME_LENGTH / 2;
-
-/*
- * Timestamps of last loop and last latch - used to calculate performance info.
- */
-int lastLoop;
-int lastLatch;
+static const uint8_t FRAME_LENGTH = 20;
 
 /*
  * Holds global information about the application.
@@ -33,7 +21,7 @@ AppInfo appInfo;
 /*
  * Indicates whether we are right after a latch.
  */
-volatile bool isAfterLatch = false;
+static volatile bool isAfterLatch = false;
 
 void handleFallingLatchPulse() {
     // keep interrupt handler short, actual code will be executed in main loop
@@ -50,8 +38,10 @@ void setup() {
 }
 
 void calculateLoopDuration() {
-    int timeNow = millis();
-    int loopDuration = timeNow - lastLoop;
+    static uint16_t lastLoop;
+
+    uint16_t timeNow = millis();
+    uint16_t loopDuration = timeNow - lastLoop;
 
     if (loopDuration > appInfo.maxLoopDuration) {
         appInfo.maxLoopDuration = loopDuration;
@@ -61,14 +51,15 @@ void calculateLoopDuration() {
 }
 
 void calculateLatchInfo() {
-    int timeNow = millis();
-    int latchDuration = timeNow - lastLatch;
+    static uint16_t lastLatch;
+
+    uint16_t timeNow = millis();
+    uint16_t latchDuration = timeNow - lastLatch;
 
     appInfo.lastLatchDuration = latchDuration;
 
     if (latchDuration < (FRAME_LENGTH / 2)) appInfo.shortLatches++;
     if (latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) appInfo.longLatches++;
-    appInfo.numberOfLatches++;
 
     if (appInfo.firstLatch == 0) {
         appInfo.firstLatch = millis();
@@ -78,7 +69,11 @@ void calculateLatchInfo() {
 }
 
 void pollController() {
-    int timeNow = millis();
+    // Controller will be polled twice per frame.
+    static uint16_t lastPoll;
+    static uint8_t pollDelta = FRAME_LENGTH / 2;
+
+    uint16_t timeNow = millis();
 
     if (timeNow - lastPoll > pollDelta) {
        WriteToConsole::addData(ReadController::getData());
@@ -87,11 +82,11 @@ void pollController() {
 }
 
 void checkButtonTiming(ButtonData* buttonData) {
-    int buttonTime = buttonData->pressedAt;
-    int timeNow = millis();
-    int timeFromFirstLatch = timeNow - appInfo.firstLatch;
+    uint16_t buttonTime = buttonData->pressedAt;
+    uint16_t timeNow = millis();
+    uint16_t timeFromFirstLatch = timeNow - appInfo.firstLatch;
 
-    int buttonDelay = buttonTime - timeFromFirstLatch - FRAME_LENGTH;
+    int8_t buttonDelay = buttonTime - timeFromFirstLatch - FRAME_LENGTH;
 
     if (buttonDelay < -FRAME_LENGTH) {
         // loading the next button data effectively skips a frame

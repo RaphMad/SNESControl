@@ -12,8 +12,6 @@ const int OUTPUT_BUFFER_SIZE = MAX_CONTENT_SIZE;
 byte outputBuffer[OUTPUT_BUFFER_SIZE];
 int outputBufferIndex= 0;
 
-extern AppInfo appInfo;
-
 void StoreButtonData::reset() {
     outputBufferIndex = 0;
 }
