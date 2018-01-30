@@ -1,7 +1,7 @@
 #ifndef Messenger_H
 #define Messenger_H
 
-#include "../types.h"
+#include "../common.h"
 
 class Messenger {
     public:

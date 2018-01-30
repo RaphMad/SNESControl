@@ -1,7 +1,7 @@
 #ifndef ReadController_h
 #define ReadController_h
 
-#include "types.h"
+#include "common.h"
 
 class ReadController {
     public:

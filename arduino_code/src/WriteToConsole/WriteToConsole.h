@@ -1,7 +1,7 @@
 #ifndef WriteToConsole_H
 #define WriteToConsole_H
 
-#include "types.h"
+#include "common.h"
 
 class WriteToConsole {
     public:

@@ -1,7 +1,7 @@
 #ifndef tools_h
 #define tools_h
 
-#include "types.h"
+#include "common.h"
 
 /*
  * Converts a ButtonData structure into its byte representation.

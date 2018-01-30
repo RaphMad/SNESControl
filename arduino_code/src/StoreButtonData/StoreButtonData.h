@@ -1,7 +1,7 @@
 #ifndef StoreButtonData_h
 #define StoreButtonData_h
 
-#include "types.h"
+#include "common.h"
 
 class StoreButtonData {
     public:

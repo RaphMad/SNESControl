@@ -1,7 +1,7 @@
 #ifndef LoadButtonData_h
 #define LoadButtonData_h
 
-#include "types.h"
+#include "common.h"
 
 class LoadButtonData {
     public:
