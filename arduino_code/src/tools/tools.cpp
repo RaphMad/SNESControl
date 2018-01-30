@@ -1,10 +1,10 @@
 #include "tools.h"
 
-void buttonDataToBytes(const ButtonData* const buttonData, byte* const buf) {
+void buttonDataToBytes(const ButtonData* const buttonData, uint8_t* const buf) {
     memcpy(buf, buttonData, sizeof(ButtonData));
 }
 
-const ButtonData bytesToButtonData(const byte* const bytes) {
+const ButtonData bytesToButtonData(const uint8_t* const bytes) {
     ButtonData buttonData;
 
     // note that buttons are stored in reverse order
@@ -27,11 +27,11 @@ const ButtonData bytesToButtonData(const byte* const bytes) {
     return buttonData;
 }
 
-void intToBytes(const uint16_t value, byte* const buf) {
+void intToBytes(const uint16_t value, uint8_t* const buf) {
     memcpy(buf, &value, sizeof(uint16_t));
 }
 
-uint16_t bytesToInt(const byte* const bytes) {
+uint16_t bytesToInt(const uint8_t* const bytes) {
     return (bytes[1] << 8) + bytes[0];
 }
 
