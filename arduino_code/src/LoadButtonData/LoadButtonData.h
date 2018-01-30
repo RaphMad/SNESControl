@@ -1,7 +1,9 @@
 #ifndef LoadButtonData_h
 #define LoadButtonData_h
 
-#include "common.h"
+#include "../tools/tools.h"
+#include "../Communication/Messenger.h"
+#include "../WriteToConsole/WriteToConsole.h"
 
 class LoadButtonData {
     public:

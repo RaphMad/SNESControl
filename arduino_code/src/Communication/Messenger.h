@@ -1,7 +1,10 @@
 #ifndef Messenger_H
 #define Messenger_H
 
-#include "../common.h"
+#include "../tools/tools.h"
+#include "../LoadButtonData/LoadButtonData.h"
+#include "../StoreButtonData/StoreButtonData.h"
+#include "../WriteToConsole/WriteToConsole.h"
 
 class Messenger {
     public:

@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "WriteToConsole.h"
 
 ButtonData lastPreparedData;

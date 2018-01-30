@@ -1,6 +1,7 @@
 #ifndef WriteToConsole_H
 #define WriteToConsole_H
 
+#include <Arduino.h>
 #include "common.h"
 
 class WriteToConsole {

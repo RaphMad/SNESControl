@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "ReadController.h"
 
 void ReadController::begin() {

@@ -1,7 +1,4 @@
-#include <Arduino.h>
 #include "StoreButtonData.h"
-#include "../tools/tools.h"
-#include "../Communication/Messenger.h"
 
 /*
  * Wait for this many bytes before actually sending data to the client.
