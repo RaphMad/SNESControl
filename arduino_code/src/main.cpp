@@ -35,7 +35,7 @@ void setup() {
 
     Serial.begin(115200);
 
-    ReadController::begin();
+    ControllerReader.begin();
     ConsoleWriter.begin();
 }
 
@@ -119,7 +119,7 @@ static void pollController() {
     const uint16_t timeNow = millis();
 
     if (timeNow - lastPoll > pollDelta) {
-       ConsoleWriter.addData(ReadController::getData());
+       ConsoleWriter.addData(ControllerReader.getData());
        lastPoll = timeNow;
     }
 }

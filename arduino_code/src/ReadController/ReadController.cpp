@@ -1,28 +1,30 @@
 #include "ReadController.h"
 
+static void pulseLatch();
+static bool sampleButton();
+static void pulseClock();
+
 void ReadController::begin() {
-    pinMode(PIN_CONTROLLER_LATCH, OUTPUT);
-    pinMode(PIN_CONTROLLER_CLOCK, OUTPUT);
+    // set pins A3-A4 as output
+    DDRC |= B00011000;
 
+    // equivalent to
+    //pinMode(PIN_CONTROLLER_CLOCK, OUTPUT);
+    //pinMode(PIN_CONTROLLER_LATCH, OUTPUT);
+
+    // set pin A5 to INPUT_PULLUP
     // having this pin configured as PULLUP is important to get consistent HIGH states when no controller is connected
-    pinMode(PIN_CONTROLLER_DATA, INPUT_PULLUP);
+    PORTC |= B00100000;
+
+    // equivalent to
+    //pinMode(PIN_CONTROLLER_DATA, INPUT_PULLUP);
 }
 
-void pulse(byte pin) {
-    digitalWrite(pin, HIGH);
-    digitalWrite(pin, LOW);
-}
-
-bool sampleButton() {
-    pulse(PIN_CONTROLLER_CLOCK);
-    return digitalRead(PIN_CONTROLLER_DATA);
-}
-
-ButtonData ReadController::getData() {
+const ButtonData ReadController::getData() {
     ButtonData sampledData;
 
     // pulse latch to tell the controller to sample the current button states
-    pulse(PIN_CONTROLLER_LATCH);
+    pulseLatch();
 
     // first button is already available, read it
     sampledData.B = digitalRead(PIN_CONTROLLER_DATA);
@@ -42,3 +44,33 @@ ButtonData ReadController::getData() {
 
     return sampledData;
 }
+
+static void pulseLatch() {
+    PORTC |= B00010000;
+    PORTC &= B11101111;
+
+    // equivalent to
+    //digitalWrite(PIN_CONTROLLER_LATCH, HIGH);
+    //digitalWrite(PIN_CONTROLLER_LATCH, LOW);
+}
+
+static bool sampleButton() {
+    pulseClock();
+
+    // give PINC some time to react
+    // 12us is the time per sampled button data on a real SNES.
+    delayMicroseconds(12);
+
+    return PINC & B00100000;
+}
+
+static void pulseClock() {
+    PORTC |= B00001000;
+    PORTC &= B11110111;
+
+    // equivalent to
+    //digitalWrite(PIN_CONTROLLER_CLOCK, HIGH);
+    //digitalWrite(PIN_CONTROLLER_CLOCK, LOW);
+}
+
+ReadController ControllerReader;

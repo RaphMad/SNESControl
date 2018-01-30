@@ -51,7 +51,7 @@ static void setPins() {
 
     // set values for pin 4-7
     PORTD &= B00001111;
-    PORTD |= memoryLocation[0] << 4;
+    PORTD |= (memoryLocation[0] << 4);
 
     // equivalent to
     //digitalWrite(PIN_BTN_B, combinedData.B);
@@ -61,7 +61,7 @@ static void setPins() {
 
     // set values for pin 8-12
     PORTB &= B11100000;
-    PORTB |= memoryLocation[0] >> 4 & B00011111;
+    PORTB |= (memoryLocation[0] >> 4 & B00011111);
 
     // equivalent to
     //digitalWrite(PIN_BTN_UP, combinedData.UP);
@@ -72,7 +72,7 @@ static void setPins() {
 
     // set values for pins A0-A2
     PORTC &= B11111000;
-    PORTC |= memoryLocation[0] >> 9 & B00000111;
+    PORTC |= (memoryLocation[0] >> 9 & B00000111);
 
     // equivalent to
     //digitalWrite(PIN_BTN_X, combinedData.X);

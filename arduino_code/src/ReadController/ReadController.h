@@ -6,12 +6,14 @@
 
 class ReadController {
     public:
-        static void begin();
+        void begin();
 
         /*
          * Poll controller for data.
          */
-        static ButtonData getData();
+        const ButtonData getData();
 };
+
+extern ReadController ControllerReader;
 
 #endif
