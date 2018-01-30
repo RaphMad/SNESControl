@@ -30,24 +30,24 @@ const byte PIN_CONTROLLER_DATA = A5;
  * Note that true means NOT pressed.
  */
 struct ButtonData {
-    bool B;
-    bool Y;
-    bool SELECT;
-    bool START;
-    bool UP;
-    bool DOWN;
-    bool LEFT;
-    bool RIGHT;
+    bool B :1;
+    bool Y :1;
+    bool SELECT :1;
+    bool START :1;
+    bool UP :1;
+    bool DOWN :1;
+    bool LEFT :1;
+    bool RIGHT :1;
 
-    bool A;
-    bool X;
-    bool SHOULDER_LEFT;
-    bool SHOULDER_RIGHT;
+    bool A :1;
+    bool X :1;
+    bool SHOULDER_LEFT :1;
+    bool SHOULDER_RIGHT :1;
 
     /*
      * Time when the button was pressed, relative to the timestamp of the first latch.
      */
-    int pressedAt;
+    uint16_t pressedAt :16;
 
     ButtonData() {
         // initialize all fields with true, this makes creating manual instances easier
