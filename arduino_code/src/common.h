@@ -30,30 +30,28 @@ const byte PIN_CONTROLLER_DATA = A5;
  * Note that true means NOT pressed.
  */
 struct ButtonData {
-    /*
-     * Store bits in reverse order s.t. the saved bytes correspond to the wire protocol.
-     */
-    bool RIGHT :1;
-    bool LEFT :1;
-    bool DOWN :1;
-    bool UP :1;
-    bool START :1;
-    bool SELECT :1;
-    bool Y :1;
     bool B :1;
+    bool Y :1;
+    bool SELECT :1;
+    bool START :1;
+    bool UP :1;
+    bool DOWN :1;
+    bool LEFT :1;
+    bool RIGHT :1;
+
+    bool A :1;
+    bool X :1;
+    bool SHOULDER_LEFT :1;
+    bool SHOULDER_RIGHT :1;
 
     /*
      * Unused padding bits.
      */
-    bool UNUSED_BIT8 :1;
-    bool UNUSED_BIT7 :1;
-    bool UNUSED_BIT6 :1;
     bool UNUSED_BIT5 :1;
+    bool UNUSED_BIT6 :1;
+    bool UNUSED_BIT7 :1;
+    bool UNUSED_BIT8 :1;
 
-    bool SHOULDER_RIGHT :1;
-    bool SHOULDER_LEFT :1;
-    bool X :1;
-    bool A :1;
 
     /*
      * Time when the button was pressed, relative to the timestamp of the first latch.
