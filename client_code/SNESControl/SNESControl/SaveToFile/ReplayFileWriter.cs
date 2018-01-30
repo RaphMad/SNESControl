@@ -1,5 +1,6 @@
 ﻿namespace SNESControl.SaveToFile
 {
+    using System;
     using System.IO;
 
     public class ReplayFileWriter
@@ -8,7 +9,7 @@
 
         private FileStream _file;
 
-        private volatile bool _isClosed;
+        private volatile bool _isOpen;
 
         public ReplayFileWriter(string fileName)
         {
@@ -17,13 +18,21 @@
 
         public void Open()
         {
-            _file = File.Open(_fileName, FileMode.Create, FileAccess.Write);
-            _isClosed = false;
+            try
+            {
+                _isOpen = false;
+                _file = File.Open(_fileName, FileMode.Create, FileAccess.Write);
+                _isOpen = true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not open file for writing: " + e.Message);
+            }
         }
 
         public void AppendBytes(byte[] bytes)
         {
-            if (!_isClosed)
+            if (_isOpen)
             {
                 _file?.Write(bytes, 0, bytes.Length);
                 _file?.Flush(true);
@@ -33,7 +42,7 @@
         public void Close()
         {
             _file?.Dispose();
-            _isClosed = true;
+            _isOpen = false;
         }
     }
 }

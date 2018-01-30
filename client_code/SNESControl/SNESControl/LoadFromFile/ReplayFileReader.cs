@@ -1,5 +1,6 @@
 ﻿namespace SNESControl.SaveToFile
 {
+    using System;
     using System.IO;
     using System.Linq;
 
@@ -18,8 +19,16 @@
 
         public void Read()
         {
-            _bytesFromFile = File.ReadAllBytes(_fileName);
-            _currentIndex = 0;
+            try
+            {
+                _currentIndex = 0;
+                _bytesFromFile = File.ReadAllBytes(_fileName);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not open file for loading: " + e.Message);
+                
+            }
         }
 
         public byte[] GetNextBytes(byte numberOfBytes)
