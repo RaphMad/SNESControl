@@ -35,7 +35,7 @@ class LoadButtonData {
          * Internally requests the first bulk of data,
          * so that it (hopefully) is already available when data is requested.
          */
-        void begin();
+        void loadInitialData();
 
         /*
          * This is meant to be called regularly when incoming data is available.

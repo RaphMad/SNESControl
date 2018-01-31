@@ -64,7 +64,7 @@ void Messenger::handleMessage(const MessageType messageType, const uint8_t* cons
         case ENABLE_LOAD:
             appInfo.firstLatch = 0;
             appInfo.isInReplayMode = true;
-            ButtonDataLoader.begin();
+            ButtonDataLoader.loadInitialData();
             break;
         case LOAD:
             break;

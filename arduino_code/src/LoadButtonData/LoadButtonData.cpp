@@ -2,8 +2,7 @@
 
 static void requestData();
 
-void LoadButtonData::begin() {
-    // request initial data for inputBuffer1 immediately
+void LoadButtonData::loadInitialData() {
     reset();
     requestData();
 }
