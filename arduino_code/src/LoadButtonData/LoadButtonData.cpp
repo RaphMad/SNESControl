@@ -46,7 +46,7 @@ const ButtonData LoadButtonData::readFromBuffer1() {
 
     inputBuffer1Index += sizeof(ButtonData);
 
-    if (inputBuffer1Index == INPUT_BUFFER_SIZE) {
+    if (inputBuffer1Index == BUFFER_SIZE) {
         isInputBuffer1Active = false;
         inputBuffer1Index = 0;
         requestData();
@@ -60,7 +60,7 @@ const ButtonData LoadButtonData::readFromBuffer2() {
 
     inputBuffer2Index += sizeof(ButtonData);
 
-    if (inputBuffer2Index == INPUT_BUFFER_SIZE) {
+    if (inputBuffer2Index == BUFFER_SIZE) {
         isInputBuffer1Active = true;
         inputBuffer2Index = 0;
         requestData();

@@ -11,9 +11,9 @@ class StoreButtonData {
         * Wait for this many bytes before actually sending data to the client.
         * With a value of 64 about two save requests are sent per second (assuming inputs come in at 50 or 60Hz).
         */
-        static const uint8_t OUTPUT_BUFFER_SIZE = MAX_CONTENT_SIZE;
+        static const uint8_t BUFFER_SIZE = MAX_CONTENT_SIZE;
 
-        uint8_t outputBuffer[OUTPUT_BUFFER_SIZE];
+        uint8_t outputBuffer[BUFFER_SIZE];
         uint8_t outputBufferIndex= 0;
 
     public:

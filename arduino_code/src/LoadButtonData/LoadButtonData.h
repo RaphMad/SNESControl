@@ -16,12 +16,12 @@ class LoadButtonData {
         /*
         * With a value of 64 about two load request are sent per second (assuming inputs come in at 50 or 60Hz).
         */
-        static const uint8_t INPUT_BUFFER_SIZE = MAX_CONTENT_SIZE;
+        static const uint8_t BUFFER_SIZE = MAX_CONTENT_SIZE;
 
-        uint8_t inputBuffer1[INPUT_BUFFER_SIZE];
+        uint8_t inputBuffer1[BUFFER_SIZE];
         uint8_t inputBuffer1Index = 0;
 
-        uint8_t inputBuffer2[INPUT_BUFFER_SIZE];
+        uint8_t inputBuffer2[BUFFER_SIZE];
         uint8_t inputBuffer2Index = 0;
 
         bool isInputBuffer1Active = false;
