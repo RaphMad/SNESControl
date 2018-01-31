@@ -6,17 +6,19 @@
 #include "../StoreButtonData/StoreButtonData.h"
 #include "../WriteToConsole/WriteToConsole.h"
 
+/*
+ * Markers were chosen deliberately to have low values, since most of the transmitted data will be high values.
+ * (HIGH means buttons are not pressed)
+ * This will ensure a minimal encoding overhead for typical scenarios.
+ */
+typedef enum {
+    START_MARKER = 0,
+    END_MARKER = 1,
+    ENCODE_MARKER = 2
+} ByteMarker;
+
 class Messenger {
     private:
-       /*
-        * Markers were chosen deliberately to have low values, since most of the transmitted data will be high values.
-        * (HIGH means buttons are not pressed)
-        * This will ensure a minimal encoding overhead for typical scenarios.
-        */
-        const uint8_t START_MARKER = 0;
-        const uint8_t END_MARKER = 1;
-        const uint8_t ENCODE_MARKER = 2;
-
        /*
         * Due the encoding, in a worst case we may need double the content size
         * plus 2 bytes for the message type plus 2 bytes for the start / end marker.

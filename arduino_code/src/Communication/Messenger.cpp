@@ -1,5 +1,9 @@
 #include "Messenger.h"
 
+static bool needsEncoding(const uint8_t byte);
+static uint8_t encode (const uint8_t byte);
+static uint8_t decode (const uint8_t byte);
+
 void Messenger::checkForData() {
     while (Serial.available() > 0) {
         const uint8_t receivedByte = Serial.read();
@@ -28,10 +32,8 @@ void Messenger::decodeReceivedMessage(const uint8_t numberOfBytes) {
         uint8_t currentByte = receiveBuffer[i];
 
         if (currentByte == ENCODE_MARKER) {
-            // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
             i++;
-            const uint8_t nextByte = receiveBuffer[i];
-            currentByte = nextByte - ENCODE_MARKER - 1;
+            currentByte = decode(receiveBuffer[i]);
         }
 
         // re-use the receive buffer for the decoded data
@@ -43,6 +45,11 @@ void Messenger::decodeReceivedMessage(const uint8_t numberOfBytes) {
     const uint8_t* payload = receiveBuffer + 1;
 
     handleMessage(messageType, payload, decodedBytes - 1);
+}
+
+static uint8_t decode (const uint8_t byte) {
+    // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
+    return byte - ENCODE_MARKER - 1;
 }
 
 void Messenger::handleMessage(const MessageType messageType, const uint8_t* const payload, const uint8_t size) {
@@ -79,6 +86,7 @@ void Messenger::handleMessage(const MessageType messageType, const uint8_t* cons
             appInfo.isInReplayMode = false;
             ButtonDataLoader.reset();
             ConsoleWriter.prepareData(ButtonData());
+            break;
         case RESET_DATA:
             appInfo.isInReplayMode = false;
             appInfo.isInSaveMode = false;
@@ -99,45 +107,52 @@ void Messenger::handleMessage(const MessageType messageType, const uint8_t* cons
              ButtonDataLoader.processIncomingData(payload, size);
             break;
         case INFO_RESPONSE:
-             ButtonDataLoader.processIncomingData(payload, size);
             break;
     }
 }
 
 void Messenger::sendData(const MessageType type, const uint8_t* const payload, const uint8_t size) {
     if (size <= MAX_CONTENT_SIZE) {
+        uint8_t sendBufferIndex = 2;
         sendBuffer[0] = START_MARKER;
-        sendBuffer[1] = type; // needs encoding should we ever introduce types 0,1,2
-        uint8_t sendIndex = 2;
+
+        if (needsEncoding(type)) {
+            sendBuffer[1] = ENCODE_MARKER;
+            sendBuffer[2] = encode(type);
+            sendBufferIndex++;
+        } else {
+            sendBuffer[1] = type;
+        }
 
         for (uint8_t i = 0; i < size; i++) {
             const uint8_t currentByte = payload[i];
 
-            // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
-            if (currentByte == START_MARKER) {
-                sendBuffer[sendIndex] = ENCODE_MARKER;
-                sendIndex++;
-                sendBuffer[sendIndex] = currentByte + ENCODE_MARKER + 1;
-            } else if (currentByte == ENCODE_MARKER) {
-                sendBuffer[sendIndex] = ENCODE_MARKER;
-                sendIndex++;
-                sendBuffer[sendIndex] = currentByte + ENCODE_MARKER + 1;
-            } else if (currentByte == END_MARKER) {
-                sendBuffer[sendIndex] = ENCODE_MARKER;
-                sendIndex++;
-                sendBuffer[sendIndex] = currentByte + ENCODE_MARKER + 1;
+            if (needsEncoding(currentByte)) {
+                sendBuffer[sendBufferIndex] = ENCODE_MARKER;
+
+                sendBufferIndex++;
+                sendBuffer[sendBufferIndex] = encode(currentByte);
             } else {
-                sendBuffer[sendIndex] = currentByte;
+                sendBuffer[sendBufferIndex] = currentByte;
             }
 
-            sendIndex++;
+            sendBufferIndex++;
         }
 
-        sendBuffer[sendIndex] = END_MARKER;
-        sendIndex++;
+        sendBuffer[sendBufferIndex] = END_MARKER;
+        sendBufferIndex++;
 
-        Serial.write(sendBuffer, sendIndex);
+        Serial.write(sendBuffer, sendBufferIndex);
     }
+}
+
+static bool needsEncoding(const uint8_t byte) {
+    return byte == START_MARKER || byte == ENCODE_MARKER || byte == END_MARKER;
+}
+
+static uint8_t encode (const uint8_t byte) {
+    // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
+    return byte + ENCODE_MARKER + 1;
 }
 
 void Messenger::sendInfo() {
