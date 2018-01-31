@@ -177,10 +177,10 @@
             Console.WriteLine();
             Console.WriteLine("First latch timestamp: " + BitConverter.ToUInt16(data, 4));
             Console.WriteLine();
-            Console.WriteLine("Number of short latches: " + data[6]);
-            Console.WriteLine("Number of long latches (lag frames): " + data[7]);
-            Console.WriteLine("Delay count: " + data[8]);
-            Console.WriteLine("Skip count: " + data[9]);
+            Console.WriteLine("Number of long latches: " + data[6]);
+            Console.WriteLine("Number of short latches (lag frames): " + data[7]);
+            Console.WriteLine("Skip count: " + data[8]);
+            Console.WriteLine("Delay count: " + data[9]);
             Console.WriteLine();
             Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 10));
             Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 11));
