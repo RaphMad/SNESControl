@@ -20,7 +20,7 @@ void ReadController::begin() {
     //pinMode(PIN_CONTROLLER_DATA, INPUT_PULLUP);
 }
 
-const ButtonData ReadController::getData() {
+ButtonData ReadController::getData() {
     ButtonData sampledData;
 
     // pulse latch to tell the controller to sample the current button states

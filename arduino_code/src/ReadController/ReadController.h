@@ -11,7 +11,7 @@ class ReadController {
         /*
          * Poll controller for data.
          */
-        const ButtonData getData();
+        ButtonData getData();
 };
 
 extern ReadController ControllerReader;

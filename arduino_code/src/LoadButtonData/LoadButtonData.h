@@ -45,7 +45,7 @@ class LoadButtonData {
         /*
          * Read the next available button data.
          */
-        const ButtonData getData();
+        ButtonData getData();
 
         /*
          * Resets to the initial state.

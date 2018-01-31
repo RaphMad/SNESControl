@@ -32,7 +32,7 @@ class WriteToConsole {
         /*
          * Retrieves the latest data that has been read by the console (combined of prepared and combined data).
          */
-        const ButtonData getLatestData();
+        ButtonData getLatestData();
 };
 
 /*

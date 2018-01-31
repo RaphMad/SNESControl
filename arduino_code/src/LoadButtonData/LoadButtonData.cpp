@@ -27,7 +27,7 @@ void LoadButtonData::processIncomingData(const uint8_t* const buf, const uint8_t
     }
 }
 
-const ButtonData LoadButtonData::getData() {
+ButtonData LoadButtonData::getData() {
     ButtonData buttonData;
 
     if (hasInitialData) {

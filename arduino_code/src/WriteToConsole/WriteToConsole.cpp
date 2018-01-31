@@ -78,7 +78,7 @@ void WriteToConsole::setPins() {
     //digitalWrite(PIN_BTN_SHOULDER_RIGHT, combinedData.SHOULDER_RIGHT);
 }
 
-const ButtonData WriteToConsole::getLatestData() {
+ButtonData WriteToConsole::getLatestData() {
     ButtonData combinedData;
     combinedData.B = lastPreparedData.B && lastAdditionalData.B;
     combinedData.Y = lastPreparedData.Y && lastAdditionalData.Y;
