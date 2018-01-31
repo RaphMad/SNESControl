@@ -3,27 +3,29 @@
 
 #include <Arduino.h>
 
-// pin to button mapping for console communication
-const uint8_t PIN_LATCH = 2;
+typedef enum {
+    // pin to button mapping for console communication
+    PIN_LATCH = 2,
 
-const uint8_t PIN_BTN_B = 4;
-const uint8_t PIN_BTN_Y = 5;
-const uint8_t PIN_BTN_SELECT = 6;
-const uint8_t PIN_BTN_START = 7;
-const uint8_t PIN_BTN_UP = 8;
-const uint8_t PIN_BTN_DOWN = 9;
-const uint8_t PIN_BTN_LEFT = 10;
-const uint8_t PIN_BTN_RIGHT = 11;
-const uint8_t PIN_BTN_A = 12;
+    PIN_BTN_B = 4,
+    PIN_BTN_Y = 5,
+    PIN_BTN_SELECT = 6,
+    PIN_BTN_START = 7,
+    PIN_BTN_UP = 8,
+    PIN_BTN_DOWN = 9,
+    PIN_BTN_LEFT = 10,
+    PIN_BTN_RIGHT = 11,
+    PIN_BTN_A = 12,
 
-const uint8_t PIN_BTN_X = A0;
-const uint8_t PIN_BTN_SHOULDER_LEFT = A1;
-const uint8_t PIN_BTN_SHOULDER_RIGHT = A2;
+    PIN_BTN_X = A0,
+    PIN_BTN_SHOULDER_LEFT = A1,
+    PIN_BTN_SHOULDER_RIGHT = A2,
 
-// pin to button mapping fo controller communication
-const uint8_t PIN_CONTROLLER_CLOCK = A3;
-const uint8_t PIN_CONTROLLER_LATCH = A4;
-const uint8_t PIN_CONTROLLER_DATA = A5;
+    // pin to button mapping fo controller communication
+    PIN_CONTROLLER_CLOCK = A3,
+    PIN_CONTROLLER_LATCH = A4,
+    PIN_CONTROLLER_DATA = A5
+} ConnectedPin;
 
 /*
  * This corresponds to the bitwise represenation of the buttons in the SNES protocol.
