@@ -112,11 +112,11 @@ static void fixButtonTiming(const uint16_t pressedAt) {
 }
 
 // Controller will be polled twice per frame.
-const static uint8_t pollDelta = FRAME_LENGTH / 2;
-static uint8_t lastPoll;
+const static uint16_t pollDelta = FRAME_LENGTH / 2;
+static uint16_t lastPoll;
 
 static void pollController() {
-    const uint8_t timeNow = millis();
+    const uint16_t timeNow = millis();
 
     if (timeNow - lastPoll > pollDelta) {
        ConsoleWriter.addData(ControllerReader.getData());
