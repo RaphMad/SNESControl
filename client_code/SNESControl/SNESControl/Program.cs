@@ -36,9 +36,18 @@
                 return;
             }
 
-            // set up the serial connection
-            _serialConnector = new SerialConnector(argList[1]);
-            _serialConnector.Start();
+            try
+            {
+                // set up the serial connection
+                _serialConnector = new SerialConnector(argList[1]);
+                _serialConnector.Start();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Cannot access port " + port + ". Error: " + e.Message);
+                Console.ReadKey();
+                return;
+            }
 
             // set up file reader and writer
             _replayFileWriter = new ReplayFileWriter(fileName);
