@@ -1,12 +1,19 @@
 #include "ReadController.h"
 
+/*
+ * These constants are used to set the ports directly via the registers.
+ */
+static const uint8_t CLOCK_MASK = B00001000;
+static const uint8_t LATCH_MASK = B00010000;
+static const uint8_t DATA_MASK = B00100000;
+
 static void pulseLatch();
 static bool sampleButton();
 static void pulseClock();
 
 void ReadController::begin() const {
     // set pins A3-A4 as output
-    DDRC |= B00011000;
+    DDRC |= (LATCH_MASK | CLOCK_MASK);
 
     // equivalent to
     //pinMode(PIN_CONTROLLER_CLOCK, OUTPUT);
@@ -14,7 +21,7 @@ void ReadController::begin() const {
 
     // set pin A5 to INPUT_PULLUP
     // having this pin configured as PULLUP is important to get consistent HIGH states when no controller is connected
-    PORTC |= B00100000;
+    PORTC |= DATA_MASK;
 
     // equivalent to
     //pinMode(PIN_CONTROLLER_DATA, INPUT_PULLUP);
@@ -46,12 +53,12 @@ ButtonData ReadController::getData() const {
 }
 
 static void pulseLatch() {
-    PORTC |= B00010000;
+    PORTC |= LATCH_MASK;
 
     // latch has a duration of 12us in the SNES controller protocol
     delayMicroseconds(12);
 
-    PORTC &= B11101111;
+    PORTC &= ~LATCH_MASK;
 
     // equivalent to
     //digitalWrite(PIN_CONTROLLER_LATCH, HIGH);
@@ -61,18 +68,18 @@ static void pulseLatch() {
 static bool sampleButton() {
     pulseClock();
 
-    return PINC & B00100000;
+    return PINC & DATA_MASK;
 }
 
 static void pulseClock() {
     // delay between clock cycles is 6us in the SNES controller protocol
     delayMicroseconds(6);
-    PORTC |= B00001000;
+    PORTC |= CLOCK_MASK;
 
     // time the clock is high is 6us in the SNES controller protocol
     delayMicroseconds(6);
 
-    PORTC &= B11110111;
+    PORTC &= ~CLOCK_MASK;
 
     // equivalent to
     //digitalWrite(PIN_CONTROLLER_CLOCK, HIGH);

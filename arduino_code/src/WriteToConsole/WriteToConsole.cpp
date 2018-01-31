@@ -1,8 +1,16 @@
 #include "WriteToConsole.h"
 
+/*
+ * These constants are used to set the ports directly via the registers.
+ * The active bits correspond to used pins.
+ */
+static const uint8_t PORTD_MASK = B11110000;
+static const uint8_t PORTB_MASK = B00011111;
+static const uint8_t PORTC_MASK = B00000111;
+
 void WriteToConsole::begin() const {
     // set pins 4-7 as output
-    DDRD |= B11110000;
+    DDRD |= PORTD_MASK;
 
     // equivalent to:
     //pinMode(PIN_BTN_B, OUTPUT);
@@ -11,7 +19,7 @@ void WriteToConsole::begin() const {
     //pinMode(PIN_BTN_START, OUTPUT);
 
     // set pins 8-12 as output
-    DDRB |= B00011111;
+    DDRB |= PORTB_MASK;
 
     // equivalent to:
     //pinMode(PIN_BTN_UP, OUTPUT);
@@ -20,7 +28,7 @@ void WriteToConsole::begin() const {
     //pinMode(PIN_BTN_RIGHT, OUTPUT);
 
     // sets pins A0-A2 as output
-    DDRC |= B00000111;
+    DDRC |= PORTC_MASK;
 
     // equivalent to:
     //pinMode(PIN_BTN_A, OUTPUT);
@@ -48,8 +56,7 @@ void WriteToConsole::setPins() const {
     const uint16_t* memoryLocation = (uint16_t*)&combinedData;
 
     // set values for pin 4-7
-    PORTD &= B00001111;
-    PORTD |= (memoryLocation[0] << 4);
+    PORTD = (PORTD & ~PORTD_MASK) | (memoryLocation[0] << 4 & PORTD_MASK);
 
     // equivalent to
     //digitalWrite(PIN_BTN_B, combinedData.B);
@@ -58,8 +65,7 @@ void WriteToConsole::setPins() const {
     //digitalWrite(PIN_BTN_START, combinedData.START);
 
     // set values for pin 8-12
-    PORTB &= B11100000;
-    PORTB |= (memoryLocation[0] >> 4 & B00011111);
+    PORTB = (PORTB & ~PORTB_MASK) | (memoryLocation[0] >> 4 & PORTB_MASK);
 
     // equivalent to
     //digitalWrite(PIN_BTN_UP, combinedData.UP);
@@ -69,8 +75,7 @@ void WriteToConsole::setPins() const {
     //digitalWrite(PIN_BTN_A, combinedData.A);
 
     // set values for pins A0-A2
-    PORTC &= B11111000;
-    PORTC |= (memoryLocation[0] >> 9 & B00000111);
+    PORTC |= (PORTC & ~PORTC_MASK) | (memoryLocation[0] >> 9 & PORTC_MASK);
 
     // equivalent to
     //digitalWrite(PIN_BTN_X, combinedData.X);
