@@ -22,6 +22,11 @@ static const uint8_t FRAME_LENGTH = 20;
  */
 static volatile bool isAfterLatch = false;
 
+/*
+ * Controller will be polled half a frame after a latch.
+ */
+static bool wasPolledThisLatch = false;
+
 static void handleFallingLatchPulse();
 static void saveButtonData();
 static void prepareNextReplayFrame();
@@ -47,6 +52,7 @@ static void handleFallingLatchPulse() {
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
+        wasPolledThisLatch = false;
 
         calculateLatchInfo();
         saveButtonData();
@@ -111,16 +117,10 @@ static void fixButtonTiming(const uint16_t pressedAt) {
     }
 }
 
-// Controller will be polled twice per frame.
-const static uint16_t pollDelta = FRAME_LENGTH / 2;
-static uint16_t lastPoll;
-
 static void pollController() {
-    const uint16_t timeNow = millis();
-
-    if (timeNow - lastPoll > pollDelta) {
+    if (!wasPolledThisLatch && millis() - lastLatch > FRAME_LENGTH / 2) {
        ConsoleWriter.addData(ControllerReader.getData());
-       lastPoll = timeNow;
+       wasPolledThisLatch = true;
     }
 }
 
