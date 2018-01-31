@@ -9,10 +9,10 @@ class WriteToConsole {
         ButtonData lastPreparedData;
         ButtonData lastAdditionalData;
 
-        void setPins();
+        void setPins() const;
 
     public:
-        void begin();
+        void begin() const;
 
         /*
          * Prepares button data for the next latch cycle.
@@ -32,7 +32,7 @@ class WriteToConsole {
         /*
          * Retrieves the latest data that has been read by the console (combined of prepared and combined data).
          */
-        ButtonData getLatestData();
+        ButtonData getLatestData() const;
 };
 
 /*

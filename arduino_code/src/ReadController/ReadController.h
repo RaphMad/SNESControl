@@ -6,12 +6,12 @@
 
 class ReadController {
     public:
-        void begin();
+        void begin() const;
 
         /*
          * Poll controller for data.
          */
-        ButtonData getData();
+        ButtonData getData() const;
 };
 
 extern ReadController ControllerReader;

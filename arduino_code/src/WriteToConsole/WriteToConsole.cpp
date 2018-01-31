@@ -1,6 +1,6 @@
 #include "WriteToConsole.h"
 
-void WriteToConsole::begin() {
+void WriteToConsole::begin() const {
     // set pins 4-7 as output
     DDRD |= B11110000;
 
@@ -42,7 +42,7 @@ void WriteToConsole::addData(const ButtonData additionalData) {
     setPins();
 }
 
-void WriteToConsole::setPins() {
+void WriteToConsole::setPins() const {
     ButtonData combinedData = getLatestData();
 
     const uint16_t* memoryLocation = (uint16_t*)&combinedData;
@@ -78,7 +78,7 @@ void WriteToConsole::setPins() {
     //digitalWrite(PIN_BTN_SHOULDER_RIGHT, combinedData.SHOULDER_RIGHT);
 }
 
-ButtonData WriteToConsole::getLatestData() {
+ButtonData WriteToConsole::getLatestData() const {
     ButtonData combinedData;
     combinedData.B = lastPreparedData.B && lastAdditionalData.B;
     combinedData.Y = lastPreparedData.Y && lastAdditionalData.Y;

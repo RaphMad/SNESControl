@@ -4,7 +4,7 @@ static void pulseLatch();
 static bool sampleButton();
 static void pulseClock();
 
-void ReadController::begin() {
+void ReadController::begin() const {
     // set pins A3-A4 as output
     DDRC |= B00011000;
 
@@ -20,7 +20,7 @@ void ReadController::begin() {
     //pinMode(PIN_CONTROLLER_DATA, INPUT_PULLUP);
 }
 
-ButtonData ReadController::getData() {
+ButtonData ReadController::getData() const {
     ButtonData sampledData;
 
     // pulse latch to tell the controller to sample the current button states
