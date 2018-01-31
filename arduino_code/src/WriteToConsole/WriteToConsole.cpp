@@ -1,7 +1,5 @@
 #include "WriteToConsole.h"
 
-static void setPins();
-
 void WriteToConsole::begin() {
     // set pins 4-7 as output
     DDRD |= B11110000;
