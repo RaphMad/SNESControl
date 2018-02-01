@@ -18,6 +18,11 @@ static AppInfo appInfo;
 static const uint8_t FRAME_LENGTH = 20;
 
 /*
+ * Timestamp of the last (most current) latch.
+ */
+static uint16_t lastLatch;
+
+/*
  * Indicates whether we are right after a latch.
  */
 static volatile bool isAfterLatch = false;
@@ -75,6 +80,7 @@ void loop() {
         wasPolledThisLatch = false;
 
         calculateLatchInfo();
+
         saveButtonData();
         prepareNextReplayFrame();
     }
@@ -85,11 +91,35 @@ void loop() {
 }
 
 static uint16_t firstLatchForSave;
+static uint16_t firstLatchForLoad;
+
+static void calculateLatchInfo() {
+    const uint16_t timeNow = millis();
+    const uint16_t latchDuration = timeNow - lastLatch;
+
+    if (lastLatch != 0) {
+        // a short latch is a latch less than 1/2 a frame
+        if (latchDuration < (FRAME_LENGTH / 2)) appInfo.shortLatches++;
+
+        // a long latch is a latch longer than 3/2 a frame
+        if (latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) appInfo.longLatches++;
+    }
+
+    if (firstLatchForSave == 0) {
+        firstLatchForSave = timeNow;
+    }
+
+    if (firstLatchForLoad == 0) {
+        firstLatchForLoad = timeNow;
+    }
+
+    lastLatch = timeNow;
+}
 
 static void saveButtonData() {
     if (appInfo.isInSaveMode) {
         ButtonData buttonData = ConsoleWriter.getLatestData();
-        buttonData.pressedAt = millis() - firstLatchForSave;
+        buttonData.pressedAt = lastLatch - firstLatchForSave;
 
         ButtonDataStorage.storeData(buttonData);
     }
@@ -104,37 +134,8 @@ static void prepareNextReplayFrame() {
     }
 }
 
-/*
- * Timestamp of the last (most current) latch.
- */
-static uint16_t lastLatch;
-static uint16_t firstLatchForLoad;
-
-static void calculateLatchInfo() {
-    const uint16_t timeNow = millis();
-    const uint16_t latchDuration = timeNow - lastLatch;
-
-    if (firstLatchForSave == 0) {
-        firstLatchForSave = millis();
-    }
-
-    if (firstLatchForLoad == 0) {
-        firstLatchForLoad = millis();
-    }
-
-    // a short latch is a latch less than 1/2 a frame
-    if (latchDuration < (FRAME_LENGTH / 2)) appInfo.shortLatches++;
-
-    // a long latch is a latch longer than 3/2 a frame
-    if (lastLatch != 0 && latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) appInfo.longLatches++;
-
-    lastLatch = timeNow;
-}
-
 static void fixButtonTiming(const uint16_t pressedAt) {
-    const uint16_t timeNow = millis();
-    const uint16_t timeFromFirstLatch = timeNow - firstLatchForLoad;
-
+    const uint16_t timeFromFirstLatch = lastLatch - firstLatchForLoad;
     const int8_t buttonDelay = pressedAt - timeFromFirstLatch - FRAME_LENGTH;
 
     if (buttonDelay < -FRAME_LENGTH) {

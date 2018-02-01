@@ -81,6 +81,9 @@ void WriteToConsole::setPins() const {
     //digitalWrite(PIN_BTN_X, combinedData.X);
     //digitalWrite(PIN_BTN_SHOULDER_LEFT, combinedData.SHOULDER_LEFT);
     //digitalWrite(PIN_BTN_SHOULDER_RIGHT, combinedData.SHOULDER_RIGHT);
+
+    // wait some time to have the pins actually change their states
+    delayMicroseconds(20);
 }
 
 ButtonData WriteToConsole::getLatestData() const {
