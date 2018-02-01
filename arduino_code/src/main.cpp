@@ -9,7 +9,7 @@
 /*
  * Holds global information about the application.
  */
-AppInfo appInfo;
+static AppInfo appInfo;
 
 /*
  * Expected frame length in ms.
@@ -35,6 +35,15 @@ static void fixButtonTiming(uint16_t);
 static void pollController();
 static void calculateLoopDuration();
 
+static void handleEnableSaveMessage(const uint8_t* payload, uint8_t size);
+static void handleEnableLoadMessage(const uint8_t* payload, uint8_t size);
+static void handlePingMessage(const uint8_t* payload, const uint8_t size);
+static void handleRequestStatusMessage(const uint8_t* payload, uint8_t size);
+static void handleDisableSaveMessage(const uint8_t* payload, uint8_t size);
+static void handleDisableLoadMessage(const uint8_t* payload, uint8_t size);
+static void handleResetDataMessage(const uint8_t* payload, uint8_t size);
+static void handleLoadResponseMessage(const uint8_t* payload, uint8_t size);
+
 void setup() {
     attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
 
@@ -44,6 +53,15 @@ void setup() {
 
     ControllerReader.begin();
     ConsoleWriter.begin();
+
+    MessageProcessor.registerMessageHandler(ENABLE_SAVE, handleEnableSaveMessage);
+    MessageProcessor.registerMessageHandler(ENABLE_LOAD, handleEnableLoadMessage);
+    MessageProcessor.registerMessageHandler(PING, handlePingMessage);
+    MessageProcessor.registerMessageHandler(REQUEST_STATUS, handleRequestStatusMessage);
+    MessageProcessor.registerMessageHandler(DISABLE_SAVE, handleDisableSaveMessage);
+    MessageProcessor.registerMessageHandler(DISABLE_LOAD, handleDisableLoadMessage);
+    MessageProcessor.registerMessageHandler(RESET_DATA, handleResetDataMessage);
+    MessageProcessor.registerMessageHandler(LOAD_RESPONSE, handleLoadResponseMessage);
 }
 
 static void handleFallingLatchPulse() {
@@ -66,12 +84,12 @@ void loop() {
     calculateLoopDuration();
 }
 
-static uint16_t firstLatch;
+static uint16_t firstLatchForSave;
 
 static void saveButtonData() {
     if (appInfo.isInSaveMode) {
         ButtonData buttonData = ConsoleWriter.getLatestData();
-        buttonData.pressedAt = millis() - firstLatch;
+        buttonData.pressedAt = millis() - firstLatchForSave;
 
         ButtonDataStorage.storeData(buttonData);
     }
@@ -86,14 +104,22 @@ static void prepareNextReplayFrame() {
     }
 }
 
+/*
+ * Timestamp of the last (most current) latch.
+ */
 static uint16_t lastLatch;
+static uint16_t firstLatchForLoad;
 
 static void calculateLatchInfo() {
     const uint16_t timeNow = millis();
     const uint16_t latchDuration = timeNow - lastLatch;
 
-    if (firstLatch == 0) {
-        firstLatch = millis();
+    if (firstLatchForSave == 0) {
+        firstLatchForSave = millis();
+    }
+
+    if (firstLatchForLoad == 0) {
+        firstLatchForLoad = millis();
     }
 
     // a short latch is a latch less than 1/2 a frame
@@ -107,7 +133,7 @@ static void calculateLatchInfo() {
 
 static void fixButtonTiming(const uint16_t pressedAt) {
     const uint16_t timeNow = millis();
-    const uint16_t timeFromFirstLatch = timeNow - firstLatch;
+    const uint16_t timeFromFirstLatch = timeNow - firstLatchForLoad;
 
     const int8_t buttonDelay = pressedAt - timeFromFirstLatch - FRAME_LENGTH;
 
@@ -140,4 +166,65 @@ static void calculateLoopDuration() {
     }
 
     lastLoop = timeNow;
+}
+
+static void handleEnableSaveMessage(const uint8_t* const payload, const uint8_t size) {
+    appInfo.isInSaveMode = true;
+    firstLatchForSave = 0;
+
+    // discard data from a possible previous save session
+    ButtonDataStorage.reset();
+}
+
+static void handleEnableLoadMessage(const uint8_t* const payload, const uint8_t size) {
+    appInfo.isInReplayMode = true;
+    firstLatchForLoad = 0;
+
+    // pre-fill internal buffers
+    // so data it is already available when first latch is received
+    ButtonDataLoader.loadInitialData();
+}
+
+static void handlePingMessage(const uint8_t* const payload, const uint8_t size) {
+    MessageProcessor.sendData(PONG, payload, size);
+}
+
+static void handleRequestStatusMessage(const uint8_t* const payload, const uint8_t size) {
+    const uint8_t dataBufferSize = sizeof(AppInfo) + sizeof(uint16_t);
+    uint8_t bytesToSend[dataBufferSize];
+
+    appInfoToBytes(&appInfo, bytesToSend);
+    intToBytes(getFreeRam(), bytesToSend + sizeof(AppInfo));
+
+    MessageProcessor.sendData(INFO_RESPONSE, bytesToSend, dataBufferSize);
+}
+
+static void handleDisableSaveMessage(const uint8_t* const payload, const uint8_t size) {
+    appInfo.isInSaveMode = false;
+}
+
+static void handleDisableLoadMessage(const uint8_t* const payload, const uint8_t size) {
+    appInfo.isInReplayMode = false;
+
+    // set prepared button data to a "no buttons pressed" state
+    ConsoleWriter.reset();
+}
+
+static void handleResetDataMessage(const uint8_t* const payload, const uint8_t size) {
+    appInfo.isInReplayMode = false;
+    appInfo.isInSaveMode = false;
+    appInfo.delayCount = 0;
+    appInfo.longLatches = 0;
+    appInfo.maxLoopDuration = 0;
+    appInfo.shortLatches = 0;
+    appInfo.skipCount = 0;
+
+    // reset all ongoing replay actions
+    ButtonDataLoader.reset();
+    ButtonDataStorage.reset();
+    ConsoleWriter.reset();
+}
+
+static void handleLoadResponseMessage(const uint8_t* const payload, const uint8_t size) {
+    ButtonDataLoader.processIncomingData(payload, size);
 }

@@ -52,58 +52,13 @@ static uint8_t decode (const uint8_t byte) {
     return byte - ENCODE_MARKER - 1;
 }
 
-void Messenger::handleMessage(const MessageType messageType, const uint8_t* const payload, const uint8_t size) {
-    switch(messageType) {
-        case ENABLE_SAVE:
-            appInfo.isInSaveMode = true;
-            ButtonDataStorage.reset();
-            break;
-        case SAVE:
-            break;
-        case ENABLE_LOAD:
-            appInfo.isInReplayMode = true;
-            ButtonDataLoader.loadInitialData();
-            break;
-        case LOAD:
-            break;
-        case PING:
-            sendData(PONG, payload, size);
-            break;
-        case PONG:
-            break;
-        case PRINT:
-            break;
-        case REQUEST_STATUS:
-            sendInfo();
-            break;
-        case DISABLE_SAVE:
-            appInfo.isInSaveMode = false;
-            ButtonDataStorage.reset();
-            break;
-        case DISABLE_LOAD:
-            appInfo.isInReplayMode = false;
-            ButtonDataLoader.reset();
-            ConsoleWriter.prepareData(ButtonData());
-            break;
-        case RESET_DATA:
-            appInfo.isInReplayMode = false;
-            appInfo.isInSaveMode = false;
-            appInfo.delayCount = 0;
-            appInfo.longLatches = 0;
-            appInfo.maxLoopDuration = 0;
-            appInfo.shortLatches = 0;
-            appInfo.skipCount = 0;
+void Messenger::registerMessageHandler(MessageType type, const MessageHandler handler) {
+    messageHandlers[type] = handler;
+}
 
-            // reset all ongoing replay actions
-            ButtonDataLoader.reset();
-            ButtonDataStorage.reset();
-            ConsoleWriter.prepareData(ButtonData());
-            break;
-        case LOAD_RESPONSE:
-             ButtonDataLoader.processIncomingData(payload, size);
-            break;
-        case INFO_RESPONSE:
-            break;
+void Messenger::handleMessage(const MessageType messageType, const uint8_t* const payload, const uint8_t size) {
+    if (messageHandlers[messageType]) {
+        messageHandlers[messageType](payload, size);
     }
 }
 
@@ -149,18 +104,6 @@ static bool needsEncoding(const uint8_t byte) {
 static uint8_t encode (const uint8_t byte) {
     // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
     return byte + ENCODE_MARKER + 1;
-}
-
-void Messenger::sendInfo() {
-    const uint8_t dataBufferSize = sizeof(AppInfo) + sizeof(uint16_t);
-    uint8_t bytesToSend[dataBufferSize];
-
-    memcpy(bytesToSend, &appInfo, sizeof(AppInfo));
-
-    // amount of free RAM is not part of AppInfo
-    intToBytes(getFreeRam(), bytesToSend + sizeof(AppInfo));
-
-    sendData(INFO_RESPONSE, bytesToSend, dataBufferSize);
 }
 
 void Messenger::print(const String& text) {

@@ -101,4 +101,11 @@ ButtonData WriteToConsole::getLatestData() const {
     return combinedData;
 }
 
+void WriteToConsole::reset() {
+    lastPreparedData = ButtonData();
+    lastAdditionalData = ButtonData();
+
+    setPins();
+}
+
 WriteToConsole ConsoleWriter;

@@ -110,6 +110,11 @@ typedef enum {
 } MessageType;
 
 /*
+ * Number of message types - needs to be higher than the highest message type above.
+ */
+const uint8_t NUM_MESSAGE_TYPES = 16;
+
+/*
  * Maximum size of the message content for incoming messages.
  *
  * Minimum 4 bytes, since this is the size of a single ButtonData structure.
@@ -131,10 +136,5 @@ struct AppInfo {
     bool isInSaveMode;
     bool isInReplayMode;
 };
-
-/*
- * Holds global information about the application.
- */
-extern AppInfo appInfo;
 
 #endif

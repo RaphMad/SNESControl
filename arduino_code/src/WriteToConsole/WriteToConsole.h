@@ -33,6 +33,11 @@ class WriteToConsole {
          * Retrieves the latest data that has been read by the console (combined of prepared and combined data).
          */
         ButtonData getLatestData() const;
+
+        /*
+         * Sets the internal button states to "not pressed".
+         */
+        void reset();
 };
 
 /*

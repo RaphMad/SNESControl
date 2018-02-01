@@ -17,6 +17,8 @@ typedef enum {
     ENCODE_MARKER = 2
 } ByteMarker;
 
+typedef void (* MessageHandler)(const uint8_t *, uint8_t);
+
 class Messenger {
     private:
        /*
@@ -36,15 +38,24 @@ class Messenger {
         */
         uint8_t sendBuffer[BUFFER_SIZE];
 
+        /*
+         * Stores the registered message handlers.
+         */
+        MessageHandler messageHandlers[NUM_MESSAGE_TYPES];
+
         void handleMessage(MessageType, const uint8_t*, uint8_t);
         void decodeReceivedMessage(uint8_t);
-        void sendInfo();
 
     public:
         /*
          * This is meant to be called regularly when incoming data may be available.
          */
         void checkForData();
+
+        /*
+         * Registers a message handler for a specific message type.
+         */
+        void registerMessageHandler(MessageType type, const MessageHandler handler);
 
         /*
          * Send data with its payload to the client.

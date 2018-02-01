@@ -4,7 +4,7 @@ void buttonDataToBytes(const ButtonData* const buttonData, uint8_t* const buf) {
     memcpy(buf, buttonData, sizeof(ButtonData));
 }
 
-const ButtonData bytesToButtonData(const uint8_t* const bytes) {
+ButtonData bytesToButtonData(const uint8_t* const bytes) {
     ButtonData buttonData;
 
     buttonData.B = bitRead(bytes[0], 0);
@@ -24,6 +24,10 @@ const ButtonData bytesToButtonData(const uint8_t* const bytes) {
     buttonData.pressedAt = bytesToInt(bytes + 2);
 
     return buttonData;
+}
+
+void appInfoToBytes(const AppInfo* appInfo, uint8_t* buf) {
+    memcpy(buf, appInfo, sizeof(AppInfo));
 }
 
 void intToBytes(const uint16_t value, uint8_t* const buf) {
