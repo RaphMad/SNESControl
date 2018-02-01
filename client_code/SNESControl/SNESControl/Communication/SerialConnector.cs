@@ -17,7 +17,7 @@
 
         public SerialConnector(string portName)
         {
-            _port = new SerialPort(portName, 115200) { NewLine = "\r\n" };
+            _port = new SerialPort(portName, 125000) { NewLine = "\r\n" };
         }
 
         public void Start()
@@ -173,19 +173,16 @@
         public void HandleInfoResponse(byte[] data)
         {
             Console.WriteLine("Max loop duration: " + BitConverter.ToUInt16(data, 0));
-            Console.WriteLine("Last latch duration: " + BitConverter.ToUInt16(data, 2));
             Console.WriteLine();
-            Console.WriteLine("First latch timestamp: " + BitConverter.ToUInt16(data, 4));
+            Console.WriteLine("Number of long latches (lag frames): " + data[2]);
+            Console.WriteLine("Number of short latches: " + data[3]);
+            Console.WriteLine("Skip count: " + data[4]);
+            Console.WriteLine("Delay count: " + data[5]);
             Console.WriteLine();
-            Console.WriteLine("Number of long latches: " + data[6]);
-            Console.WriteLine("Number of short latches (lag frames): " + data[7]);
-            Console.WriteLine("Skip count: " + data[8]);
-            Console.WriteLine("Delay count: " + data[9]);
+            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 6));
+            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 7));
             Console.WriteLine();
-            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 10));
-            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 11));
-            Console.WriteLine();
-            Console.WriteLine("Free RAM: " + BitConverter.ToUInt16(data, 12));
+            Console.WriteLine("Free RAM: " + BitConverter.ToUInt16(data, 8));
             Console.WriteLine();
         }
     }

@@ -122,9 +122,6 @@ const uint8_t MAX_CONTENT_SIZE = 64;
  */
 struct AppInfo {
     uint16_t maxLoopDuration;
-    uint16_t lastLatchDuration;
-
-    uint16_t firstLatch;
 
     uint8_t longLatches;
     uint8_t shortLatches;

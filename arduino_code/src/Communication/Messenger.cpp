@@ -55,14 +55,12 @@ static uint8_t decode (const uint8_t byte) {
 void Messenger::handleMessage(const MessageType messageType, const uint8_t* const payload, const uint8_t size) {
     switch(messageType) {
         case ENABLE_SAVE:
-            appInfo.firstLatch = 0;
             appInfo.isInSaveMode = true;
             ButtonDataStorage.reset();
             break;
         case SAVE:
             break;
         case ENABLE_LOAD:
-            appInfo.firstLatch = 0;
             appInfo.isInReplayMode = true;
             ButtonDataLoader.loadInitialData();
             break;
@@ -91,8 +89,6 @@ void Messenger::handleMessage(const MessageType messageType, const uint8_t* cons
             appInfo.isInReplayMode = false;
             appInfo.isInSaveMode = false;
             appInfo.delayCount = 0;
-            appInfo.firstLatch = 0;
-            appInfo.lastLatchDuration = 0;
             appInfo.longLatches = 0;
             appInfo.maxLoopDuration = 0;
             appInfo.shortLatches = 0;

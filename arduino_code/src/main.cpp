@@ -38,7 +38,9 @@ static void calculateLoopDuration();
 void setup() {
     attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
 
-    Serial.begin(115200);
+    // A baud rate of 125k results in a nice integer ratio to a clock speed of 16 Mhz
+    // http://wormfood.net/avrbaudcalc.php?bitrate=125k&clock=16&databits=8
+    Serial.begin(125000);
 
     ControllerReader.begin();
     ConsoleWriter.begin();
@@ -64,10 +66,12 @@ void loop() {
     calculateLoopDuration();
 }
 
+static uint16_t firstLatch;
+
 static void saveButtonData() {
     if (appInfo.isInSaveMode) {
         ButtonData buttonData = ConsoleWriter.getLatestData();
-        buttonData.pressedAt = millis() - appInfo.firstLatch;
+        buttonData.pressedAt = millis() - firstLatch;
 
         ButtonDataStorage.storeData(buttonData);
     }
@@ -88,21 +92,22 @@ static void calculateLatchInfo() {
     const uint16_t timeNow = millis();
     const uint16_t latchDuration = timeNow - lastLatch;
 
-    appInfo.lastLatchDuration = latchDuration;
-
-    if (latchDuration < (FRAME_LENGTH / 2)) appInfo.shortLatches++;
-    if (latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) appInfo.longLatches++;
-
-    if (appInfo.firstLatch == 0) {
-        appInfo.firstLatch = millis();
+    if (firstLatch == 0) {
+        firstLatch = millis();
     }
+
+    // a short latch is a latch less than 1/2 a frame
+    if (latchDuration < (FRAME_LENGTH / 2)) appInfo.shortLatches++;
+
+    // a long latch is a latch longer than 3/2 a frame
+    if (lastLatch != 0 && latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) appInfo.longLatches++;
 
     lastLatch = timeNow;
 }
 
 static void fixButtonTiming(const uint16_t pressedAt) {
     const uint16_t timeNow = millis();
-    const uint16_t timeFromFirstLatch = timeNow - appInfo.firstLatch;
+    const uint16_t timeFromFirstLatch = timeNow - firstLatch;
 
     const int8_t buttonDelay = pressedAt - timeFromFirstLatch - FRAME_LENGTH;
 
