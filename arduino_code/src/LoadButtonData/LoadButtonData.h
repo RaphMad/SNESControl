@@ -3,7 +3,6 @@
 
 #include "../tools/tools.h"
 #include "../Communication/Messenger.h"
-#include "../WriteToConsole/WriteToConsole.h"
 
 /*
  * Use two alternating input buffers to ensure a consistent flow of inputs to the console.
@@ -38,9 +37,11 @@ class LoadButtonData {
         void loadInitialData();
 
         /*
-         * This is meant to be called regularly when incoming data is available.
+         * Adds incoming data to the internal buffers.
+         *
+         * The return value indicates whether this was the initial batch of data.
          */
-        void processIncomingData(const uint8_t* buf, uint8_t size);
+        bool processIncomingData(const uint8_t* buf, uint8_t size);
 
         /*
          * Read the next available button data.

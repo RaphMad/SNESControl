@@ -8,6 +8,7 @@ static const uint8_t LATCH_MASK = B00010000;
 static const uint8_t DATA_MASK = B00100000;
 
 static void pulseLatch();
+static bool readButton();
 static bool sampleButton();
 static void pulseClock();
 
@@ -34,7 +35,7 @@ ButtonData ReadController::getData() const {
     pulseLatch();
 
     // first button is already available, read it
-    sampledData.B = digitalRead(PIN_CONTROLLER_DATA);
+    sampledData.B = sampleButton();
 
     // sample the following buttons
     sampledData.Y = sampleButton();
@@ -65,10 +66,14 @@ static void pulseLatch() {
     //digitalWrite(PIN_CONTROLLER_LATCH, LOW);
 }
 
+static bool readButton() {
+    return PINC & DATA_MASK;
+}
+
 static bool sampleButton() {
     pulseClock();
 
-    return PINC & DATA_MASK;
+    return readButton();
 }
 
 static void pulseClock() {

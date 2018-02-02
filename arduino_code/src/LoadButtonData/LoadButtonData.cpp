@@ -7,7 +7,7 @@ void LoadButtonData::loadInitialData() {
     requestData();
 }
 
-void LoadButtonData::processIncomingData(const uint8_t* const buf, const uint8_t size) {
+bool LoadButtonData::processIncomingData(const uint8_t* const buf, const uint8_t size) {
     // write data into inactive input buffer
     if (!isInputBuffer1Active) {
         memcpy(inputBuffer1, buf, size);
@@ -22,22 +22,20 @@ void LoadButtonData::processIncomingData(const uint8_t* const buf, const uint8_t
         requestData();
 
         // also prepare the first frame
-        ConsoleWriter.prepareData(getData());
+        return true;
     }
+
+    return false;
 }
 
 ButtonData LoadButtonData::getData() {
-    ButtonData buttonData;
-
-    if (hasInitialData) {
-        if (isInputBuffer1Active) {
-            buttonData = readFromBuffer1();
-        } else {
-            buttonData = readFromBuffer2();
-        }
+    if (isInputBuffer1Active) {
+        return readFromBuffer1();
+    } else {
+        return readFromBuffer2();
     }
 
-    return buttonData;
+    return ButtonData();
 }
 
 const ButtonData LoadButtonData::readFromBuffer1() {

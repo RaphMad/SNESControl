@@ -130,8 +130,6 @@ struct AppInfo {
 
     uint8_t longLatches;
     uint8_t shortLatches;
-    uint8_t skipCount;
-    uint8_t delayCount;
 
     bool isInSaveMode;
     bool isInReplayMode;

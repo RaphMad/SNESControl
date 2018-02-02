@@ -176,13 +176,11 @@
             Console.WriteLine();
             Console.WriteLine("Number of long latches (lag frames): " + data[2]);
             Console.WriteLine("Number of short latches: " + data[3]);
-            Console.WriteLine("Skip count: " + data[4]);
-            Console.WriteLine("Delay count: " + data[5]);
             Console.WriteLine();
-            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 6));
-            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 7));
+            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 4));
+            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 5));
             Console.WriteLine();
-            Console.WriteLine("Free RAM: " + BitConverter.ToUInt16(data, 8));
+            Console.WriteLine("Free RAM: " + BitConverter.ToUInt16(data, 6));
             Console.WriteLine();
         }
     }

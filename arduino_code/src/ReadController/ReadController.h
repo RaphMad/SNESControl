@@ -1,7 +1,6 @@
 #ifndef ReadController_h
 #define ReadController_h
 
-#include <Arduino.h>
 #include "common.h"
 
 class ReadController {

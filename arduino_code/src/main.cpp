@@ -36,7 +36,6 @@ static void handleFallingLatchPulse();
 static void saveButtonData();
 static void prepareNextReplayFrame();
 static void calculateLatchInfo();
-static void fixButtonTiming(uint16_t);
 static void pollController();
 static void calculateLoopDuration();
 
@@ -127,25 +126,7 @@ static void saveButtonData() {
 
 static void prepareNextReplayFrame() {
     if (appInfo.isInReplayMode) {
-        ButtonData buttonData = ButtonDataLoader.getData();
-        fixButtonTiming(buttonData.pressedAt);
-
-        ConsoleWriter.prepareData(buttonData);
-    }
-}
-
-static void fixButtonTiming(const uint16_t pressedAt) {
-    const uint16_t timeFromFirstLatch = lastLatch - firstLatchForLoad;
-    const int8_t buttonDelay = pressedAt - timeFromFirstLatch - FRAME_LENGTH;
-
-    if (buttonDelay < -FRAME_LENGTH) {
-        // loading the next button data effectively skips a frame
-        ButtonDataLoader.getData();
-        appInfo.skipCount++;
-    } else if (buttonDelay > FRAME_LENGTH / 2) {
-        // delay a bit so we can sync up
-        delay(buttonDelay);
-        appInfo.delayCount++;
+        ConsoleWriter.prepareData(ButtonDataLoader.getData());
     }
 }
 
@@ -213,12 +194,12 @@ static void handleDisableLoadMessage(const uint8_t* const payload, const uint8_t
 
 static void handleResetDataMessage(const uint8_t* const payload, const uint8_t size) {
     appInfo.isInReplayMode = false;
-    appInfo.isInSaveMode = false;
-    appInfo.delayCount = 0;
+
     appInfo.longLatches = 0;
-    appInfo.maxLoopDuration = 0;
     appInfo.shortLatches = 0;
-    appInfo.skipCount = 0;
+
+    appInfo.isInSaveMode = false;
+    appInfo.maxLoopDuration = 0;
 
     // reset all ongoing replay actions
     ButtonDataLoader.reset();
@@ -227,5 +208,10 @@ static void handleResetDataMessage(const uint8_t* const payload, const uint8_t s
 }
 
 static void handleLoadResponseMessage(const uint8_t* const payload, const uint8_t size) {
-    ButtonDataLoader.processIncomingData(payload, size);
+    bool wasInitialData = ButtonDataLoader.processIncomingData(payload, size);
+
+    // prepare initial button states
+    if (wasInitialData) {
+        ConsoleWriter.prepareData(ButtonDataLoader.getData());
+    }
 }

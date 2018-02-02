@@ -1,8 +1,7 @@
 #ifndef StoreButtonData_h
 #define StoreButtonData_h
 
-#include <Arduino.h>
-#include "common.h"
+#include "../tools/tools.h"
 #include "../Communication/Messenger.h"
 
 class StoreButtonData {
