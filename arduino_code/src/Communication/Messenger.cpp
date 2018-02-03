@@ -63,38 +63,21 @@ void Messenger::handleMessage(const MessageType messageType, const uint8_t* cons
 }
 
 void Messenger::sendData(const MessageType type, const uint8_t* const payload, const uint8_t size) {
-    if (size <= MAX_CONTENT_SIZE) {
-        uint8_t sendBufferIndex = 2;
-        sendBuffer[0] = START_MARKER;
+    Serial.write(START_MARKER);
+    Serial.write(type);
 
-        if (needsEncoding(type)) {
-            sendBuffer[1] = ENCODE_MARKER;
-            sendBuffer[2] = encode(type);
-            sendBufferIndex++;
+    for (int i = 0; i < size; i++) {
+        uint8_t currentByte = payload[i];
+
+        if (needsEncoding(currentByte)) {
+            Serial.write(ENCODE_MARKER);
+            Serial.write(encode(currentByte));
         } else {
-            sendBuffer[1] = type;
+            Serial.write(currentByte);
         }
-
-        for (uint8_t i = 0; i < size; i++) {
-            const uint8_t currentByte = payload[i];
-
-            if (needsEncoding(currentByte)) {
-                sendBuffer[sendBufferIndex] = ENCODE_MARKER;
-
-                sendBufferIndex++;
-                sendBuffer[sendBufferIndex] = encode(currentByte);
-            } else {
-                sendBuffer[sendBufferIndex] = currentByte;
-            }
-
-            sendBufferIndex++;
-        }
-
-        sendBuffer[sendBufferIndex] = END_MARKER;
-        sendBufferIndex++;
-
-        Serial.write(sendBuffer, sendBufferIndex);
     }
+
+    Serial.write(END_MARKER);
 }
 
 static bool needsEncoding(const uint8_t byte) {

@@ -28,13 +28,6 @@ class Messenger {
         uint8_t receiveBufferIndex;
         bool isReceiving;
 
-       /*
-        * This could be allocated on the stack for each sent message,
-        * but declaring it here makes it show up in the program data size
-        * and avoids allocating a lot of stack memory each time a message is sent.
-        */
-        uint8_t sendBuffer[BUFFER_SIZE];
-
         /*
          * Stores the registered message handlers.
          */

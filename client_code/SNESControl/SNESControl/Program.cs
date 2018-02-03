@@ -62,7 +62,7 @@
             Console.WriteLine("'x': stop saving / loading");
             Console.WriteLine("'i': request information");
             Console.WriteLine("'o': clear information");
-            Console.WriteLine("'p': send a PING request containing 64 bytes");
+            Console.WriteLine("'p': send a PING request containing 32 bytes");
             Console.WriteLine("'ESC': quit");
             Console.WriteLine();
 
@@ -134,7 +134,7 @@
 
         static void SendPing()
         {
-            byte[] bytes = Enumerable.Range(0, 64).Select(x => (byte)x).ToArray();
+            byte[] bytes = Enumerable.Range(0, 32).Select(x => (byte)x).ToArray();
             _serialConnector.StartPingTimer();
             _serialConnector.SendData(MessageType.Ping, bytes);
         }

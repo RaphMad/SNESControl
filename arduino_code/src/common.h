@@ -120,7 +120,7 @@ const uint8_t NUM_MESSAGE_TYPES = 16;
  * Minimum 4 bytes, since this is the size of a single ButtonData structure.
  * Maximum size is at about 230 (depending on current stack size).
  */
-const uint8_t MAX_CONTENT_SIZE = 64;
+const uint8_t MAX_CONTENT_SIZE = 32;
 
 /*
  * Holds information about the application.
