@@ -49,6 +49,12 @@ static void handleResetDataMessage(const uint8_t* payload, uint8_t size);
 static void handleLoadResponseMessage(const uint8_t* payload, uint8_t size);
 
 void setup() {
+    // stop the built in led from lightning up by setting it to output
+    DDRB |= B00100000;
+
+    // equivalent to
+    //pinMode(LED_BUILTIN, OUTPUT);
+
     attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
 
     // A baud rate of 125k results in a nice integer ratio to a clock speed of 16 Mhz
