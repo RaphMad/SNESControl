@@ -2,50 +2,30 @@
 #define Messenger_H
 
 #include "../tools/tools.h"
-
-/*
- * Markers were chosen deliberately to have low values, since most of the transmitted data will be high values.
- * (HIGH means buttons are not pressed)
- * This will ensure a minimal encoding overhead for typical scenarios.
- */
-typedef enum {
-    START_MARKER = 0,
-    END_MARKER = 1,
-    ENCODE_MARKER = 2
-} ByteMarker;
+#include "Encoding.h"
 
 typedef void (* MessageHandler)(const uint8_t *, uint8_t);
 
 class Messenger {
     private:
-       /*
-        * Due the encoding, in a worst case we may need double the content size
-        * plus 2 bytes for the message type plus 2 bytes for the start / end marker.
-        */
-        static const uint8_t BUFFER_SIZE = MAX_CONTENT_SIZE * 2 + 2 + 2;
-
-        uint8_t receiveBuffer[BUFFER_SIZE];
-        uint8_t receiveBufferIndex;
-        bool isReceiving;
+       Encoding encoder;
 
         /*
          * Stores the registered message handlers.
          */
         MessageHandler messageHandlers[NUM_MESSAGE_TYPES];
 
-        void handleMessage(MessageType, const uint8_t*, uint8_t);
         void decodeReceivedMessage(uint8_t);
-
     public:
-        /*
-         * This is meant to be called regularly when incoming data may be available.
-         */
-        void checkForData();
-
         /*
          * Registers a message handler for a specific message type.
          */
         void registerMessageHandler(MessageType type, const MessageHandler handler);
+
+        /*
+         * This is meant to be called regularly when incoming data may be available.
+         */
+        void pollData();
 
         /*
          * Send data with its payload to the client.

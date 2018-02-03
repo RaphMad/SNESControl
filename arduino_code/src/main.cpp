@@ -91,7 +91,8 @@ void loop() {
     }
 
     pollController();
-    MessageProcessor.checkForData();
+    MessageProcessor.pollData();
+
     calculateLoopDuration();
 }
 
