@@ -36,6 +36,11 @@ void WriteToConsole::begin() const {
     //pinMode(PIN_BTN_SHOULDER_LEFT, OUTPUT);
     //pinMode(PIN_BTN_SHOULDER_RIGHT, OUTPUT);
 
+    // stop led _ builtin from lightning up by setting it to output too
+    DDRB |= B00100000;
+
+    //pinMode(LED_BUILTIN, OUTPUT);
+
     // initialize pins with default button data (all set to HIGH)
     setPins();
 }
