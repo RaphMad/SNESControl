@@ -35,7 +35,7 @@ ButtonData ReadController::getData() const {
     pulseLatch();
 
     // first button is already available, read it
-    sampledData.B = sampleButton();
+    sampledData.B = readButton();
 
     // sample the following buttons
     sampledData.Y = sampleButton();
