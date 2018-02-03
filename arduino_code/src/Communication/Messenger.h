@@ -25,13 +25,12 @@ class Messenger {
         /*
          * This is meant to be called regularly when incoming data may be available.
          */
-        void pollData();
+        void pollForMessage();
 
         /*
-         * Send data with its payload to the client.
-         * Size needs to be less than MAX_CONTENT_SIZE.
+         * Send message with its payload to the client.
          */
-        void sendData(MessageType type, const uint8_t* payload, uint8_t size);
+        void sendMessage(MessageType type, const uint8_t* payload, uint8_t size);
 
         /*
          * Convencience function to print text to the client.

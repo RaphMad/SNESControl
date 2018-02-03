@@ -68,7 +68,7 @@ const ButtonData LoadButtonData::readFromBuffer2() {
 
 static void requestData() {
     const uint8_t content[] = { MAX_CONTENT_SIZE };
-    MessageProcessor.sendData(LOAD, content, 1);
+    MessageProcessor.sendMessage(LOAD, content, 1);
 }
 
 

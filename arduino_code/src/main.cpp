@@ -91,7 +91,7 @@ void loop() {
     }
 
     pollController();
-    MessageProcessor.pollData();
+    MessageProcessor.pollForMessage();
 
     calculateLoopDuration();
 }
@@ -175,7 +175,7 @@ static void handleEnableLoadMessage(const uint8_t* const payload, const uint8_t 
 }
 
 static void handlePingMessage(const uint8_t* const payload, const uint8_t size) {
-    MessageProcessor.sendData(PONG, payload, size);
+    MessageProcessor.sendMessage(PONG, payload, size);
 }
 
 static void handleRequestStatusMessage(const uint8_t* const payload, const uint8_t size) {
@@ -185,7 +185,7 @@ static void handleRequestStatusMessage(const uint8_t* const payload, const uint8
     appInfoToBytes(&appInfo, bytesToSend);
     intToBytes(getFreeRam(), bytesToSend + sizeof(AppInfo));
 
-    MessageProcessor.sendData(INFO_RESPONSE, bytesToSend, dataBufferSize);
+    MessageProcessor.sendMessage(INFO_RESPONSE, bytesToSend, dataBufferSize);
 }
 
 static void handleDisableSaveMessage(const uint8_t* const payload, const uint8_t size) {

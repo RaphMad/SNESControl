@@ -34,14 +34,23 @@ class Encoding {
         /*
          * This is meant to be called regularly when incoming data may be available.
          *
-         * The return value indicates whether a complete frame is available.
+         * The return value indicates whether a complete message is available.
          *
          * 0 indicates that no message is available. (All messages have at least size 1, the message type.)
          * A positive value indicates that a message of the given size is available.
          */
-        uint8_t pollData();
+        uint8_t pollForData();
 
-        uint8_t* getMessage();
+        /*
+         * Used to retrieve the next message.
+         * Note that this will only return meaningful data if .pollData() returned a positive value.
+         */
+        const uint8_t* readMessage();
+
+        /*
+         * Send message with its payload to the client.
+         */
+        void sendMessage(MessageType type, const uint8_t* payload, uint8_t size);
 };
 
 #endif
