@@ -21,8 +21,6 @@ ButtonData bytesToButtonData(const uint8_t* const bytes) {
     buttonData.SHOULDER_LEFT = bitRead(bytes[1], 2);
     buttonData.SHOULDER_RIGHT = bitRead(bytes[1], 3);
 
-    buttonData.pressedAt = bytesToInt(bytes + 2);
-
     return buttonData;
 }
 

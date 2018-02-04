@@ -12,30 +12,13 @@
 static AppInfo appInfo;
 
 /*
- * Expected frame length in ms.
- * Should be 20ms for PAL, 16ms for NTSC consoles.
- */
-static const uint8_t FRAME_LENGTH = 20;
-
-/*
- * Timestamp of the last (most current) latch.
- */
-static uint16_t lastLatch;
-
-/*
  * Indicates whether we are right after a latch.
  */
 static volatile bool isAfterLatch = false;
 
-/*
- * Controller will be polled half a frame after a latch.
- */
-static bool wasPolledThisLatch = false;
-
 static void handleFallingLatchPulse();
 static void saveButtonData();
 static void prepareNextReplayFrame();
-static void calculateLatchInfo();
 static void pollController();
 static void calculateLoopDuration();
 
@@ -82,52 +65,22 @@ static void handleFallingLatchPulse() {
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
-        wasPolledThisLatch = false;
-
-        calculateLatchInfo();
 
         saveButtonData();
         prepareNextReplayFrame();
+
+        if (!appInfo.isInReplayMode) {
+            pollController();
+        }
     }
 
-    pollController();
     MessageProcessor.pollForMessage();
-
     calculateLoopDuration();
-}
-
-static uint16_t firstLatchForSave;
-static uint16_t firstLatchForLoad;
-
-static void calculateLatchInfo() {
-    const uint16_t timeNow = millis();
-    const uint16_t latchDuration = timeNow - lastLatch;
-
-    if (lastLatch != 0) {
-        // a short latch is a latch less than 1/2 a frame
-        if (latchDuration < (FRAME_LENGTH / 2)) appInfo.shortLatches++;
-
-        // a long latch is a latch longer than 3/2 a frame
-        if (latchDuration > (FRAME_LENGTH + (FRAME_LENGTH / 2))) appInfo.longLatches++;
-    }
-
-    if (firstLatchForSave == 0) {
-        firstLatchForSave = timeNow;
-    }
-
-    if (firstLatchForLoad == 0) {
-        firstLatchForLoad = timeNow;
-    }
-
-    lastLatch = timeNow;
 }
 
 static void saveButtonData() {
     if (appInfo.isInSaveMode) {
-        ButtonData buttonData = ConsoleWriter.getLatestData();
-        buttonData.pressedAt = lastLatch - firstLatchForSave;
-
-        ButtonDataStorage.storeData(buttonData);
+        ButtonDataStorage.storeData(ConsoleWriter.getLatestData());
     }
 }
 
@@ -138,10 +91,7 @@ static void prepareNextReplayFrame() {
 }
 
 static void pollController() {
-    if (!wasPolledThisLatch && millis() - lastLatch > FRAME_LENGTH / 2) {
-       ConsoleWriter.addData(ControllerReader.getData());
-       wasPolledThisLatch = true;
-    }
+    ConsoleWriter.addData(ControllerReader.getData());
 }
 
 static uint16_t lastLoop;
@@ -159,7 +109,6 @@ static void calculateLoopDuration() {
 
 static void handleEnableSaveMessage(const uint8_t* const payload, const uint8_t size) {
     appInfo.isInSaveMode = true;
-    firstLatchForSave = 0;
 
     // discard data from a possible previous save session
     ButtonDataStorage.reset();
@@ -167,7 +116,6 @@ static void handleEnableSaveMessage(const uint8_t* const payload, const uint8_t 
 
 static void handleEnableLoadMessage(const uint8_t* const payload, const uint8_t size) {
     appInfo.isInReplayMode = true;
-    firstLatchForLoad = 0;
 
     // pre-fill internal buffers
     // so data it is already available when first latch is received
@@ -200,13 +148,10 @@ static void handleDisableLoadMessage(const uint8_t* const payload, const uint8_t
 }
 
 static void handleResetDataMessage(const uint8_t* const payload, const uint8_t size) {
-    appInfo.isInReplayMode = false;
-
-    appInfo.longLatches = 0;
-    appInfo.shortLatches = 0;
-
-    appInfo.isInSaveMode = false;
     appInfo.maxLoopDuration = 0;
+
+    appInfo.isInReplayMode = false;
+    appInfo.isInSaveMode = false;
 
     // reset all ongoing replay actions
     ButtonDataLoader.reset();

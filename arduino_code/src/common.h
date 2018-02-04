@@ -54,12 +54,6 @@ struct ButtonData {
     bool UNUSED_BIT7 :1;
     bool UNUSED_BIT8 :1;
 
-
-    /*
-     * Time when the button was pressed, relative to the timestamp of the first latch.
-     */
-    uint16_t pressedAt;
-
     ButtonData() {
         // initialize all fields with true, this makes creating manual instances easier
         // (remember that true means NOT pressed)
@@ -127,9 +121,6 @@ const uint8_t MAX_CONTENT_SIZE = 32;
  */
 struct AppInfo {
     uint16_t maxLoopDuration;
-
-    uint8_t longLatches;
-    uint8_t shortLatches;
 
     bool isInSaveMode;
     bool isInReplayMode;

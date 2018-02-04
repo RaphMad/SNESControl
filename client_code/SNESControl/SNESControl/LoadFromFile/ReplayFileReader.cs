@@ -23,10 +23,10 @@
             try
             {
                 _currentIndex = 0;
-                //_bytesFromFile = File.ReadAllBytes(_fileName);
+                _bytesFromFile = File.ReadAllBytes(_fileName);
                 //_bytesFromFile = ConvertFromSnes9xFile(File.ReadAllBytes(_fileName));
                 //_bytesFromFile = ConvertFromLsnesFile(File.ReadAllLines(_fileName));
-                _bytesFromFile = ConvertFromLsnesDumpFile(File.ReadAllBytes(_fileName));
+                //_bytesFromFile = ConvertFromLsnesDumpFile(File.ReadAllBytes(_fileName));
             }
             catch (Exception e)
             {
