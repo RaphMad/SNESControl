@@ -16,6 +16,11 @@ static AppInfo appInfo;
  */
 static volatile bool isAfterLatch = false;
 
+/*
+ * Stores the current latch number.
+ */
+static uint32_t currentLatch;
+
 static void handleFallingLatchPulse();
 static void saveButtonData();
 static void prepareNextReplayFrame();
@@ -65,6 +70,7 @@ static void handleFallingLatchPulse() {
 void loop() {
     if (isAfterLatch) {
         isAfterLatch = false;
+        currentLatch++;
 
         saveButtonData();
         prepareNextReplayFrame();
@@ -80,12 +86,16 @@ void loop() {
 
 static void saveButtonData() {
     if (appInfo.isInSaveMode) {
-        ButtonDataStorage.storeData(ConsoleWriter.getLatestData());
+        ButtonData buttonData = ConsoleWriter.getLatestData();
+
+        buttonData.latchNumber = currentLatch;
+
+        ButtonDataStorage.storeData(buttonData);
     }
 }
 
 static void prepareNextReplayFrame() {
-    if (appInfo.isInReplayMode) {
+    if (appInfo.isInReplayMode && ButtonDataLoader.hasData()) {
         ConsoleWriter.prepareData(ButtonDataLoader.getData());
     }
 }
@@ -112,6 +122,7 @@ static void handleEnableSaveMessage(const uint8_t* const payload, const uint8_t 
 
     // discard data from a possible previous save session
     ButtonDataStorage.reset();
+    currentLatch = 0;
 }
 
 static void handleEnableLoadMessage(const uint8_t* const payload, const uint8_t size) {
@@ -164,6 +175,8 @@ static void handleLoadResponseMessage(const uint8_t* const payload, const uint8_
 
     // prepare initial button states
     if (wasInitialData) {
+        currentLatch = 0;
+
         ConsoleWriter.prepareData(ButtonDataLoader.getData());
     }
 }

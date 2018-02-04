@@ -1,4 +1,5 @@
 #include "tools.h"
+#include "../Communication/Messenger.h"
 
 void buttonDataToBytes(const ButtonData* const buttonData, uint8_t* const buf) {
     memcpy(buf, buttonData, sizeof(ButtonData));
@@ -21,6 +22,8 @@ ButtonData bytesToButtonData(const uint8_t* const bytes) {
     buttonData.SHOULDER_LEFT = bitRead(bytes[1], 2);
     buttonData.SHOULDER_RIGHT = bitRead(bytes[1], 3);
 
+    buttonData.latchNumber = bytesToLong(bytes + 2);
+
     return buttonData;
 }
 
@@ -34,6 +37,10 @@ void intToBytes(const uint16_t value, uint8_t* const buf) {
 
 uint16_t bytesToInt(const uint8_t* const bytes) {
     return (bytes[1] << 8) + bytes[0];
+}
+
+uint32_t bytesToLong(const uint8_t* const bytes) {
+    return (uint32_t)bytes[3] * 256 * 256 * 256 + (uint32_t)bytes[2] * 256 * 256 + (bytes[1] << 8) + bytes[0];
 }
 
 const String formatButtonData(const ButtonData& buttonData) {

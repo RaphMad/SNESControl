@@ -6,8 +6,8 @@ void StoreButtonData::storeData(const ButtonData buttonData) {
     outputBufferIndex += sizeof(ButtonData);
 
     // buffer is full, send data
-    if (outputBufferIndex == BUFFER_SIZE) {
-        MessageProcessor.sendMessage(SAVE, outputBuffer, BUFFER_SIZE);
+    if (outputBufferIndex + sizeof(ButtonData) > BUFFER_SIZE) {
+        MessageProcessor.sendMessage(SAVE, outputBuffer, outputBufferIndex);
         outputBufferIndex = 0;
     }
 }

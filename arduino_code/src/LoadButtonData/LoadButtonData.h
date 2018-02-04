@@ -37,6 +37,11 @@ class LoadButtonData {
         void loadInitialData();
 
         /*
+         * Returns true when the data loader contains data.
+         */
+        bool hasData();
+
+        /*
          * Adds incoming data to the internal buffers.
          *
          * The return value indicates whether this was the initial batch of data.

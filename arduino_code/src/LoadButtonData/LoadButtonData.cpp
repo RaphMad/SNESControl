@@ -7,6 +7,10 @@ void LoadButtonData::loadInitialData() {
     requestData();
 }
 
+bool LoadButtonData::hasData() {
+    return hasInitialData;
+}
+
 bool LoadButtonData::processIncomingData(const uint8_t* const buf, const uint8_t size) {
     // write data into inactive input buffer
     if (!isInputBuffer1Active) {
@@ -29,10 +33,12 @@ bool LoadButtonData::processIncomingData(const uint8_t* const buf, const uint8_t
 }
 
 ButtonData LoadButtonData::getData() {
-    if (isInputBuffer1Active) {
-        return readFromBuffer1();
-    } else {
-        return readFromBuffer2();
+    if (hasInitialData) {
+        if (isInputBuffer1Active) {
+            return readFromBuffer1();
+        } else {
+            return readFromBuffer2();
+        }
     }
 
     return ButtonData();
@@ -43,7 +49,7 @@ const ButtonData LoadButtonData::readFromBuffer1() {
 
     inputBuffer1Index += sizeof(ButtonData);
 
-    if (inputBuffer1Index == BUFFER_SIZE) {
+    if (inputBuffer1Index + sizeof(ButtonData) >= BUFFER_SIZE) {
         isInputBuffer1Active = false;
         inputBuffer1Index = 0;
         requestData();
@@ -57,7 +63,7 @@ const ButtonData LoadButtonData::readFromBuffer2() {
 
     inputBuffer2Index += sizeof(ButtonData);
 
-    if (inputBuffer2Index == BUFFER_SIZE) {
+    if (inputBuffer2Index + sizeof(ButtonData) >= BUFFER_SIZE) {
         isInputBuffer1Active = true;
         inputBuffer2Index = 0;
         requestData();
@@ -67,7 +73,7 @@ const ButtonData LoadButtonData::readFromBuffer2() {
 }
 
 static void requestData() {
-    const uint8_t content[] = { MAX_CONTENT_SIZE };
+    const uint8_t content[] = { MAX_CONTENT_SIZE - MAX_CONTENT_SIZE % sizeof(ButtonData) };
     MessageProcessor.sendMessage(LOAD, content, 1);
 }
 

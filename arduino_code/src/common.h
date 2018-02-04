@@ -54,6 +54,11 @@ struct ButtonData {
     bool UNUSED_BIT7 :1;
     bool UNUSED_BIT8 :1;
 
+    /*
+     * The latch number of this set of input data.
+     */
+    uint32_t latchNumber;
+
     ButtonData() {
         // initialize all fields with true, this makes creating manual instances easier
         // (remember that true means NOT pressed)
@@ -74,6 +79,8 @@ struct ButtonData {
         UNUSED_BIT6 = true;
         UNUSED_BIT7 = true;
         UNUSED_BIT8 = true;
+
+        latchNumber = 0;
     }
 };
 

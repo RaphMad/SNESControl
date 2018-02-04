@@ -30,6 +30,11 @@ void intToBytes(uint16_t value, uint8_t* buf);
 uint16_t bytesToInt(const uint8_t* bytes);
 
 /*
+ * Converts bytes to their long integer representation.
+ */
+uint32_t bytesToLong(const uint8_t* bytes);
+
+/*
  * Gets the currently available free RAM.
  *
  * This is the amount of bytes between the stack and the heap.
