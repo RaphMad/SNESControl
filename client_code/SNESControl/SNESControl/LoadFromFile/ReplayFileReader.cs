@@ -23,9 +23,10 @@
             try
             {
                 _currentIndex = 0;
-                _bytesFromFile = File.ReadAllBytes(_fileName);
+                //_bytesFromFile = File.ReadAllBytes(_fileName);
                 //_bytesFromFile = ConvertFromSnes9xFile(File.ReadAllBytes(_fileName));
                 //_bytesFromFile = ConvertFromLsnesFile(File.ReadAllLines(_fileName));
+                _bytesFromFile = ConvertFromLsnesDumpFile(File.ReadAllBytes(_fileName));
             }
             catch (Exception e)
             {
@@ -41,6 +42,28 @@
             _currentIndex += numberOfBytes;
 
             return bytes;
+        }
+
+        private byte[] ConvertFromLsnesDumpFile(byte[] file)
+        {
+            var convertedBytes = new List<byte>();
+
+            uint inputOffset = BitConverter.ToUInt32(file, 0x1C);
+            ushort frameTime = 0;
+
+            for (uint i = inputOffset; i < file.Length; i += 2)
+            {
+                byte byte1 = file[i];
+                byte byte2 = file[i + 1];
+
+                convertedBytes.Add((byte)~byte2);
+                convertedBytes.Add((byte)~byte1);
+
+                convertedBytes.AddRange(BitConverter.GetBytes(frameTime));
+                frameTime += 16;
+            }
+
+            return convertedBytes.ToArray();
         }
 
         private byte[] ConvertFromSnes9xFile(byte[] file)
