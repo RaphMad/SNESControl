@@ -43,8 +43,6 @@ on_latch = function()
 
         dumpfile:write(string.char(byte1));
         dumpfile:write(string.char(byte2));
-
-        dumpfile:write(string.char(latchCount & 0xff, (latchCount >>  8) & 0xff, (latchCount >> 16) & 0xff, (latchCount >> 24) & 0xff));
     end
 end
 
