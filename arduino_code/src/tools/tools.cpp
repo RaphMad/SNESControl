@@ -22,8 +22,6 @@ ButtonData bytesToButtonData(const uint8_t* const bytes) {
     buttonData.SHOULDER_LEFT = bitRead(bytes[1], 2);
     buttonData.SHOULDER_RIGHT = bitRead(bytes[1], 3);
 
-    buttonData.latchNumber = bytesToLong(bytes + 2);
-
     return buttonData;
 }
 
@@ -37,34 +35,6 @@ void intToBytes(const uint16_t value, uint8_t* const buf) {
 
 uint16_t bytesToInt(const uint8_t* const bytes) {
     return (bytes[1] << 8) + bytes[0];
-}
-
-uint32_t bytesToLong(const uint8_t* const bytes) {
-    return (uint32_t)bytes[3] * 256 * 256 * 256 + (uint32_t)bytes[2] * 256 * 256 + (bytes[1] << 8) + bytes[0];
-}
-
-const String formatButtonData(const ButtonData& buttonData) {
-    String pressedButtons = "";
-    pressedButtons.reserve(81);
-
-    if (!buttonData.B) pressedButtons += "B, ";
-    if (!buttonData.Y) pressedButtons += "Y, ";
-    if (!buttonData.SELECT) pressedButtons += "SELECT, ";
-    if (!buttonData.START) pressedButtons += "START, ";
-    if (!buttonData.UP) pressedButtons += "UP, ";
-    if (!buttonData.DOWN) pressedButtons += "DOWN, ";
-    if (!buttonData.LEFT) pressedButtons += "LEFT, ";
-    if (!buttonData.RIGHT) pressedButtons += "RIGHT, ";
-    if (!buttonData.A) pressedButtons += "A, ";
-    if (!buttonData.X) pressedButtons += "X, ";
-    if (!buttonData.SHOULDER_LEFT) pressedButtons += "SHOULDER_LEFT, ";
-    if (!buttonData.SHOULDER_RIGHT) pressedButtons += "SHOULDER_RIGHT, ";
-
-    if (pressedButtons.endsWith(", ")) {
-        pressedButtons = pressedButtons.substring(0, pressedButtons.length() - 2);
-    }
-
-    return pressedButtons;
 }
 
 uint16_t getFreeRam() {
