@@ -53,10 +53,11 @@ void WriteToConsole::addData(const ButtonData additionalData) {
 void WriteToConsole::setPins() const {
     ButtonData combinedData = getLatestData();
 
-    const uint16_t* memoryLocation = (uint16_t*)&combinedData;
+    const uint8_t* byte1 = (uint8_t*)&combinedData;
+    const uint8_t* byte2 = (uint8_t*)&combinedData + 1;
 
     // set values for pin 4-7
-    PORTD = (PORTD & ~PORTD_MASK) | (memoryLocation[0] << 4 & PORTD_MASK);
+    PORTD = (PORTD & ~PORTD_MASK) | (byte1[0] << 4 & PORTD_MASK);
 
     // equivalent to
     //digitalWrite(PIN_BTN_B, combinedData.B);
@@ -65,7 +66,7 @@ void WriteToConsole::setPins() const {
     //digitalWrite(PIN_BTN_START, combinedData.START);
 
     // set values for pin 8-12
-    PORTB = (PORTB & ~PORTB_MASK) | (memoryLocation[0] >> 4 & PORTB_MASK);
+    PORTB = (PORTB & ~PORTB_MASK) | (byte1[0] >> 4 & PORTB_MASK);
 
     // equivalent to
     //digitalWrite(PIN_BTN_UP, combinedData.UP);
@@ -75,7 +76,7 @@ void WriteToConsole::setPins() const {
     //digitalWrite(PIN_BTN_A, combinedData.A);
 
     // set values for pins A0-A2
-    PORTC |= (PORTC & ~PORTC_MASK) | (memoryLocation[0] >> 9 & PORTC_MASK);
+    PORTC = (PORTC & ~PORTC_MASK) | (byte2[0] >> 1 & PORTC_MASK);
 
     // equivalent to
     //digitalWrite(PIN_BTN_X, combinedData.X);
