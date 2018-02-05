@@ -17,7 +17,7 @@
 
         public SerialConnector(string portName)
         {
-            _port = new SerialPort(portName, 125000) { NewLine = "\r\n" };
+            _port = new SerialPort(portName, 125000);
         }
 
         public void Start()
@@ -34,8 +34,8 @@
 
         public void SendData(MessageType type, byte[] data)
         {
-            byte typeByte = (byte)type;
-            var bytesToEncode = new List<byte> { typeByte };
+            // prepend type byte
+            var bytesToEncode = new List<byte> { (byte)type };
             bytesToEncode.AddRange(data);
 
             byte[] encodedBytes = MessageCoder.Encode(bytesToEncode.ToArray());
@@ -55,6 +55,7 @@
                 {
                     if (receivedBytes.Count > 0)
                     {
+                        // this should only happen in exceptional cases, like baud rate mismatches
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Received incomplete message: <" + BitConverter.ToString(receivedBytes.Select(x => (byte)x).ToArray()) + ">");
                         Console.ForegroundColor = ConsoleColor.White;

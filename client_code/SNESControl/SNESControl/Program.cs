@@ -60,14 +60,9 @@
             Console.WriteLine("'l': load from file");
             Console.WriteLine("'x': stop saving / loading");
             Console.WriteLine("'i': request information");
-            Console.WriteLine("'o': clear information");
             Console.WriteLine("'p': send a PING request containing 32 bytes");
             Console.WriteLine("'ESC': quit");
             Console.WriteLine();
-
-            // reset any previous states
-            _serialConnector.SendData(MessageType.DisableSave, new byte[] { });
-            _serialConnector.SendData(MessageType.DisableLoad, new byte[] { });
 
             ProcessKeys();
 
@@ -105,8 +100,7 @@
                                      { ConsoleKey.P, SendPing },
                                      { ConsoleKey.S, Save },
                                      { ConsoleKey.L, Load },
-                                     { ConsoleKey.X, StopSaveLoad },
-                                     { ConsoleKey.O, Reset }
+                                     { ConsoleKey.X, StopSaveLoad }
                                  };
 
                 if (keyActions.ContainsKey(pressedKey))
@@ -148,12 +142,6 @@
             _replayFileWriter.Close();
             _serialConnector.SendData(MessageType.DisableSave, new byte[] { });
             _serialConnector.SendData(MessageType.DisableLoad, new byte[] { });
-        }
-
-        static void Reset()
-        {
-            Console.WriteLine("Resetting all data.");
-            _serialConnector.SendData(MessageType.ResetData, new byte[] { });
         }
     }
 }

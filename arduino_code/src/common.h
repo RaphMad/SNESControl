@@ -120,8 +120,6 @@ const uint8_t MAX_CONTENT_SIZE = 32;
  * Holds information about the application.
  */
 struct AppInfo {
-    uint16_t maxLoopDuration;
-
     bool isInSaveMode;
     bool isInReplayMode;
 };

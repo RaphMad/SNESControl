@@ -11,25 +11,14 @@
 
         public static byte[] Encode(byte[] bytes)
         {
-            var encodedBytes = new List<int> { StartMarker };
+            var encodedBytes = new List<byte> { StartMarker };
 
             foreach (byte currentByte in bytes)
             {
-                // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
-                if (currentByte == StartMarker)
+                if (NeedsEncoding(currentByte))
                 {
                     encodedBytes.Add(EncodeMarker);
-                    encodedBytes.Add(currentByte + EncodeMarker + 1);
-                }
-                else if (currentByte == EndMarker)
-                {
-                    encodedBytes.Add(EncodeMarker);
-                    encodedBytes.Add(currentByte + EncodeMarker + 1);
-                }
-                else if (currentByte == EncodeMarker)
-                {
-                    encodedBytes.Add(EncodeMarker);
-                    encodedBytes.Add(currentByte + EncodeMarker + 1);
+                    encodedBytes.Add(Encode(currentByte));
                 }
                 else
                 {
@@ -39,7 +28,21 @@
 
             encodedBytes.Add(EndMarker);
 
-            return encodedBytes.Select(x => (byte)x).ToArray();
+            return encodedBytes.ToArray();
+        }
+
+        private static bool NeedsEncoding(byte value)
+        {
+            return value == StartMarker || value == EncodeMarker || value == EndMarker;
+        }
+
+        private static byte Encode(byte value)
+        {
+            unchecked
+            {
+                // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
+                return (byte)(value + EncodeMarker + 1);
+            }
         }
 
         public static byte[] Decode(byte[] bytes)
@@ -49,21 +52,27 @@
             // 1 skips the start marker, -1 omits the end marker
             for (int i = 1; i < bytes.Length - 1; i++)
             {
-                int currentByte = bytes[i];
-
-                if (currentByte == EncodeMarker)
+                if (bytes[i] == EncodeMarker)
                 {
-                    // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
                     i++;
-                    int nextByte = bytes[i];
-                    currentByte = nextByte - EncodeMarker - 1;
+                    decodedBytes.Add(Decode(bytes[i]));
                 }
-
-                // re-use the receive buffer for the decoded data
-                decodedBytes.Add(currentByte);
+                else
+                {
+                    decodedBytes.Add(bytes[i]);
+                }
             }
 
             return decodedBytes.Select(x => (byte)x).ToArray();
+        }
+
+        private static byte Decode(byte value)
+        {
+            unchecked
+            {
+                // coding scheme: 0 <-> 2 3 , 1 <-> 2 4, 2 <-> 2 5
+                return (byte)(value - EncodeMarker - 1);
+            }
         }
     }
 }

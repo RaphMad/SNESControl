@@ -136,8 +136,6 @@ static void handleDisableLoadMessage(const uint8_t* const payload, const uint8_t
 }
 
 static void handleResetDataMessage(const uint8_t* const payload, const uint8_t size) {
-    appInfo.maxLoopDuration = 0;
-
     appInfo.isInReplayMode = false;
     appInfo.isInSaveMode = false;
 
