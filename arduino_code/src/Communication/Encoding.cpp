@@ -12,8 +12,8 @@ uint8_t Encoding::pollForData() {
         const uint8_t receivedByte = Serial.read();
 
         if (receivedByte == START_MARKER) {
-            receiveBufferIndex = 0;
             isReceiving = true;
+            receiveBufferIndex = 0;
         } else if (receivedByte == END_MARKER) {
             isReceiving = false;
             messageSize = receiveBufferIndex;
