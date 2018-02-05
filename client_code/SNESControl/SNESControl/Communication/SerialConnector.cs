@@ -172,12 +172,8 @@
 
         public void HandleInfoResponse(byte[] data)
         {
-            Console.WriteLine("Max loop duration: " + BitConverter.ToUInt16(data, 0));
-            Console.WriteLine();
-            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 2));
-            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 3));
-            Console.WriteLine();
-            Console.WriteLine("Free RAM: " + BitConverter.ToUInt16(data, 4));
+            Console.WriteLine("Is file save mode: " + BitConverter.ToBoolean(data, 0));
+            Console.WriteLine("Is in replay mode: " + BitConverter.ToBoolean(data, 1));
             Console.WriteLine();
         }
     }

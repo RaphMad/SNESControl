@@ -35,6 +35,11 @@ void setup() {
     // stop the built in led from lightning up by setting it to output
     DDRB |= B00100000;
 
+    // disable Timer0 overflow interrupt (renders millis(), micros() and delay() unusable)
+    noInterrupts();
+    bitClear(TIMSK0, TOIE0);
+    interrupts();
+
     // equivalent to
     //pinMode(LED_BUILTIN, OUTPUT);
 
@@ -75,7 +80,6 @@ void loop() {
     }
 
     MessageProcessor.pollForMessage();
-    calculateLoopDuration();
 }
 
 static void saveButtonData() {
@@ -92,19 +96,6 @@ static void prepareNextReplayFrame() {
 
 static void pollController() {
     ConsoleWriter.addData(ControllerReader.getData());
-}
-
-static uint16_t lastLoop;
-
-static void calculateLoopDuration() {
-    const uint16_t timeNow = millis();
-    const uint16_t loopDuration = timeNow - lastLoop;
-
-    if (loopDuration > appInfo.maxLoopDuration) {
-        appInfo.maxLoopDuration = loopDuration;
-    }
-
-    lastLoop = timeNow;
 }
 
 static void handleEnableSaveMessage(const uint8_t* const payload, const uint8_t size) {
@@ -127,13 +118,10 @@ static void handlePingMessage(const uint8_t* const payload, const uint8_t size) 
 }
 
 static void handleRequestStatusMessage(const uint8_t* const payload, const uint8_t size) {
-    const uint8_t dataBufferSize = sizeof(AppInfo) + sizeof(uint16_t);
-    uint8_t bytesToSend[dataBufferSize];
-
+    uint8_t bytesToSend[sizeof(AppInfo)];
     appInfoToBytes(&appInfo, bytesToSend);
-    intToBytes(getFreeRam(), bytesToSend + sizeof(AppInfo));
 
-    MessageProcessor.sendMessage(INFO_RESPONSE, bytesToSend, dataBufferSize);
+    MessageProcessor.sendMessage(INFO_RESPONSE, bytesToSend, sizeof(AppInfo));
 }
 
 static void handleDisableSaveMessage(const uint8_t* const payload, const uint8_t size) {
