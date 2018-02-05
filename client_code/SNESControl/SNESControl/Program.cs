@@ -9,9 +9,7 @@
     class Program
     {
         private static SerialConnector _serialConnector;
-
         private static ReplayFileWriter _replayFileWriter;
-
         private static ReplayFileReader _replayFileReader;
 
         static void Main(string[] args)
@@ -52,6 +50,7 @@
             // set up file reader and writer
             _replayFileWriter = new ReplayFileWriter(fileName);
             _serialConnector.UseReplayFileWriter(_replayFileWriter);
+
             _replayFileReader = new ReplayFileReader(fileName);
             _serialConnector.UseReplayFileReader(_replayFileReader);
 
@@ -69,16 +68,6 @@
             // reset any previous states
             _serialConnector.SendData(MessageType.DisableSave, new byte[] { });
             _serialConnector.SendData(MessageType.DisableLoad, new byte[] { });
-
-            // initialize saving to file if needed
-            string loadFromFile = FindArg(argList, "-loadFromFile");
-            if (loadFromFile != null)
-            {
-                _serialConnector.SendData(MessageType.EnableLoad, new byte[] { });
-
-                Console.WriteLine("Loading inputs from file <" + loadFromFile + ">.");
-                Console.WriteLine();
-            }
 
             ProcessKeys();
 
