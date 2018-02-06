@@ -1,0 +1,14 @@
+verify longer logic captures
+diff tool for logic captures + replay file
+
+remove print when no longer needed
+
+try to diff lsnes output (may need a correct smw cart)
+
+verify with NTSC cart
+verify with NTSC console
+
+add Hamming 24/16 code: http://www.robotroom.com/Hamming-Error-Correcting-Code-1.html
+
+try lsnes imports for other games (when tested with NTSC hardware)
+try imports from other replay formats
