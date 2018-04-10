@@ -2,7 +2,7 @@
 
 This project contains hardware schematics and software for building a device that is able to decode and encode the SNES controller protocol on the fly.
 
-Planned features:
+Features:
 
 * Save stream of pressed buttons into a replay file
 * Play back replay files saved this way
