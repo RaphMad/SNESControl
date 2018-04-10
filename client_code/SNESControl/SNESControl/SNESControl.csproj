@@ -43,6 +43,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Communication\SerialConnector.cs" />
     <Compile Include="SaveToFile\ReplayFileWriter.cs" />
+    <Compile Include="StressTest\StressTester.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

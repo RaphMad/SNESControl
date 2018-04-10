@@ -5,12 +5,14 @@
     using System.Linq;
     using System.Threading;
     using SaveToFile;
+    using StressTest;
 
     class Program
     {
         private static SerialConnector _serialConnector;
         private static ReplayFileWriter _replayFileWriter;
         private static ReplayFileReader _replayFileReader;
+        private static StressTester _stressTester;
 
         static void Main(string[] args)
         {
@@ -54,6 +56,8 @@
             _replayFileReader = new ReplayFileReader(fileName);
             _serialConnector.UseReplayFileReader(_replayFileReader);
 
+            _stressTester = new StressTester(_serialConnector);
+
             Console.WriteLine("Commands:");
             Console.WriteLine();
             Console.WriteLine("'s': save to file");
@@ -61,6 +65,8 @@
             Console.WriteLine("'x': stop saving / loading");
             Console.WriteLine("'i': request information");
             Console.WriteLine("'p': send a PING request containing 32 bytes");
+            Console.WriteLine("'t': start stress test");
+            Console.WriteLine("'z': stop stres test");
             Console.WriteLine("'ESC': quit");
             Console.WriteLine();
 
@@ -100,7 +106,9 @@
                                      { ConsoleKey.P, SendPing },
                                      { ConsoleKey.S, Save },
                                      { ConsoleKey.L, Load },
-                                     { ConsoleKey.X, StopSaveLoad }
+                                     { ConsoleKey.X, StopSaveLoad },
+                                     { ConsoleKey.T, StartStressTest },
+                                     { ConsoleKey.Z, StopStressTest }
                                  };
 
                 if (keyActions.ContainsKey(pressedKey))
@@ -142,6 +150,18 @@
             _replayFileWriter.Close();
             _serialConnector.SendData(MessageType.DisableSave, new byte[] { });
             _serialConnector.SendData(MessageType.DisableLoad, new byte[] { });
+        }
+
+        static void StartStressTest()
+        {
+            Console.WriteLine("Starting stress test");
+            _stressTester.Start();
+        }
+
+        static void StopStressTest()
+        {
+            Console.WriteLine("Stopping stress test");
+            _stressTester.Stop();
         }
     }
 }

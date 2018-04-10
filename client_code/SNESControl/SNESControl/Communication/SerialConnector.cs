@@ -127,7 +127,11 @@
             Console.WriteLine("Ping took " + _pingTimer.ElapsedMilliseconds + " ms.");
 
             _pingTimer.Reset();
+
+            PongReceived?.Invoke(this, data);
         }
+
+        public EventHandler<byte[]> PongReceived;
 
         private void ProcessPrint(byte[] data)
         {
