@@ -35,13 +35,13 @@ void setup() {
     // stop the built in led from lightning up by setting it to output
     DDRB |= B00100000;
 
+    // equivalent to
+    //pinMode(LED_BUILTIN, OUTPUT);
+
     // disable Timer0 overflow interrupt (renders millis(), micros() and delay() unusable)
     noInterrupts();
     bitClear(TIMSK0, TOIE0);
     interrupts();
-
-    // equivalent to
-    //pinMode(LED_BUILTIN, OUTPUT);
 
     attachInterrupt(digitalPinToInterrupt(PIN_LATCH), handleFallingLatchPulse, FALLING);
 
